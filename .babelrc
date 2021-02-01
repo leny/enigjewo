@@ -17,7 +17,8 @@
                     "core": "./src/core",
                     "hooks": "./src/core/hooks",
                     "components": "./src/components",
-                    "containers": "./src/containers"
+                    "containers": "./src/containers",
+                    "styles": "./src/styles"
                 }
             }
         ]
