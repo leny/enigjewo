@@ -8,25 +8,18 @@
 
 import React, {useState} from "react";
 
-import Hello from "../components/commons/hello";
-import Button from "../components/commons/button";
+import {MODE_MENU, MODE_GAME} from "../core/constants";
+
+import MenuContainer from "../containers/menu";
 
 const RootContainer = () => {
-    const [name, setName] = useState("World");
+    const [mode, setMode] = useState(MODE_MENU);
 
-    return (
-        <section className={"section"}>
-            <div className={"container"}>
-                <Hello name={name} primary />
-                <div>
-                    <Button
-                        label={"Who am I?"}
-                        onClick={() => setName("Enigjewo")}
-                    />
-                </div>
-            </div>
-        </section>
-    );
+    if (mode === MODE_GAME) {
+        console.log("Show game window!");
+    }
+
+    return <MenuContainer onSelectGameMode={() => setMode(MODE_GAME)} />;
 };
 
 export default RootContainer;
