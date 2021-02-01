@@ -10,3 +10,5 @@ bower_components
 *.sublime-workspace
 *.swp
 .eslintcache
+.cache
+dist

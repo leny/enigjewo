@@ -4,7 +4,9 @@
   "description": "A _remake_ of **GeoGuessr** with React & Firebase",
   "main": "index.js",
   "scripts": {
-    "lint": "npx eslint --fix --cache src"
+    "lint": "npx eslint --fix --cache src",
+    "work": "npx parcel src/index.html",
+    "build": "npx parcel build src/index.html"
   },
   "author": "leny <info@flatland.be>",
   "license": "MIT",
@@ -20,6 +22,7 @@
     "eslint-plugin-unicorn": "^27.0.0",
     "husky": "^4.3.8",
     "lint-staged": "^10.5.3",
+    "parcel-bundler": "^1.12.4",
     "prettier": "^2.2.1"
   },
   "lint-staged": {
@@ -34,5 +37,9 @@
     "hooks": {
       "pre-commit": "npx lint-staged"
     }
+  },
+  "dependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   }
 }
