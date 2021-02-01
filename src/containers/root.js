@@ -6,7 +6,7 @@
  * started at 01/02/2021
  */
 
-import React, {useState} from "react";
+import {useState} from "react";
 
 import {MODE_MENU, MODE_GAME} from "core/constants";
 
