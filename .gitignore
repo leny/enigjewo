@@ -1,0 +1,11 @@
+syntax: glob
+
+*~
+._*
+.DS_Store
+.sass-cache
+tmp
+node_modules
+bower_components
+*.sublime-workspace
+*.swp
