@@ -7,6 +7,7 @@
  */
 
 import React from "react";
+import PropTypes from "prop-types";
 import classnames from "classnames";
 
 const Button = ({label, variant = "info", onClick}) => (
@@ -17,5 +18,11 @@ const Button = ({label, variant = "info", onClick}) => (
         {label}
     </button>
 );
+
+Button.propTypes = {
+    label: PropTypes.string.isRequired,
+    variant: PropTypes.string,
+    onClick: PropTypes.func,
+};
 
 export default Button;
