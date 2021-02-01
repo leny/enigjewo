@@ -12,3 +12,4 @@ bower_components
 .eslintcache
 .cache
 dist
+.env
