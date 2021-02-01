@@ -44,6 +44,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.34",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
     "@fortawesome/react-fontawesome": "^0.1.14",
+    "@googlemaps/js-api-loader": "^1.11.1",
     "bulma": "^0.9.2",
     "classnames": "^2.2.6",
     "react": "^17.0.1",
