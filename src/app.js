@@ -9,9 +9,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import Hello from "./components/hello";
+import "bulma";
 
-ReactDOM.render(
-    <Hello />,
-    document.querySelector("#app"),
-);
+import Root from "./containers/root";
+
+ReactDOM.render(<Root />, document.querySelector("#app"));
