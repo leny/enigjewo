@@ -3,6 +3,17 @@
       "@babel/preset-env",
       "@babel/preset-react"
   ],
+  "plugins": [
+      ["module-resolver", {
+          "root": ["./src"],
+          "alias": {
+              "core": "./src/core",
+              "hooks": "./src/core/hooks",
+              "components": "./src/components",
+              "containers": "./src/containers",
+          },
+      }]
+  ],
   "compact": false,
   "comments": false
 }
