@@ -8,9 +8,9 @@
 
 import React, {useState} from "react";
 
-import {MODE_MENU, MODE_GAME} from "../core/constants";
+import {MODE_MENU, MODE_GAME} from "core/constants";
 
-import MenuContainer from "../containers/menu";
+import MenuContainer from "containers/menu";
 
 const RootContainer = () => {
     const [mode, setMode] = useState(MODE_MENU);
