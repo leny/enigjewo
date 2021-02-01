@@ -13,6 +13,7 @@ import classnames from "classnames";
 import {MODE_MENU, MODE_GAME} from "core/constants";
 
 import MenuContainer from "containers/menu";
+import GameContainer from "containers/game";
 
 import Loading from "components/commons/loading";
 
@@ -31,7 +32,7 @@ const RootContainer = () => {
     }
 
     if (mode === MODE_GAME) {
-        console.log("Show game window!");
+        return <GameContainer />;
     }
 
     return <MenuContainer onSelectGameMode={() => setMode(MODE_GAME)} />;
