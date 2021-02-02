@@ -24,7 +24,12 @@ import {
     faExpandAlt,
     faCompressAlt,
     faMapMarkerAlt,
+    faFlag,
+    faStickyNote,
 } from "@fortawesome/free-solid-svg-icons";
+
+import {withValue} from "core/utils";
+import {getRandomLatLng} from "core/geo-utils";
 
 const SIZE_SMALL = "small";
 const SIZE_MEDIUM = "medium";
@@ -33,9 +38,12 @@ const SIZE_BIG = "big";
 const Roadmap = ({
     startPosition = {lat: 0, lng: 0},
     startZoom = 2,
+    onResetPanorama,
     onGuessPosition,
 }) => {
     const box = useRef(null);
+    const [showNotes, setShowNotes] = useState(null);
+    const [notes, setNotes] = useState("");
     const [map, setMap] = useState(null);
     const [marker, setMarker] = useState(null);
     const [size, setSize] = useState(SIZE_SMALL);
@@ -54,13 +62,21 @@ const Roadmap = ({
     );
 
     const handleMakeGuess = useCallback(() => {
-        // TODO: check if position exists, else select random one
-        // onGuessPosition(position);
-    }, [onGuessPosition]);
+        if (!marker){
+            onGuessPosition(getRandomLatLng().position);
+            return;
+        }
+
+        onGuessPosition(marker.getPosition().toJSON());
+    }, [onGuessPosition, marker]);
 
     const handleCenterOnMarker = useCallback(() => {
-        map.panTo(marker.getPosition())
+        map.panTo(marker.getPosition());
     }, [map, marker]);
+
+    const handleToggleStickyNote = useCallback(() => setShowNotes((v) => !v), [
+        setShowNotes,
+    ]);
 
     const handlePinBox = useCallback(() => setIsPinned((v) => !v), [
         setIsPinned,
@@ -128,6 +144,23 @@ const Roadmap = ({
                 size === SIZE_MEDIUM && "roadmap--size-medium",
                 size === SIZE_BIG && "roadmap--size-big",
             )}>
+            {showNotes && (
+                <div className={classnames("mb-1", "roadmap__notes")}>
+                    <textarea
+                        className={classnames(
+                            "textarea",
+                            "roadmap__notes-area",
+                            "has-fixed-size",
+                        )}
+                        name={"notes"}
+                        placeholder={
+                            "Here's a notepad for you. It's emptied after each round."
+                        }
+                        value={notes}
+                        onChange={withValue(setNotes)}
+                    />
+                </div>
+            )}
             <div
                 className={classnames(
                     "roadmap__tools",
@@ -136,12 +169,25 @@ const Roadmap = ({
                     "is-justify-content-space-between",
                     "is-align-content-center",
                 )}>
-                <ToolIcon
-                    icon={faMapMarkerAlt}
-                    title={"Center on marker"}
-                    disabled={!marker}
-                    onClick={handleCenterOnMarker}
-                />
+                <span>
+                    <ToolIcon
+                        icon={faMapMarkerAlt}
+                        title={"Center on marker"}
+                        disabled={!marker}
+                        onClick={handleCenterOnMarker}
+                    />
+                    <ToolIcon
+                        icon={faFlag}
+                        title={"Return to drop point"}
+                        onClick={onResetPanorama}
+                    />
+                    <ToolIcon
+                        icon={faStickyNote}
+                        title={"Toggle sticky note"}
+                        active={showNotes}
+                        onClick={handleToggleStickyNote}
+                    />
+                </span>
                 <span>
                     <ToolIcon
                         icon={faCompressAlt}
@@ -179,6 +225,7 @@ Roadmap.propTypes = {
         lng: PropTypes.number.isRequired,
     }),
     startZoom: PropTypes.number,
+    onResetPanorama: PropTypes.func.isRequired,
     onGuessPosition: PropTypes.func.isRequired,
 };
 
