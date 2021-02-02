@@ -6,14 +6,26 @@
  * started at 01/02/2021
  */
 
+/* eslint-disable */ // WIP
+
 import "styles/game.scss";
 
-import {useRef, useEffect} from "react";
+import {useEffect, useCallback, useState} from "react";
 
 import Panorama from "components/game/panorama";
 import Roadmap from "components/game/roadmap";
+import TopBar from "components/game/top-bar";
 
 const GameContainer = () => {
+    const handleResetPanorama=useCallback(()=>console.log("reset panorama"), []);
+
+    const handleGuessPosition = useCallback(
+        position => {
+            // TODO: if no position, compute one randomly
+            console.log("guess position:", position);
+        },
+        [],
+    );
 
     useEffect(() => {
         const html = document.querySelector("html");
@@ -25,9 +37,9 @@ const GameContainer = () => {
 
     return (
         <>
-            <div>{"top-bar"}</div>
+            <TopBar />
             <Panorama />
-            <div>{"tools"}</div>
+            <Roadmap onResetPanorama={handleResetPanorama} onGuessPosition={handleGuessPosition} />
         </>
     );
 };
