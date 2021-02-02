@@ -8,13 +8,20 @@
 
 import "styles/game.scss";
 
-import {useRef} from "react";
+import {useRef, useEffect} from "react";
 
 import Panorama from "components/game/panorama";
 import Roadmap from "components/game/roadmap";
 
 const GameContainer = () => {
-    const streetView = useRef(null);
+
+    useEffect(() => {
+        const html = document.querySelector("html");
+
+        html.classList.add("game-page");
+
+        return () => html.classList.remove("game-page");
+    }, []);
 
     return (
         <>
