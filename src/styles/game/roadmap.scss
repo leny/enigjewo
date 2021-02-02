@@ -1,0 +1,42 @@
+/* leny/enigjewo
+ *
+ * /src/styles/game/roadmap.scss - Roadmap styles
+ *
+ * coded by leny@BeCode
+ * started at 02/02/2021
+ */
+
+.roadmap {
+    position: absolute;
+    left: 2rem;
+    bottom: 2rem;
+    z-index: 100;
+    &__map {
+        width: 300px;
+        height: 180px;
+        transition: width .25s ease-in-out, height .25s ease-in-out;
+        background: lightgray; // tmp
+    }
+    &--is-pinned {
+        opacity: 1;
+    }
+    &--is-floating {
+        opacity: 0.5;
+        transition: opacity .25s ease-in-out;
+        &:hover {
+            opacity: 1;
+        }
+    }
+    &--size-medium {
+        .roadmap__map {
+            width: 40vw;
+            height: 35vh;
+        }
+    }
+    &--size-big {
+        .roadmap__map {
+            width: 65vw;
+            height: 60vh;
+        }
+    }
+}
