@@ -10,7 +10,7 @@
 
 import "styles/game.scss";
 
-import {useEffect, useCallback} from "react";
+import {useEffect, useCallback, useState} from "react";
 import {useStreetViewService} from "core/hooks/use-streetview-service";
 
 import classnames from "classnames";
@@ -25,7 +25,8 @@ import {getRandomLatLng} from "core/geo-utils";
 
 const GameContainer = () => {
     const [panorama]=useStreetViewService();
-    const handleResetPanorama=useCallback(()=>console.log("reset panorama"), []);
+    const [discriminator, setDiscriminator]=useState(Date.now());
+    const handleResetPanorama=useCallback(()=>setDiscriminator(Date.now()), [setDiscriminator]);
 
     console.log("panorama:", panorama);
 
@@ -58,7 +59,7 @@ const GameContainer = () => {
     return (
         <>
             <TopBar />
-            <Panorama panorama={panorama} />
+            <Panorama panorama={panorama} discriminator={discriminator} />
             <Roadmap onResetPanorama={handleResetPanorama} onGuessPosition={handleGuessPosition} />
         </>
     );

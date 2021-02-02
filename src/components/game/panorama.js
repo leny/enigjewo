@@ -14,7 +14,7 @@ import {useRef, useState, useEffect} from "react";
 import classnames from "classnames";
 import PropTypes from "prop-types";
 
-const Panorama = ({panorama}) => {
+const Panorama = ({panorama, discriminator}) => {
     const box = useRef(null);
     const [streetView, setStreetView]=useState(null);
 
@@ -50,11 +50,14 @@ const Panorama = ({panorama}) => {
             pitch: 0,
         });
         streetView.setZoom(0);
-    },[streetView, panorama])
+    },[streetView, panorama, discriminator])
 
     return <div className={classnames("panorama")} ref={box} />;
 };
 
-Panorama.propTypes = {};
+Panorama.propTypes = {
+    panorama: PropTypes.string.isRequired,
+    discriminator: PropTypes.number.isRequired,
+};
 
 export default Panorama;
