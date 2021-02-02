@@ -18,6 +18,7 @@
                     "hooks": "./src/core/hooks",
                     "components": "./src/components",
                     "containers": "./src/containers",
+                    "sounds": "./src/sounds",
                     "styles": "./src/styles"
                 }
             }

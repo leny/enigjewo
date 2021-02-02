@@ -49,6 +49,7 @@
     "bulma": "^0.9.2",
     "classnames": "^2.2.6",
     "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react-dom": "^17.0.1",
+    "use-sound": "^2.0.1"
   }
 }
