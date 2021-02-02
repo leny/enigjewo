@@ -10,18 +10,18 @@ import "styles/game.scss";
 
 import {useRef} from "react";
 
+import Panorama from "components/game/panorama";
 import Roadmap from "components/game/roadmap";
 
 const GameContainer = () => {
     const streetView = useRef(null);
 
     return (
-        <div>
+        <>
             <div>{"top-bar"}</div>
-            <div ref={streetView}>{"street-view"}</div>
-            <Roadmap />
+            <Panorama />
             <div>{"tools"}</div>
-        </div>
+        </>
     );
 };
 
