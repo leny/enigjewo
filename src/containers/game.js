@@ -11,12 +11,16 @@
 import "styles/game.scss";
 
 import {useEffect, useCallback, useState} from "react";
+import {useStreetViewService} from "core/hooks/use-streetview-service";
 
 import Panorama from "components/game/panorama";
 import Roadmap from "components/game/roadmap";
 import TopBar from "components/game/top-bar";
 
+import {getRandomLatLng} from "core/geo-utils";
+
 const GameContainer = () => {
+    const [panorama, refetch]=useStreetViewService();
     const handleResetPanorama=useCallback(()=>console.log("reset panorama"), []);
 
     const handleGuessPosition = useCallback(
