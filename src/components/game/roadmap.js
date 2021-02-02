@@ -6,8 +6,6 @@
  * started at 02/02/2021
  */
 
-/* eslint-disable */ // WIP
-
 /* global google */
 
 import "styles/game/roadmap.scss";
@@ -28,8 +26,9 @@ import {
     faStickyNote,
 } from "@fortawesome/free-solid-svg-icons";
 
-import {withValue} from "core/utils";
-import {getRandomLatLng} from "core/geo-utils";
+import {withValue, isFalsy} from "core/utils";
+
+const invertValue = isFalsy;
 
 const SIZE_SMALL = "small";
 const SIZE_MEDIUM = "medium";
@@ -62,30 +61,26 @@ const Roadmap = ({
     );
 
     const handleMakeGuess = useCallback(() => {
-        if (!marker){
-            onGuessPosition(getRandomLatLng().position);
-            return;
-        }
-
-        onGuessPosition(marker.getPosition().toJSON());
+        onGuessPosition(marker && marker.getPosition().toJSON());
     }, [onGuessPosition, marker]);
 
     const handleCenterOnMarker = useCallback(() => {
         map.panTo(marker.getPosition());
     }, [map, marker]);
 
-    const handleToggleStickyNote = useCallback(() => setShowNotes((v) => !v), [
-        setShowNotes,
-    ]);
+    const handleToggleStickyNote = useCallback(
+        () => setShowNotes(invertValue),
+        [setShowNotes],
+    );
 
-    const handlePinBox = useCallback(() => setIsPinned((v) => !v), [
+    const handlePinBox = useCallback(() => setIsPinned(invertValue), [
         setIsPinned,
     ]);
 
     const handleGrowBox = useCallback(
         () =>
             setSize(
-                (v) =>
+                v =>
                     ({
                         [SIZE_SMALL]: SIZE_MEDIUM,
                         [SIZE_MEDIUM]: SIZE_BIG,
@@ -97,7 +92,7 @@ const Roadmap = ({
 
     const handleShrinkBox = useCallback(
         () =>
-            setSize((v) =>
+            setSize(v =>
                 setSize(
                     {
                         [SIZE_SMALL]: SIZE_SMALL,
