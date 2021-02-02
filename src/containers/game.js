@@ -10,8 +10,12 @@
 
 import "styles/game.scss";
 
-import {useEffect, useCallback, useState} from "react";
+import {useEffect, useCallback} from "react";
 import {useStreetViewService} from "core/hooks/use-streetview-service";
+
+import classnames from "classnames";
+
+import Loading from "components/commons/loading";
 
 import Panorama from "components/game/panorama";
 import Roadmap from "components/game/roadmap";
@@ -20,8 +24,10 @@ import TopBar from "components/game/top-bar";
 import {getRandomLatLng} from "core/geo-utils";
 
 const GameContainer = () => {
-    const [panorama, refetch]=useStreetViewService();
+    const [panorama]=useStreetViewService();
     const handleResetPanorama=useCallback(()=>console.log("reset panorama"), []);
+
+    console.log("panorama:", panorama);
 
     const handleGuessPosition = useCallback(
         position => {
@@ -39,10 +45,20 @@ const GameContainer = () => {
         return () => html.classList.remove("game-page");
     }, []);
 
+    if (!panorama){
+        return (
+            <section className={"section"}>
+                <div className={classnames("container", "has-text-centered")}>
+                    <Loading variant={"info"} size={"large"} />
+                </div>
+            </section>
+        );
+    }
+
     return (
         <>
             <TopBar />
-            <Panorama />
+            <Panorama panorama={panorama} />
             <Roadmap onResetPanorama={handleResetPanorama} onGuessPosition={handleGuessPosition} />
         </>
     );

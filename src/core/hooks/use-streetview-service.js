@@ -8,13 +8,13 @@
 
 /* global google */
 
-import {useState, useCallback, useEffect} from "react";
+import {useState, useCallback, useEffect, useMemo} from "react";
 import {getRandomLatLng} from "core/geo-utils";
 
-export const useStreetViewService = () => {
-    const [panorama, setPanorama] = useState(null);
+export const useStreetViewService = (pano = null) => {
+    const [panorama, setPanorama] = useState(pano);
 
-    const service = new google.maps.StreetViewService();
+    const service = useMemo(() => new google.maps.StreetViewService(), []);
 
     const getPanorama = useCallback(() => {
         service.getPanorama(
@@ -30,14 +30,14 @@ export const useStreetViewService = () => {
                     return;
                 }
 
-                console.log("data:", data);
+                setPanorama(data.location.pano);
             },
         );
     }, [setPanorama, service]);
 
     useEffect(() => {
-        getPanorama();
-    }, []);
+        !pano && getPanorama();
+    }, [pano]);
 
     return [panorama, getPanorama];
 };

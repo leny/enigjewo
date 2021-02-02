@@ -10,12 +10,47 @@
 
 import "styles/game/panorama.scss";
 
-import {useRef} from "react";
+import {useRef, useState, useEffect} from "react";
 import classnames from "classnames";
 import PropTypes from "prop-types";
 
-const Panorama = () => {
+const Panorama = ({panorama}) => {
     const box = useRef(null);
+    const [streetView, setStreetView]=useState(null);
+
+    useEffect(()=>{
+        if(streetView||!box.current){
+            return;
+        }
+
+        setStreetView(
+            new google.maps.StreetViewPanorama(
+                box.current,{
+                    addressControl: false,
+                fullscreenControl: false,
+                motionTracking: false,
+                motionTrackingControl: false,
+                showRoadLabels: false,
+                panControl: true,
+                }
+            )
+        );
+    },[
+        box, streetView, setStreetView
+    ]);
+
+    useEffect(()=>{
+        if (!streetView||!panorama){
+            return;
+        }
+
+        streetView.setPano(panorama);
+        streetView.setPov({
+            heading: 270,
+            pitch: 0,
+        });
+        streetView.setZoom(0);
+    },[streetView, panorama])
 
     return <div className={classnames("panorama")} ref={box} />;
 };
