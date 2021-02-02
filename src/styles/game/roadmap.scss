@@ -22,7 +22,7 @@
     &__map {
         width: 300px;
         height: 180px;
-        transition: width 0.25s ease-in-out, height 0.25s ease-in-out;
+        transition: width 0.25s ease-out, height 0.25s ease-out;
         background: lightgray; // tmp
     }
     &--is-pinned {
@@ -50,11 +50,15 @@
     &--is-floating {
         opacity: 0.5;
         transition: opacity 0.25s ease-in-out;
+        .roadmap__notes {
+            height: 240px;
+        }
         &:hover {
             opacity: 1;
             .roadmap__map {
                 width: 40vw;
                 height: 35vh;
+                transition: width 0.2s ease-in, height 0.2s ease-in;
             }
             &.roadmap--size-medium {
                 .roadmap__map {
