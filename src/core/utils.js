@@ -16,3 +16,5 @@ export const preventDefault = next => e => {
     e.preventDefault();
     next(e);
 };
+
+export const withValue = next => e => next(e.currentTarget.value);
