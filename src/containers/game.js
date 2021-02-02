@@ -9,17 +9,17 @@
 import "styles/game.scss";
 
 import {useRef} from "react";
-import classnames from "classnames";
+
+import Roadmap from "components/game/roadmap";
 
 const GameContainer = () => {
     const streetView = useRef(null);
-    const mapView = useRef(null);
 
     return (
         <div>
             <div>{"top-bar"}</div>
             <div ref={streetView}>{"street-view"}</div>
-            <div ref={mapView} className={classnames("map-view")} />
+            <Roadmap />
             <div>{"tools"}</div>
         </div>
     );
