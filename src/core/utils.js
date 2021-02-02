@@ -8,6 +8,7 @@
 
 export const isTruthy = m => !!m;
 export const isFalsy = m => !m;
+export const invertValue = isFalsy;
 
 // eslint-disable-next-line no-empty-function
 export const noop = () => {};
