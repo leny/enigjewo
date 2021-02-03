@@ -6,19 +6,29 @@
  * started at 03/02/2021
  */
 
-import {DEBUG, DEFAULT_ROUND_DURATION} from "core/constants";
+import {
+    DEBUG,
+    DEFAULT_ROUND_DURATION,
+    DEFAULT_DIFFICULTY,
+} from "core/constants";
 import {
     STEP_LOADING,
     STEP_PLAY,
-    // STEP_RESULTS,
+    STEP_RESULTS,
+    // STEP_SUMMARY,
     ACTION_PREPARE_ROUND,
     ACTION_START_ROUND,
     ACTION_COMPUTE_RESULTS,
     ACTION_SHOW_RESULTS,
 } from "./types";
 
+import {createContext} from "react";
+
+export const GameStoreContext = createContext();
+
 // TODO: inject game options
 export const initState = () => ({
+    difficulty: DEFAULT_DIFFICULTY,
     rounds: {
         total: 5,
         current: 0,
@@ -30,7 +40,9 @@ export const initState = () => ({
         score: 0,
     } */,
     panoramas: [],
+    targets: [],
     positions: [],
+    distances: [],
     scores: [],
     step: STEP_LOADING,
 });
@@ -50,10 +62,12 @@ export const reducer = (state, {type, ...payload}) => {
                 step: STEP_LOADING,
             };
         case ACTION_START_ROUND: {
-            const {index, panorama} = payload;
+            const {index, panorama, target} = payload;
 
             return {
                 ...state,
+                panoramas: [...state.panoramas, panorama],
+                targets: [...state.targets, target],
                 currentRound: {
                     index,
                     panorama,
@@ -62,10 +76,25 @@ export const reducer = (state, {type, ...payload}) => {
                 step: STEP_PLAY,
             };
         }
-        case ACTION_COMPUTE_RESULTS:
-        case ACTION_SHOW_RESULTS:
-            return {...state, ...payload};
-        // TODO: resolve actions
+        case ACTION_COMPUTE_RESULTS: {
+            const {position} = payload;
+
+            return {
+                ...state,
+                positions: [...state.positions, position],
+                step: STEP_LOADING,
+            };
+        }
+        case ACTION_SHOW_RESULTS: {
+            const {distance, score} = payload;
+
+            return {
+                ...state,
+                scores: [...state.scores, score],
+                distances: [...state.distances, distance],
+                step: STEP_RESULTS,
+            };
+        }
         default:
             return state;
     }

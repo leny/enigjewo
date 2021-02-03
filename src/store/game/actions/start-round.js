@@ -12,6 +12,6 @@ import {getRandomPanorama} from "core/street-view";
 
 export default index => async dispatch => {
     dispatch({type: ACTION_PREPARE_ROUND, index});
-    const panorama = await getRandomPanorama();
-    dispatch({type: ACTION_START_ROUND, index, panorama});
+    const {panorama, position} = await getRandomPanorama();
+    dispatch({type: ACTION_START_ROUND, index, panorama, target: position});
 };
