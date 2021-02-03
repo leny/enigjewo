@@ -6,7 +6,7 @@
  * started at 03/02/2021
  */
 
-export const STEP_PREPARE = "prepare";
+export const STEP_LOADING = "loading";
 export const STEP_PLAY = "play";
 export const STEP_COMPUTE = "compute";
 export const STEP_RESULTS = "results";
