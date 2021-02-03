@@ -38,6 +38,7 @@ const Roadmap = ({
     startPosition = {lat: 0, lng: 0},
     startZoom = 2,
     onResetPanorama,
+    onUpdatePosition,
     onGuessPosition,
 }) => {
     const box = useRef(null);
@@ -50,6 +51,8 @@ const Roadmap = ({
 
     const handleClickOnMap = useCallback(
         ({latLng}) => {
+            onUpdatePosition(latLng.toJSON());
+
             if (!marker) {
                 setMarker(new google.maps.Marker({position: latLng, map}));
                 return;
@@ -57,12 +60,8 @@ const Roadmap = ({
 
             marker.setPosition(latLng);
         },
-        [map, marker, setMarker],
+        [map, marker, setMarker, onUpdatePosition],
     );
-
-    const handleMakeGuess = useCallback(() => {
-        onGuessPosition(marker && marker.getPosition().toJSON());
-    }, [onGuessPosition, marker]);
 
     const handleCenterOnMarker = useCallback(() => {
         map.panTo(marker.getPosition());
@@ -208,7 +207,7 @@ const Roadmap = ({
             <Button
                 variant={"dark"}
                 label={"Guess"}
-                onClick={handleMakeGuess}
+                onClick={onGuessPosition}
             />
         </div>
     );
@@ -221,6 +220,7 @@ Roadmap.propTypes = {
     }),
     startZoom: PropTypes.number,
     onResetPanorama: PropTypes.func.isRequired,
+    onUpdatePosition: PropTypes.func.isRequired,
     onGuessPosition: PropTypes.func.isRequired,
 };
 
