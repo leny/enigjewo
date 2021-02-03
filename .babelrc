@@ -19,6 +19,7 @@
                     "components": "./src/components",
                     "containers": "./src/containers",
                     "sounds": "./src/sounds",
+                    "store": "./src/store",
                     "styles": "./src/styles"
                 }
             }
