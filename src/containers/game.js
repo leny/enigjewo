@@ -10,37 +10,33 @@
 
 import "styles/game.scss";
 
-import {useEffect, useCallback, useState} from "react";
-import {useStreetViewService} from "core/hooks/use-streetview-service";
+import {useEffect, useCallback} from "react";
+import {useThunkedReducer} from "core/hooks/use-thunked-reducer";
+
+import {STEP_PLAY} from "store/game/types";
+import {initState, reducer} from "store/game";
+import startRound from "store/game/actions/start-round";
 
 import classnames from "classnames";
 
 import Loading from "components/commons/loading";
-
-import Panorama from "components/game/panorama";
-import Roadmap from "components/game/roadmap";
-import TopBar from "components/game/top-bar";
+import Play from "components/game/play";
 
 import {getRandomLatLng} from "core/geo-utils";
 
 const GameContainer = () => {
-    const [position, setPosition] = useState(null);
-    const [panorama] = useStreetViewService();
-    const [discriminator, setDiscriminator] = useState(Date.now());
-    const handleResetPanorama = useCallback(
-        () => setDiscriminator(Date.now()),
-        [setDiscriminator],
-    );
+    // TODO: inject game options
+    const [state, dispatch] = useThunkedReducer(reducer, null, initState);
 
-    const handleUpdatePosition = useCallback((pos) => setPosition(pos), [
-        setPosition,
-    ]);
+    const handleFinishRound = useCallback((position) => {
+        console.log("handleFinishRound(position):", position);
+        // TODO computeResults(index, position)
+    }, []);
 
-    const handleFinishRound=useCallback(()=>{
-        const pos = position||getRandomLatLng().position;
-        console.log("finishRound(position):", pos);
-        // TODO: extract match logic in sub component, then send position to GameContainer to conclude a round & show results
-    },[position])
+    // launch match
+    useEffect(() => {
+        dispatch(startRound(1));
+    }, []);
 
     useEffect(() => {
         const html = document.querySelector("html");
@@ -50,26 +46,17 @@ const GameContainer = () => {
         return () => html.classList.remove("game-page");
     }, []);
 
-    if (!panorama) {
-        return (
-            <section className={"section"}>
-                <div className={classnames("container", "has-text-centered")}>
-                    <Loading variant={"info"} size={"large"} />
-                </div>
-            </section>
-        );
+    if (state.step === STEP_PLAY) {
+        return <Play panorama={state.currentRound.panorama} rounds={state.rounds} score={state.currentRound.score} onFinishRound={handleFinishRound} />;
     }
 
+    // state === STEP_LOADING
     return (
-        <>
-            <TopBar onTimerFinished={handleFinishRound} />
-            <Panorama panorama={panorama} discriminator={discriminator} />
-            <Roadmap
-                onResetPanorama={handleResetPanorama}
-                onUpdatePosition={handleUpdatePosition}
-                onGuessPosition={handleFinishRound}
-            />
-        </>
+        <section className={"section"}>
+            <div className={classnames("container", "has-text-centered")}>
+                <Loading variant={"info"} size={"large"} />
+            </div>
+        </section>
     );
 };
 

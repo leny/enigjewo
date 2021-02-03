@@ -19,21 +19,19 @@ import {faBell, faBellSlash} from "@fortawesome/free-solid-svg-icons";
 
 import {noop, preventDefault, invertValue} from "core/utils";
 
-import {DEFAULT_ROUND_DURATION, NBSP} from "core/constants";
+import {NBSP} from "core/constants";
 
 import halfTimeAlert from "sounds/half-time.mp3";
 import thirtySecondsRemainingAlert from "sounds/thirty-seconds-remaining.mp3";
 
 const TopBar = ({
-    roundDuration = DEFAULT_ROUND_DURATION,
-    currentRound = 1,
-    totalRounds = 5,
+    rounds: {duration, current, total},
     score = 0,
     onTimerFinished = noop,
 }) => {
     const [withSoundAlerts, setWithSoundAlerts] = useState(true);
     const [timerColorClassName, setTimerColorClassName] = useState(false);
-    const [{seconds, running}] = useTimer(roundDuration, true, onTimerFinished);
+    const [{seconds, running}] = useTimer(duration, true, onTimerFinished);
     const [playHalfTimeAlert] = useSound(halfTimeAlert);
     const [playThirtySecondsRemainingAlert] = useSound(
         thirtySecondsRemainingAlert,
@@ -44,23 +42,23 @@ const TopBar = ({
             return;
         }
 
-        if (seconds === roundDuration) {
+        if (seconds === duration) {
             setTimerColorClassName(false);
         }
 
-        if (roundDuration / 2 > 60 && seconds === roundDuration / 2) {
+        if (duration / 2 > 60 && seconds === duration / 2) {
             withSoundAlerts && playHalfTimeAlert();
             setTimerColorClassName("has-text-warning");
         }
 
-        if (roundDuration > 120 && seconds === 30) {
+        if (duration > 120 && seconds === 30) {
             withSoundAlerts && playThirtySecondsRemainingAlert();
             setTimerColorClassName("has-text-danger");
         }
     }, [
         seconds,
         running,
-        roundDuration,
+        duration,
         withSoundAlerts,
         playHalfTimeAlert,
         playThirtySecondsRemainingAlert,
@@ -113,7 +111,7 @@ const TopBar = ({
             <span className={classnames("top-bar__rounds")}>
                 <span className={classnames("has-text-grey")}>{"Round:"}</span>
                 {NBSP}
-                <strong>{`${currentRound} / ${totalRounds}`}</strong>
+                <strong>{`${current} / ${total}`}</strong>
             </span>
             <span className={classnames("top-bar__score")}>
                 <span className={classnames("has-text-grey")}>{"Score:"}</span>
@@ -125,10 +123,12 @@ const TopBar = ({
 };
 
 TopBar.propTypes = {
-    roundDuration: PropTypes.number,
-    currentRound: PropTypes.number,
-    totalRounds: PropTypes.number,
-    score: PropTypes.number,
+    rounds: PropTypes.shape({
+        duration: PropTypes.number.isRequired,
+        current: PropTypes.number.isRequired,
+        total: PropTypes.number.isRequired,
+    }).isRequired,
+    score: PropTypes.number.isRequired,
     onTimerFinished: PropTypes.func,
 };
 

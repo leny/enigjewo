@@ -6,14 +6,11 @@
  * started at 01/02/2021
  */
 
-import "styles/play.scss";
+import "styles/game/play.scss";
 
 import {useCallback, useState} from "react";
 
 import PropTypes from "prop-types";
-import classnames from "classnames";
-
-import Loading from "components/commons/loading";
 
 import Panorama from "components/game/panorama";
 import Roadmap from "components/game/roadmap";
@@ -21,7 +18,7 @@ import TopBar from "components/game/top-bar";
 
 import {getRandomLatLng} from "core/geo-utils";
 
-const Play = ({panorama, onFinishRound}) => {
+const Play = ({rounds, score, panorama, onFinishRound}) => {
     const [position, setPosition] = useState(null);
     const [discriminator, setDiscriminator] = useState(Date.now());
     const handleResetPanorama = useCallback(
@@ -38,19 +35,13 @@ const Play = ({panorama, onFinishRound}) => {
         [position, onFinishRound],
     );
 
-    if (!panorama) {
-        return (
-            <section className={"section"}>
-                <div className={classnames("container", "has-text-centered")}>
-                    <Loading variant={"info"} size={"large"} />
-                </div>
-            </section>
-        );
-    }
-
     return (
         <>
-            <TopBar onTimerFinished={handleFinishRound} />
+            <TopBar
+                rounds={rounds}
+                score={score}
+                onTimerFinished={handleFinishRound}
+            />
             <Panorama panorama={panorama} discriminator={discriminator} />
             <Roadmap
                 onResetPanorama={handleResetPanorama}
@@ -62,6 +53,12 @@ const Play = ({panorama, onFinishRound}) => {
 };
 
 Play.propTypes = {
+    rounds: PropTypes.shape({
+        duration: PropTypes.number.isRequired,
+        current: PropTypes.number.isRequired,
+        total: PropTypes.number.isRequired,
+    }).isRequired,
+    score: PropTypes.number.isRequired,
     panorama: PropTypes.string.isRequired,
     // TODO: game options
     onFinishRound: PropTypes.func.isRequired,
