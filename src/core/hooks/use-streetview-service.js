@@ -11,6 +11,8 @@
 import {useState, useCallback, useEffect, useMemo} from "react";
 import {getRandomLatLng} from "core/geo-utils";
 
+import {DEBUG} from "core/constants";
+
 export const useStreetViewService = (pano = null) => {
     const [panorama, setPanorama] = useState(pano);
 
@@ -29,6 +31,13 @@ export const useStreetViewService = (pano = null) => {
                     getPanorama();
                     return;
                 }
+
+                DEBUG &&
+                    console.log("DEBUG:", {
+                        description: data.location.description,
+                        panorama: data.location.pano,
+                        position: data.location.latLng.toJSON(),
+                    });
 
                 setPanorama(data.location.pano);
             },

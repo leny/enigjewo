@@ -6,6 +6,8 @@
  * started at 01/02/2021
  */
 
+export const DEBUG = process.env.NODE_ENV !== "production";
+
 export const MODE_MENU = "menu";
 export const MODE_GAME = "game";
 
