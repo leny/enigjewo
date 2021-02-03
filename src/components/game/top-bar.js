@@ -10,9 +10,11 @@ import "styles/game/top-bar.scss";
 
 import classnames from "classnames";
 import PropTypes from "prop-types";
-import {useEffect, useState} from "react";
+import {useEffect, useState, useContext} from "react";
 import {useTimer} from "core/hooks/use-timer";
 import useSound from "use-sound";
+
+import {GameStoreContext} from "store/game";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBell, faBellSlash} from "@fortawesome/free-solid-svg-icons";
@@ -24,11 +26,11 @@ import {NBSP} from "core/constants";
 import halfTimeAlert from "sounds/half-time.mp3";
 import thirtySecondsRemainingAlert from "sounds/thirty-seconds-remaining.mp3";
 
-const TopBar = ({
-    rounds: {duration, current, total},
-    score = 0,
-    onTimerFinished = noop,
-}) => {
+const TopBar = ({onTimerFinished = noop}) => {
+    const {
+        rounds: {duration, current, total},
+        currentRound: {score},
+    } = useContext(GameStoreContext);
     const [withSoundAlerts, setWithSoundAlerts] = useState(true);
     const [timerColorClassName, setTimerColorClassName] = useState(false);
     const [{seconds, running}] = useTimer(duration, true, onTimerFinished);
@@ -123,12 +125,6 @@ const TopBar = ({
 };
 
 TopBar.propTypes = {
-    rounds: PropTypes.shape({
-        duration: PropTypes.number.isRequired,
-        current: PropTypes.number.isRequired,
-        total: PropTypes.number.isRequired,
-    }).isRequired,
-    score: PropTypes.number.isRequired,
     onTimerFinished: PropTypes.func,
 };
 

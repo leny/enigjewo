@@ -6,41 +6,42 @@
  * started at 02/02/2021
  */
 
-/* eslint-disable */ // WIP
+/* global google */
 
 import "styles/game/panorama.scss";
 
-import {useRef, useState, useEffect} from "react";
+import {useRef, useState, useEffect, useContext} from "react";
+import {GameStoreContext} from "store/game";
+
 import classnames from "classnames";
 import PropTypes from "prop-types";
 
-const Panorama = ({panorama, discriminator}) => {
+const Panorama = ({discriminator}) => {
+    const {
+        currentRound: {panorama},
+    } = useContext(GameStoreContext);
     const box = useRef(null);
-    const [streetView, setStreetView]=useState(null);
+    const [streetView, setStreetView] = useState(null);
 
-    useEffect(()=>{
-        if(streetView||!box.current){
+    useEffect(() => {
+        if (streetView || !box.current) {
             return;
         }
 
         setStreetView(
-            new google.maps.StreetViewPanorama(
-                box.current,{
-                    addressControl: false,
+            new google.maps.StreetViewPanorama(box.current, {
+                addressControl: false,
                 fullscreenControl: false,
                 motionTracking: false,
                 motionTrackingControl: false,
                 showRoadLabels: false,
                 panControl: true,
-                }
-            )
+            }),
         );
-    },[
-        box, streetView, setStreetView
-    ]);
+    }, [box, streetView, setStreetView]);
 
-    useEffect(()=>{
-        if (!streetView||!panorama){
+    useEffect(() => {
+        if (!streetView || !panorama) {
             return;
         }
 
@@ -50,13 +51,12 @@ const Panorama = ({panorama, discriminator}) => {
             pitch: 0,
         });
         streetView.setZoom(0);
-    },[streetView, panorama, discriminator])
+    }, [streetView, panorama, discriminator]);
 
     return <div className={classnames("panorama")} ref={box} />;
 };
 
 Panorama.propTypes = {
-    panorama: PropTypes.string.isRequired,
     discriminator: PropTypes.number.isRequired,
 };
 

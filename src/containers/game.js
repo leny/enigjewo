@@ -14,24 +14,24 @@ import {useEffect, useCallback} from "react";
 import {useThunkedReducer} from "core/hooks/use-thunked-reducer";
 
 import {STEP_PLAY} from "store/game/types";
-import {initState, reducer} from "store/game";
+import {initState, reducer, GameStoreContext} from "store/game";
 import startRound from "store/game/actions/start-round";
+import computeResults from "store/game/actions/compute-results";
 
 import classnames from "classnames";
 
 import Loading from "components/commons/loading";
 import Play from "components/game/play";
 
-import {getRandomLatLng} from "core/geo-utils";
+const {Provider: GameStoreContextProvider}=GameStoreContext;
 
 const GameContainer = () => {
     // TODO: inject game options
     const [state, dispatch] = useThunkedReducer(reducer, null, initState);
 
     const handleFinishRound = useCallback((position) => {
-        console.log("handleFinishRound(position):", position);
-        // TODO computeResults(index, position)
-    }, []);
+        dispatch(computeResults(position, state))
+    }, [state]);
 
     // launch match
     useEffect(() => {
@@ -47,7 +47,11 @@ const GameContainer = () => {
     }, []);
 
     if (state.step === STEP_PLAY) {
-        return <Play panorama={state.currentRound.panorama} rounds={state.rounds} score={state.currentRound.score} onFinishRound={handleFinishRound} />;
+        return (
+            <GameStoreContextProvider value={state}>
+                <Play onFinishRound={handleFinishRound} />;
+            </GameStoreContextProvider>
+        )
     }
 
     // state === STEP_LOADING
