@@ -16,27 +16,24 @@ export const useTimer = (
 ) => {
     const [seconds, setSeconds] = useState(initialSeconds);
     const [running, setRunning] = useState(initialRunning);
-    const [intervalId, setIntervalId] = useState(null);
 
     useEffect(() => {
         if (running) {
-            setIntervalId(
-                setInterval(() => setSeconds(Math.max(0, seconds - 1)), 1000),
+            const id = setTimeout(
+                () => setSeconds(Math.max(0, seconds - 1)),
+                1000,
             );
 
             if (seconds === 0) {
                 setRunning(false);
                 onFinished();
             }
-        } else if (intervalId) {
-            clearInterval(intervalId);
-            setIntervalId(null);
+
+            return () => clearTimeout(id);
         }
 
-        return () => {
-            intervalId && clearInterval(intervalId);
-        };
-    }, [running, seconds]);
+        return noop;
+    }, [running, seconds, onFinished]);
 
     return [
         {seconds, running},
