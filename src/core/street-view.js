@@ -39,7 +39,10 @@ export const getRandomPanorama = () =>
                             position: data.location.latLng.toJSON(),
                         });
 
-                    resolve(data.location.pano);
+                    resolve({
+                        panorama: data.location.pano,
+                        position: data.location.latLng.toJSON(),
+                    });
                 },
             );
         })();
