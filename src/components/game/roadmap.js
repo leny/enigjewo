@@ -10,12 +10,13 @@
 
 import "styles/game/roadmap.scss";
 
-import {useRef, useEffect, useState, useCallback} from "react";
+import {useState, useCallback} from "react";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 
 import Button from "components/commons/button";
 import ToolIcon from "components/game/tool-icon";
+import GMap from "components/commons/map";
 
 import {
     faThumbtack,
@@ -41,16 +42,16 @@ const Roadmap = ({
     onUpdatePosition,
     onGuessPosition,
 }) => {
-    const box = useRef(null);
+    const [center, setCenter] = useState(startPosition);
+    const [discriminator, setDiscriminator] = useState(Date.now());
     const [showNotes, setShowNotes] = useState(null);
     const [notes, setNotes] = useState("");
-    const [map, setMap] = useState(null);
     const [marker, setMarker] = useState(null);
     const [size, setSize] = useState(SIZE_SMALL);
     const [isPinned, setIsPinned] = useState(false);
 
     const handleClickOnMap = useCallback(
-        ({latLng}) => {
+        (map, {latLng}) => {
             onUpdatePosition(latLng.toJSON());
 
             if (!marker) {
@@ -60,12 +61,13 @@ const Roadmap = ({
 
             marker.setPosition(latLng);
         },
-        [map, marker, setMarker, onUpdatePosition],
+        [marker, setMarker, onUpdatePosition],
     );
 
     const handleCenterOnMarker = useCallback(() => {
-        map.panTo(marker.getPosition());
-    }, [map, marker]);
+        setCenter(marker.getPosition());
+        setDiscriminator(Date.now());
+    }, [marker, setCenter]);
 
     const handleToggleStickyNote = useCallback(
         () => setShowNotes(invertValue),
@@ -102,29 +104,6 @@ const Roadmap = ({
             ),
         [setSize],
     );
-
-    useEffect(() => {
-        if (map || !box.current) {
-            return;
-        }
-
-        setMap(
-            new google.maps.Map(box.current, {
-                center: startPosition,
-                zoom: startZoom,
-                disableDefaultUI: true,
-                zoomControl: true,
-            }),
-        );
-    }, [box, map, setMap, startPosition, startZoom]);
-
-    useEffect(() => {
-        if (!map) {
-            return;
-        }
-
-        map.addListener("click", handleClickOnMap);
-    }, [map, handleClickOnMap]);
 
     return (
         <div
@@ -203,7 +182,13 @@ const Roadmap = ({
                     />
                 </span>
             </div>
-            <div className={classnames("roadmap__map", "my-1")} ref={box} />
+            <GMap
+                className={classnames("roadmap__map", "my-1")}
+                position={center}
+                discriminator={discriminator}
+                zoom={startZoom}
+                onMapClick={handleClickOnMap}
+            />
             <Button
                 variant={"dark"}
                 label={"Guess"}
