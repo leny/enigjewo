@@ -8,6 +8,7 @@
 
 import {useState, useEffect} from "react";
 import {noop} from "core/utils";
+import useInterval from "use-interval";
 
 export const useTimer = (
     initialSeconds,
@@ -17,23 +18,14 @@ export const useTimer = (
     const [seconds, setSeconds] = useState(initialSeconds);
     const [running, setRunning] = useState(initialRunning);
 
+    useInterval(() => running && setSeconds(Math.max(0, seconds - 1)), 1000);
+
     useEffect(() => {
-        if (running) {
-            const id = setTimeout(
-                () => setSeconds(Math.max(0, seconds - 1)),
-                1000,
-            );
-
-            if (seconds === 0) {
-                setRunning(false);
-                onFinished();
-            }
-
-            return () => clearTimeout(id);
+        if (seconds === 0) {
+            setRunning(false);
+            onFinished();
         }
-
-        return noop;
-    }, [running, seconds, onFinished]);
+    }, [seconds, setRunning, onFinished]);
 
     return [
         {seconds, running},
