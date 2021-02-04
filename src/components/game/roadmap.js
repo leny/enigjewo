@@ -28,6 +28,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import {withValue, isFalsy} from "core/utils";
+import {getMarkerIcon} from "core/icons";
 
 const invertValue = isFalsy;
 
@@ -55,7 +56,13 @@ const Roadmap = ({
             onUpdatePosition(latLng.toJSON());
 
             if (!marker) {
-                setMarker(new google.maps.Marker({position: latLng, map}));
+                setMarker(
+                    new google.maps.Marker({
+                        position: latLng,
+                        map,
+                        icon: getMarkerIcon("player1"),
+                    }),
+                );
                 return;
             }
 
