@@ -15,7 +15,7 @@ import {useRef, useState, useEffect} from "react";
 import classnames from "classnames";
 import PropTypes from "prop-types";
 
-const StreetView = ({className, panorama, discriminator = 0}) => {
+const StreetView = ({className, panorama, discriminator = 0, options = {}}) => {
     const box = useRef(null);
     const [streetView, setStreetView] = useState(null);
 
@@ -32,9 +32,10 @@ const StreetView = ({className, panorama, discriminator = 0}) => {
                 motionTrackingControl: false,
                 showRoadLabels: false,
                 panControl: true,
+                ...options,
             }),
         );
-    }, [box, streetView, setStreetView]);
+    }, [box, streetView, setStreetView, options]);
 
     useEffect(() => {
         if (!streetView || !panorama) {
@@ -55,6 +56,7 @@ const StreetView = ({className, panorama, discriminator = 0}) => {
 StreetView.propTypes = {
     panorama: PropTypes.string.isRequired,
     discriminator: PropTypes.number,
+    options: PropTypes.object,
 };
 
 export default StreetView;
