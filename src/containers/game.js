@@ -13,7 +13,7 @@ import "styles/game.scss";
 import {useEffect, useCallback} from "react";
 import {useThunkedReducer} from "core/hooks/use-thunked-reducer";
 
-import {STEP_PLAY} from "store/game/types";
+import {STEP_PLAY, STEP_RESULTS} from "store/game/types";
 import {initState, reducer, GameStoreContext} from "store/game";
 import startRound from "store/game/actions/start-round";
 import computeResults from "store/game/actions/compute-results";
@@ -22,6 +22,7 @@ import classnames from "classnames";
 
 import Loading from "components/commons/loading";
 import Play from "components/game/play";
+import Results from "components/game/results";
 
 const {Provider: GameStoreContextProvider}=GameStoreContext;
 
@@ -32,6 +33,10 @@ const GameContainer = () => {
     const handleFinishRound = useCallback((position) => {
         dispatch(computeResults(position, state))
     }, [state]);
+
+    const handleNextRound=useCallback(()=>{
+        console.log("handleNextRound()")
+    },[]);
 
     // launch match
     useEffect(() => {
@@ -45,6 +50,14 @@ const GameContainer = () => {
 
         return () => html.classList.remove("game-page");
     }, []);
+
+    if (state.step===STEP_RESULTS) {
+        return (
+            <GameStoreContextProvider value={state}>
+                <Results onNext={handleNextRound} />
+            </GameStoreContextProvider>
+        )
+    }
 
     if (state.step === STEP_PLAY) {
         return (

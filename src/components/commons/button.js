@@ -9,10 +9,10 @@
 import PropTypes from "prop-types";
 import classnames from "classnames";
 
-const Button = ({label, variant = "info", onClick}) => (
+const Button = ({className, label, variant = "info", onClick}) => (
     <button
         type={"button"}
-        className={classnames("button", `is-${variant}`)}
+        className={classnames("button", `is-${variant}`, className)}
         onClick={onClick}>
         {label}
     </button>

@@ -1,0 +1,24 @@
+/* leny/enigjewo
+ *
+ * /src/styles/game/results.scss - Game Results styles
+ *
+ * coded by leny@BeCode
+ * started at 04/02/2021
+ */
+
+.results {
+    &__navigation {
+        height: 40vh;
+    }
+    &__map {
+        width: 100%;
+        height: 100%;
+        min-height: 200px;
+    }
+    &__panorama {
+        width: 100%;
+        height: 100%;
+        min-height: 200px;
+    }
+}
+
