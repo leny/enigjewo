@@ -9,9 +9,10 @@
 import PropTypes from "prop-types";
 import classnames from "classnames";
 
-const Button = ({className, label, variant = "info", onClick}) => (
+const Button = ({className, label, disabled, variant = "info", onClick}) => (
     <button
         type={"button"}
+        disabled={disabled}
         className={classnames("button", `is-${variant}`, className)}
         onClick={onClick}>
         {label}
@@ -21,6 +22,7 @@ const Button = ({className, label, variant = "info", onClick}) => (
 Button.propTypes = {
     label: PropTypes.string.isRequired,
     variant: PropTypes.string,
+    disabled: PropTypes.bool,
     onClick: PropTypes.func,
 };
 

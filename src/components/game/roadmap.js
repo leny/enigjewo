@@ -192,6 +192,7 @@ const Roadmap = ({
             <Button
                 variant={"dark"}
                 label={"Guess"}
+                disabled={!marker}
                 onClick={onGuessPosition}
             />
         </div>
