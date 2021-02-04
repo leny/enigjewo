@@ -16,6 +16,7 @@
                 "alias": {
                     "core": "./src/core",
                     "hooks": "./src/core/hooks",
+                    "icons": "./src/assets/icons",
                     "components": "./src/components",
                     "containers": "./src/containers",
                     "sounds": "./src/sounds",
