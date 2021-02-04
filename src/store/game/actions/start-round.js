@@ -10,8 +10,8 @@ import {ACTION_PREPARE_ROUND, ACTION_START_ROUND} from "store/game/types";
 
 import {getRandomPanorama} from "core/street-view";
 
-export default index => async dispatch => {
-    dispatch({type: ACTION_PREPARE_ROUND, index});
+export default () => async dispatch => {
+    dispatch({type: ACTION_PREPARE_ROUND});
     const {panorama, position} = await getRandomPanorama();
-    dispatch({type: ACTION_START_ROUND, index, panorama, target: position});
+    dispatch({type: ACTION_START_ROUND, panorama, target: position});
 };

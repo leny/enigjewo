@@ -56,20 +56,20 @@ export const reducer = (state, {type, ...payload}) => {
                 ...state,
                 rounds: {
                     ...state.rounds,
-                    current: payload.index,
+                    current: state.rounds.current + 1,
                 },
                 currentRound: null,
                 step: STEP_LOADING,
             };
         case ACTION_START_ROUND: {
-            const {index, panorama, target} = payload;
+            const {panorama, target} = payload;
 
             return {
                 ...state,
                 panoramas: [...state.panoramas, panorama],
                 targets: [...state.targets, target],
                 currentRound: {
-                    index,
+                    index: state.rounds.current,
                     panorama,
                     score: state.scores.reduce((acc, elt) => acc + elt, 0),
                 },

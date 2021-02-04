@@ -35,13 +35,11 @@ const GameContainer = () => {
     }, [state]);
 
     const handleNextRound=useCallback(()=>{
-        console.log("handleNextRound()")
+        dispatch(startRound())
     },[]);
 
     // launch match
-    useEffect(() => {
-        dispatch(startRound(1));
-    }, []);
+    useEffect(handleNextRound, []);
 
     useEffect(() => {
         const html = document.querySelector("html");
