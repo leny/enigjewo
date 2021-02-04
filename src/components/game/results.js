@@ -6,7 +6,7 @@
  * started at 04/02/2021
  */
 
-/* eslint-disable */ // WIP
+/* global google */
 
 import "styles/game/results.scss";
 
@@ -22,7 +22,7 @@ import Button from "components/commons/button";
 import GMap from "components/commons/map";
 import StreetView from "components/commons/street-view";
 
-const Results = ({onNext}) => {
+const Results = ({onNext, onEnd}) => {
     const {
         rounds: {total},
         currentRound: {index, score: totalScore},
@@ -31,6 +31,7 @@ const Results = ({onNext}) => {
         targets,
         distances,
         scores,
+        ended,
     } = useContext(GameStoreContext);
 
     const distance = useMemo(() => distances[index - 1], [distances, index]);
@@ -62,7 +63,7 @@ const Results = ({onNext}) => {
             const bounds = new google.maps.LatLngBounds();
             bounds.extend(targetMarker.getPosition());
             bounds.extend(positionMarker.getPosition());
-            map.fitBounds(bounds);
+            map.fitBounds(bounds, {top: 30, right: 30, bottom: 30, left: 30});
         },
         [position, target],
     );
@@ -80,7 +81,9 @@ const Results = ({onNext}) => {
                             className={classnames(
                                 "card-header-title",
                                 "has-text-white",
-                            )}>{`Round ${index}/${total} results`}</span>
+                            )}>
+                            {`Round ${index}/${total} results`}
+                        </span>
                     </header>
                     <div
                         className={classnames(
@@ -150,13 +153,13 @@ const Results = ({onNext}) => {
                     </div>
                     <footer className={"card-footer"}>
                         <Button
-                            label={"Start next round"}
+                            label={ended ? "Show summary" : "Start next round"}
                             variant={"link"}
                             className={classnames(
                                 "card-footer-item",
                                 "no-top-radius",
                             )}
-                            onClick={onNext}
+                            onClick={ended ? onEnd : onNext}
                         />
                     </footer>
                 </div>
