@@ -17,7 +17,6 @@ const GMap = ({
     className,
     position = {lat: 0, lng: 0},
     zoom = 2,
-    discriminator = 0,
     options = {},
     onMapReady = noop,
     onMapClick = noop,
@@ -53,21 +52,12 @@ const GMap = ({
         map.addListener("click", e => onMapClick(map, e));
     }, [map, onMapClick]);
 
-    useEffect(() => {
-        map?.setZoom(zoom);
-    }, [map, zoom]);
-
-    useEffect(() => {
-        map?.panTo(position);
-    }, [map, position, discriminator]);
-
     return <div className={className} ref={box} />;
 };
 
 GMap.propTypes = {
     position: PropTypes.object.isRequired,
     zoom: PropTypes.number,
-    discriminator: PropTypes.number,
     options: PropTypes.object,
     onMapReady: PropTypes.func,
     onMapClick: PropTypes.func,

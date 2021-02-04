@@ -22,7 +22,6 @@ import {
     faThumbtack,
     faExpandAlt,
     faCompressAlt,
-    faMapMarkerAlt,
     faFlag,
     faStickyNote,
 } from "@fortawesome/free-solid-svg-icons";
@@ -43,8 +42,7 @@ const Roadmap = ({
     onUpdatePosition,
     onGuessPosition,
 }) => {
-    const [center, setCenter] = useState(startPosition);
-    const [discriminator, setDiscriminator] = useState(Date.now());
+    const [center] = useState(startPosition);
     const [showNotes, setShowNotes] = useState(null);
     const [notes, setNotes] = useState("");
     const [marker, setMarker] = useState(null);
@@ -70,11 +68,6 @@ const Roadmap = ({
         },
         [marker, setMarker, onUpdatePosition],
     );
-
-    const handleCenterOnMarker = useCallback(() => {
-        setCenter(marker.getPosition());
-        setDiscriminator(Date.now());
-    }, [marker, setCenter]);
 
     const handleToggleStickyNote = useCallback(
         () => setShowNotes(invertValue),
@@ -151,12 +144,6 @@ const Roadmap = ({
                 )}>
                 <span>
                     <ToolIcon
-                        icon={faMapMarkerAlt}
-                        title={"Center on marker"}
-                        disabled={!marker}
-                        onClick={handleCenterOnMarker}
-                    />
-                    <ToolIcon
                         icon={faFlag}
                         title={"Return to drop point"}
                         onClick={onResetPanorama}
@@ -192,7 +179,6 @@ const Roadmap = ({
             <GMap
                 className={classnames("roadmap__map", "my-1")}
                 position={center}
-                discriminator={discriminator}
                 zoom={startZoom}
                 onMapClick={handleClickOnMap}
             />
