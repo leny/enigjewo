@@ -119,6 +119,8 @@ const TopBar = ({onTimerFinished = noop}) => {
                 <span className={classnames("has-text-grey")}>{"Score:"}</span>
                 {NBSP}
                 <strong>{score}</strong>
+                {NBSP}
+                <small>{`pt${score > 0 ? "s" : ""}`}</small>
             </span>
         </div>
     );
