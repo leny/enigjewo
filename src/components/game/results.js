@@ -12,10 +12,11 @@ import "styles/game/results.scss";
 
 import classnames from "classnames";
 import PropTypes from "prop-types";
-import {useContext, useMemo} from "react";
+import {useContext, useMemo, useCallback} from "react";
 
 import {GameStoreContext} from "store/game";
 import {NBSP} from "core/constants";
+import {getMarkerIcon} from "core/icons";
 
 import Button from "components/commons/button";
 import GMap from "components/commons/map";
@@ -37,6 +38,34 @@ const Results = ({onNext}) => {
     const position = useMemo(() => positions[index - 1], [positions, index]);
     const panorama = useMemo(() => panoramas[index - 1], [panoramas, index]);
     const target = useMemo(() => targets[index - 1], [targets, index]);
+
+    const handleMapReady = useCallback(
+        map => {
+            const polyLine = new google.maps.Polyline({
+                path: [target, position],
+                strokeColor: "hsl(141, 53%, 53%)",
+                strokeOpacity: 1.0,
+                strokeWeight: 3,
+            });
+            polyLine.setMap(map);
+            const targetMarker = new google.maps.Marker({
+                position: target,
+                map,
+                icon: getMarkerIcon("target"),
+            });
+            const positionMarker = new google.maps.Marker({
+                position,
+                map,
+                icon: getMarkerIcon("player1"),
+            });
+            map.setZoom(18);
+            const bounds = new google.maps.LatLngBounds();
+            bounds.extend(targetMarker.getPosition());
+            bounds.extend(positionMarker.getPosition());
+            map.fitBounds(bounds);
+        },
+        [position, target],
+    );
 
     return (
         <div className={classnames("columns", "is-centered")}>
@@ -99,6 +128,7 @@ const Results = ({onNext}) => {
                             <GMap
                                 className={classnames("results__map")}
                                 position={target}
+                                onMapReady={handleMapReady}
                             />
                         </div>
                         <div
@@ -111,14 +141,21 @@ const Results = ({onNext}) => {
                             <StreetView
                                 className={classnames("results__panorama")}
                                 panorama={panorama}
+                                options={{
+                                    addressControl: true,
+                                    showRoadLabels: true,
+                                }}
                             />
                         </div>
                     </div>
-                    <footer className={ "card-footer" }>
+                    <footer className={"card-footer"}>
                         <Button
                             label={"Start next round"}
-                            variant={"primary"}
-                            className={classnames( "card-footer-item", "no-top-radius" )}
+                            variant={"link"}
+                            className={classnames(
+                                "card-footer-item",
+                                "no-top-radius",
+                            )}
                             onClick={onNext}
                         />
                     </footer>
