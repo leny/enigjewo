@@ -92,6 +92,13 @@ export const reducer = (state, {type, ...payload}) => {
                 ...state,
                 scores: [...state.scores, score],
                 distances: [...state.distances, distance],
+                currentRound: {
+                    ...state.currentRound,
+                    score: [...state.scores, score].reduce(
+                        (acc, elt) => acc + elt,
+                        0,
+                    ),
+                },
                 step: STEP_RESULTS,
             };
         }
