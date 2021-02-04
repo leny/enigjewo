@@ -15,11 +15,12 @@ import {
     STEP_LOADING,
     STEP_PLAY,
     STEP_RESULTS,
-    // STEP_SUMMARY,
+    STEP_SUMMARY,
     ACTION_PREPARE_ROUND,
     ACTION_START_ROUND,
     ACTION_COMPUTE_RESULTS,
     ACTION_SHOW_RESULTS,
+    ACTION_SHOW_SUMMARY,
 } from "./types";
 
 import {createContext} from "react";
@@ -45,6 +46,7 @@ export const initState = () => ({
     distances: [],
     scores: [],
     step: STEP_LOADING,
+    ended: false,
 });
 
 export const reducer = (state, {type, ...payload}) => {
@@ -100,8 +102,11 @@ export const reducer = (state, {type, ...payload}) => {
                     ),
                 },
                 step: STEP_RESULTS,
+                ended: state.rounds.current === state.rounds.total,
             };
         }
+        case ACTION_SHOW_SUMMARY:
+            return {...state, step: STEP_SUMMARY};
         default:
             return state;
     }
