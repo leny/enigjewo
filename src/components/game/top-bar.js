@@ -52,12 +52,12 @@ const TopBar = ({onTimerFinished = noop}) => {
             setTimerColorClassName(false);
         }
 
-        if (duration / 2 > 60 && seconds === duration / 2) {
+        if (seconds === ~~(duration / 2)) {
             withSoundAlerts && playHalfTimeAlert();
             setTimerColorClassName("has-text-warning");
         }
 
-        if (duration > 120 && seconds === 30) {
+        if (seconds === ~~(duration / 10)) {
             withSoundAlerts && playThirtySecondsRemainingAlert();
             setTimerColorClassName("has-text-danger");
         }
