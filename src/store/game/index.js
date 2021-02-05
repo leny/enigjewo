@@ -27,13 +27,15 @@ import {createContext} from "react";
 
 export const GameStoreContext = createContext();
 
-// TODO: inject game options
-export const initState = () => ({
+export const initState = ({
+    totalRounds = 5,
+    roundDuration = DEFAULT_ROUND_DURATION,
+}) => ({
     difficulty: DEFAULT_DIFFICULTY,
     rounds: {
-        total: 5,
+        total: totalRounds,
         current: 0,
-        duration: DEFAULT_ROUND_DURATION,
+        duration: roundDuration === 0 ? false : roundDuration,
     },
     currentRound: null /* {
         index: 0,
