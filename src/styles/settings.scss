@@ -1,0 +1,20 @@
+/* leny/enigjewo
+ *
+ * /src/styles/settings.scss - Game Settings styles
+ *
+ * coded by leny@BeCode
+ * started at 05/02/2021
+ */
+
+.settings {
+    &__duration-range{
+        flex: 1;
+        > input {
+            width: 100%;
+        }
+    }
+    &__duration-value {
+        flex: none;
+    }
+}
+
