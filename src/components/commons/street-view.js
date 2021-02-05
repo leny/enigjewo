@@ -10,52 +10,47 @@
 
 import "styles/game.scss";
 
-import {useRef, useState, useEffect} from "react";
+import {useRef, useEffect, forwardRef} from "react";
 
 import classnames from "classnames";
 import PropTypes from "prop-types";
 
-const StreetView = ({className, panorama, discriminator = 0, options = {}}) => {
-    const box = useRef(null);
-    const [streetView, setStreetView] = useState(null);
+const StreetView = forwardRef(
+    ({className, panorama, options = {}}, streetView) => {
+        const box = useRef(null);
 
-    useEffect(() => {
-        if (streetView || !box.current) {
-            return;
-        }
+        useEffect(() => {
+            if (streetView.current || !box.current) {
+                return;
+            }
 
-        setStreetView(
-            new google.maps.StreetViewPanorama(box.current, {
-                addressControl: false,
-                fullscreenControl: false,
-                motionTracking: false,
-                motionTrackingControl: false,
-                showRoadLabels: false,
-                panControl: true,
-                ...options,
-            }),
-        );
-    }, [box, streetView, setStreetView, options]);
+            streetView.current = new google.maps.StreetViewPanorama(
+                box.current,
+                {
+                    addressControl: false,
+                    fullscreenControl: false,
+                    motionTracking: false,
+                    motionTrackingControl: false,
+                    showRoadLabels: false,
+                    panControl: true,
+                    ...options,
+                },
+            );
 
-    useEffect(() => {
-        if (!streetView || !panorama) {
-            return;
-        }
+            streetView.current.setPano(panorama);
+            streetView.current.setPov({
+                heading: 270,
+                pitch: 0,
+            });
+            streetView.current.setZoom(0);
+        }, [box, streetView.current, panorama, options]);
 
-        streetView.setPano(panorama);
-        streetView.setPov({
-            heading: 270,
-            pitch: 0,
-        });
-        streetView.setZoom(0);
-    }, [streetView, panorama, discriminator]);
-
-    return <div className={classnames(className, "expand")} ref={box} />;
-};
+        return <div className={classnames(className, "expand")} ref={box} />;
+    },
+);
 
 StreetView.propTypes = {
     panorama: PropTypes.string.isRequired,
-    discriminator: PropTypes.number,
     options: PropTypes.object,
 };
 

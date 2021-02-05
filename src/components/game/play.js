@@ -8,23 +8,35 @@
 
 import "styles/game/play.scss";
 
-import {useCallback, useState} from "react";
+import {useCallback, useContext, useState, useRef} from "react";
+import {GameStoreContext} from "store/game";
 
 import PropTypes from "prop-types";
 
-import Panorama from "components/game/panorama";
+import StreetView from "components/commons/street-view";
 import Roadmap from "components/game/roadmap";
 import TopBar from "components/game/top-bar";
 
 import {getRandomLatLng} from "core/geo-utils";
 
 const Play = ({onFinishRound}) => {
+    const {
+        currentRound: {panorama},
+    } = useContext(GameStoreContext);
     const [position, setPosition] = useState(null);
-    const [discriminator, setDiscriminator] = useState(Date.now());
-    const handleResetPanorama = useCallback(
-        () => setDiscriminator(Date.now()),
-        [setDiscriminator],
-    );
+    const streetView = useRef(null);
+    const handleResetPanorama = useCallback(() => {
+        if (!streetView.current) {
+            return;
+        }
+
+        streetView.current.setPano(panorama);
+        streetView.current.setPov({
+            heading: 270,
+            pitch: 0,
+        });
+        streetView.current.setZoom(0);
+    }, [streetView.current, panorama]);
 
     const handleUpdatePosition = useCallback(pos => setPosition(pos), [
         setPosition,
@@ -38,7 +50,7 @@ const Play = ({onFinishRound}) => {
     return (
         <>
             <TopBar onTimerFinished={handleFinishRound} />
-            <Panorama discriminator={discriminator} />
+            <StreetView panorama={panorama} ref={streetView} />
             <Roadmap
                 onResetPanorama={handleResetPanorama}
                 onUpdatePosition={handleUpdatePosition}

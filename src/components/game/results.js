@@ -35,6 +35,7 @@ const Results = ({onNext, onEnd}) => {
         ended,
     } = useContext(GameStoreContext);
     const gmap = useRef(null);
+    const streetView = useRef(null);
 
     const distance = useMemo(() => distances[index - 1], [distances, index]);
     const score = useMemo(() => scores[index - 1], [scores, index]);
@@ -193,6 +194,7 @@ const Results = ({onNext, onEnd}) => {
                             )}>
                             <StreetView
                                 className={classnames("results__panorama")}
+                                ref={streetView}
                                 panorama={panorama}
                                 options={{
                                     addressControl: true,
