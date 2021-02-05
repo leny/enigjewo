@@ -12,7 +12,7 @@ import "styles/game/summary.scss";
 
 import classnames from "classnames";
 import PropTypes from "prop-types";
-import {useContext, useCallback} from "react";
+import {useContext, useEffect, useRef} from "react";
 import {renderToStaticMarkup} from "react-dom/server";
 
 import {GameStoreContext} from "store/game";
@@ -31,85 +31,89 @@ const Summary = ({onRestart}) => {
         distances,
         scores,
     } = useContext(GameStoreContext);
+    const gmap = useRef(null);
 
-    const handleMapReady = useCallback(
-        map => {
-            const bounds = new google.maps.LatLngBounds();
-            map.setZoom(18);
-            Array.from(new Array(total).keys()).forEach(i => {
-                const polyLine = new google.maps.Polyline({
-                    path: [targets[i], positions[i]],
-                    strokeColor: "hsl(141, 53%, 53%)",
-                    strokeOpacity: 1.0,
-                    strokeWeight: 3,
-                });
-                polyLine.setMap(map);
-                const targetInfoWindow = new google.maps.InfoWindow({
-                    content: renderToStaticMarkup(
-                        <>
-                            <h5 className={"mb-1"}>
-                                {`Round #${i + 1}: Target`}
-                            </h5>
-                            <p>
-                                {`${targets[i].lat.toFixed(4)}, ${targets[
+    useEffect(() => {
+        if (!gmap.current) {
+            return;
+        }
+
+        const bounds = new google.maps.LatLngBounds();
+        gmap.current.setZoom(18);
+        Array.from(new Array(total).keys()).forEach(i => {
+            const polyLine = new google.maps.Polyline({
+                path: [targets[i], positions[i]],
+                strokeColor: "hsl(141, 53%, 53%)",
+                strokeOpacity: 1.0,
+                strokeWeight: 3,
+            });
+            polyLine.setMap(gmap.current);
+            const targetInfoWindow = new google.maps.InfoWindow({
+                content: renderToStaticMarkup(
+                    <>
+                        <h5 className={"mb-1"}>{`Round #${i + 1}: Target`}</h5>
+                        <p>
+                            {`${targets[i].lat.toFixed(4)}, ${targets[
+                                i
+                            ].lng.toFixed(4)}`}
+                        </p>
+                    </>,
+                ),
+            });
+            const targetMarker = new google.maps.Marker({
+                position: targets[i],
+                map: gmap.current,
+                icon: getMarkerIcon("target"),
+            });
+            targetMarker.addListener("click", () =>
+                targetInfoWindow.open(gmap.current, targetMarker),
+            );
+            const positionInfoWindow = new google.maps.InfoWindow({
+                content: renderToStaticMarkup(
+                    <>
+                        <h5 className={"mb-1"}>
+                            {`Round #${i + 1}: Your guess`}
+                        </h5>
+                        <p>
+                            {distances[i] > 2000
+                                ? `${Math.floor(distances[i] / 1000)}km`
+                                : `${distances[i]}m`}
+                            {`${NBSP}-${NBSP}`}
+                            <strong
+                                className={classnames(
+                                    scores[i] === 5000 && "has-text-success",
+                                )}>
+                                {`${scores[i]}pts`}
+                            </strong>
+                        </p>
+                        <p>
+                            <small>
+                                {`${positions[i].lat.toFixed(4)}, ${positions[
                                     i
                                 ].lng.toFixed(4)}`}
-                            </p>
-                        </>,
-                    ),
-                });
-                const targetMarker = new google.maps.Marker({
-                    position: targets[i],
-                    map,
-                    icon: getMarkerIcon("target"),
-                });
-                targetMarker.addListener("click", () =>
-                    targetInfoWindow.open(map, targetMarker),
-                );
-                const positionInfoWindow = new google.maps.InfoWindow({
-                    content: renderToStaticMarkup(
-                        <>
-                            <h5 className={"mb-1"}>
-                                {`Round #${i + 1}: Your guess`}
-                            </h5>
-                            <p>
-                                {distances[i] > 2000
-                                    ? `${Math.floor(distances[i] / 1000)}km`
-                                    : `${distances[i]}m`}
-                                {`${NBSP}-${NBSP}`}
-                                <strong
-                                    className={classnames(
-                                        scores[i] === 5000 &&
-                                            "has-text-success",
-                                    )}>
-                                    {`${scores[i]}pts`}
-                                </strong>
-                            </p>
-                            <p>
-                                <small>
-                                    {`${positions[i].lat.toFixed(
-                                        4,
-                                    )}, ${positions[i].lng.toFixed(4)}`}
-                                </small>
-                            </p>
-                        </>,
-                    ),
-                });
-                const positionMarker = new google.maps.Marker({
-                    position: positions[i],
-                    map,
-                    icon: getMarkerIcon("player1"),
-                });
-                positionMarker.addListener("click", () =>
-                    positionInfoWindow.open(map, positionMarker),
-                );
-                bounds.extend(targetMarker.getPosition());
-                bounds.extend(positionMarker.getPosition());
+                            </small>
+                        </p>
+                    </>,
+                ),
             });
-            map.fitBounds(bounds, {top: 30, right: 30, bottom: 30, left: 30});
-        },
-        [positions, targets, total, scores, distances],
-    );
+            const positionMarker = new google.maps.Marker({
+                position: positions[i],
+                map: gmap.current,
+                icon: getMarkerIcon("player1"),
+            });
+            positionMarker.addListener("click", () =>
+                positionInfoWindow.open(gmap.current, positionMarker),
+            );
+            bounds.extend(targetMarker.getPosition());
+            bounds.extend(positionMarker.getPosition());
+        });
+        gmap.current.fitBounds(bounds, {
+            top: 30,
+            right: 30,
+            bottom: 30,
+            left: 30,
+        });
+    }, [gmap.current, positions, targets, total, scores, distances]);
 
     return (
         <div className={classnames("columns", "is-centered")}>
@@ -184,8 +188,8 @@ const Summary = ({onRestart}) => {
                         )}>
                         <GMap
                             className={classnames("summary__map")}
+                            ref={gmap}
                             position={targets[0]}
-                            onMapReady={handleMapReady}
                         />
                     </div>
                     <footer className={"card-footer"}>

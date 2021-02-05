@@ -10,7 +10,7 @@
 
 import "styles/game/roadmap.scss";
 
-import {useState, useCallback} from "react";
+import {useState, useCallback, useRef} from "react";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 
@@ -24,6 +24,7 @@ import {
     faCompressAlt,
     faFlag,
     faStickyNote,
+    faMapMarkerAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
 import {withValue, isFalsy} from "core/utils";
@@ -48,6 +49,7 @@ const Roadmap = ({
     const [marker, setMarker] = useState(null);
     const [size, setSize] = useState(SIZE_SMALL);
     const [isPinned, setIsPinned] = useState(false);
+    const gmap = useRef(null);
 
     const handleClickOnMap = useCallback(
         (map, {latLng}) => {
@@ -68,6 +70,10 @@ const Roadmap = ({
         },
         [marker, setMarker, onUpdatePosition],
     );
+
+    const handleCenterMap = useCallback(() => {
+        gmap?.current.panTo(marker.getPosition());
+    }, [gmap.current, marker]);
 
     const handleToggleStickyNote = useCallback(
         () => setShowNotes(invertValue),
@@ -144,6 +150,12 @@ const Roadmap = ({
                 )}>
                 <span>
                     <ToolIcon
+                        icon={faMapMarkerAlt}
+                        title={"Center on Guess"}
+                        disabled={!marker}
+                        onClick={handleCenterMap}
+                    />
+                    <ToolIcon
                         icon={faFlag}
                         title={"Return to drop point"}
                         onClick={onResetPanorama}
@@ -178,6 +190,7 @@ const Roadmap = ({
             </div>
             <GMap
                 className={classnames("roadmap__map", "my-1")}
+                ref={gmap}
                 position={center}
                 zoom={startZoom}
                 onMapClick={handleClickOnMap}

@@ -8,52 +8,54 @@
 
 /* global google */
 
-import {useRef, useEffect, useState} from "react";
+import {useRef, useEffect, forwardRef} from "react";
 import PropTypes from "prop-types";
 
 import {noop} from "core/utils";
 
-const GMap = ({
-    className,
-    position = {lat: 0, lng: 0},
-    zoom = 2,
-    options = {},
-    onMapReady = noop,
-    onMapClick = noop,
-}) => {
-    const box = useRef(null);
-    const [map, setMap] = useState(null);
+const GMap = forwardRef(
+    (
+        {
+            className,
+            position = {lat: 0, lng: 0},
+            zoom = 2,
+            options = {},
+            onMapReady = noop,
+            onMapClick = noop,
+        },
+        map,
+    ) => {
+        const box = useRef(null);
 
-    useEffect(() => {
-        if (map || !box.current) {
-            return;
-        }
+        useEffect(() => {
+            if (map.current || !box.current) {
+                return;
+            }
 
-        const gmap = new google.maps.Map(box.current, {
-            center: position,
-            zoom,
-            disableDefaultUI: true,
-            zoomControl: true,
-            ...options,
-        });
+            map.current = new google.maps.Map(box.current, {
+                center: position,
+                zoom,
+                disableDefaultUI: true,
+                zoomControl: true,
+                ...options,
+            });
 
-        onMapReady(gmap);
-        gmap.addListener("click", e => onMapClick(gmap, e));
+            // onMapReady(map.current);
+            map.current.addListener("click", e => onMapClick(map.current, e));
+        }, [box, options, map.current, position, zoom, onMapReady, onMapClick]);
 
-        setMap(gmap);
-    }, [box, options, map, setMap, position, zoom, onMapReady, onMapClick]);
+        useEffect(() => {
+            if (!map) {
+                return;
+            }
 
-    useEffect(() => {
-        if (!map) {
-            return;
-        }
+            google.maps.event.clearListeners(map.current, "click");
+            map.current.addListener("click", e => onMapClick(map.current, e));
+        }, [map.current, onMapClick]);
 
-        google.maps.event.clearListeners(map, "click");
-        map.addListener("click", e => onMapClick(map, e));
-    }, [map, onMapClick]);
-
-    return <div className={className} ref={box} />;
-};
+        return <div className={className} ref={box} />;
+    },
+);
 
 GMap.propTypes = {
     position: PropTypes.object.isRequired,

@@ -12,7 +12,7 @@ import "styles/game/results.scss";
 
 import classnames from "classnames";
 import PropTypes from "prop-types";
-import {useContext, useMemo, useCallback} from "react";
+import {useContext, useMemo, useEffect, useRef} from "react";
 import {renderToStaticMarkup} from "react-dom/server";
 
 import {GameStoreContext} from "store/game";
@@ -34,6 +34,7 @@ const Results = ({onNext, onEnd}) => {
         scores,
         ended,
     } = useContext(GameStoreContext);
+    const gmap = useRef(null);
 
     const distance = useMemo(() => distances[index - 1], [distances, index]);
     const score = useMemo(() => scores[index - 1], [scores, index]);
@@ -41,77 +42,81 @@ const Results = ({onNext, onEnd}) => {
     const panorama = useMemo(() => panoramas[index - 1], [panoramas, index]);
     const target = useMemo(() => targets[index - 1], [targets, index]);
 
-    const handleMapReady = useCallback(
-        map => {
-            const polyLine = new google.maps.Polyline({
-                path: [target, position],
-                strokeColor: "hsl(141, 53%, 53%)",
-                strokeOpacity: 1.0,
-                strokeWeight: 3,
-            });
-            polyLine.setMap(map);
-            const targetInfoWindow = new google.maps.InfoWindow({
-                content: renderToStaticMarkup(
-                    <>
-                        <h5 className={"mb-1"}>{"Target"}</h5>
-                        <p>
-                            {`${target.lat.toFixed(4)}, ${target.lng.toFixed(
+    useEffect(() => {
+        if (!gmap.current) {
+            return;
+        }
+
+        const polyLine = new google.maps.Polyline({
+            path: [target, position],
+            strokeColor: "hsl(141, 53%, 53%)",
+            strokeOpacity: 1.0,
+            strokeWeight: 3,
+        });
+        polyLine.setMap(gmap.current);
+        const targetInfoWindow = new google.maps.InfoWindow({
+            content: renderToStaticMarkup(
+                <>
+                    <h5 className={"mb-1"}>{"Target"}</h5>
+                    <p>
+                        {`${target.lat.toFixed(4)}, ${target.lng.toFixed(4)}`}
+                    </p>
+                </>,
+            ),
+        });
+        const targetMarker = new google.maps.Marker({
+            position: target,
+            map: gmap.current,
+            icon: getMarkerIcon("target"),
+        });
+        targetMarker.addListener("click", () =>
+            targetInfoWindow.open(gmap.current, targetMarker),
+        );
+        const positionInfoWindow = new google.maps.InfoWindow({
+            content: renderToStaticMarkup(
+                <>
+                    <h5 className={"mb-1"}>{"Your guess"}</h5>
+                    <p>
+                        {distance > 2000
+                            ? `${Math.floor(distance / 1000)}km`
+                            : `${distance}m`}
+                        {`${NBSP}-${NBSP}`}
+                        <strong
+                            className={classnames(
+                                score === 5000 && "has-text-success",
+                            )}>
+                            {`${score}pts`}
+                        </strong>
+                    </p>
+                    <p>
+                        <small>
+                            {`${position.lat.toFixed(
                                 4,
-                            )}`}
-                        </p>
-                    </>,
-                ),
-            });
-            const targetMarker = new google.maps.Marker({
-                position: target,
-                map,
-                icon: getMarkerIcon("target"),
-            });
-            targetMarker.addListener("click", () =>
-                targetInfoWindow.open(map, targetMarker),
-            );
-            const positionInfoWindow = new google.maps.InfoWindow({
-                content: renderToStaticMarkup(
-                    <>
-                        <h5 className={"mb-1"}>{"Your guess"}</h5>
-                        <p>
-                            {distance > 2000
-                                ? `${Math.floor(distance / 1000)}km`
-                                : `${distance}m`}
-                            {`${NBSP}-${NBSP}`}
-                            <strong
-                                className={classnames(
-                                    score === 5000 && "has-text-success",
-                                )}>
-                                {`${score}pts`}
-                            </strong>
-                        </p>
-                        <p>
-                            <small>
-                                {`${position.lat.toFixed(
-                                    4,
-                                )}, ${position.lng.toFixed(4)}`}
-                            </small>
-                        </p>
-                    </>,
-                ),
-            });
-            const positionMarker = new google.maps.Marker({
-                position,
-                map,
-                icon: getMarkerIcon("player1"),
-            });
-            positionMarker.addListener("click", () =>
-                positionInfoWindow.open(map, positionMarker),
-            );
-            map.setZoom(18);
-            const bounds = new google.maps.LatLngBounds();
-            bounds.extend(targetMarker.getPosition());
-            bounds.extend(positionMarker.getPosition());
-            map.fitBounds(bounds, {top: 30, right: 30, bottom: 30, left: 30});
-        },
-        [position, target, score, distance],
-    );
+                            )}, ${position.lng.toFixed(4)}`}
+                        </small>
+                    </p>
+                </>,
+            ),
+        });
+        const positionMarker = new google.maps.Marker({
+            position,
+            map: gmap.current,
+            icon: getMarkerIcon("player1"),
+        });
+        positionMarker.addListener("click", () =>
+            positionInfoWindow.open(gmap.current, positionMarker),
+        );
+        gmap.current.setZoom(18);
+        const bounds = new google.maps.LatLngBounds();
+        bounds.extend(targetMarker.getPosition());
+        bounds.extend(positionMarker.getPosition());
+        gmap.current.fitBounds(bounds, {
+            top: 30,
+            right: 30,
+            bottom: 30,
+            left: 30,
+        });
+    }, [gmap.current, position, target, score, distance]);
 
     return (
         <div className={classnames("columns", "is-centered")}>
@@ -175,8 +180,8 @@ const Results = ({onNext, onEnd}) => {
                             )}>
                             <GMap
                                 className={classnames("results__map")}
+                                ref={gmap}
                                 position={target}
-                                onMapReady={handleMapReady}
                             />
                         </div>
                         <div
