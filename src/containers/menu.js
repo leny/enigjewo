@@ -11,7 +11,7 @@ import classnames from "classnames";
 
 import Button from "components/commons/button";
 
-const MenuContainer = ({onSelectGameMode}) => (
+const MenuContainer = ({onSelectMode}) => (
     <section className={"section"}>
         <div className={"container"}>
             <div className={classnames("notification")}>
@@ -21,17 +21,14 @@ const MenuContainer = ({onSelectGameMode}) => (
                 <p>{"Please, launch the game."}</p>
             </div>
             <div>
-                <Button
-                    label={"Start a game"}
-                    onClick={() => onSelectGameMode()}
-                />
+                <Button label={"Start a game"} onClick={() => onSelectMode()} />
             </div>
         </div>
     </section>
 );
 
 MenuContainer.propTypes = {
-    onSelectGameMode: PropTypes.func.isRequired,
+    onSelectMode: PropTypes.func.isRequired,
 };
 
 export default MenuContainer;

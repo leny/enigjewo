@@ -6,23 +6,33 @@
  * started at 01/02/2021
  */
 
-import {useState, useEffect} from "react";
+import {useState, useEffect, useCallback} from "react";
 import {useGMapAPILoader} from "hooks/use-gmap-api-loader";
 import classnames from "classnames";
 
 import "styles/main.scss";
 import bcgImage from "assets/bcg.jpg";
 
-import {MODE_MENU, MODE_GAME} from "core/constants";
+import {MODE_MENU, MODE_GAME, MODE_SETTINGS} from "core/constants";
 
 import MenuContainer from "containers/menu";
 import GameContainer from "containers/game";
+import SettingsContainer from "containers/settings";
 
 import Loading from "components/commons/loading";
 
 const RootContainer = () => {
     const [loading] = useGMapAPILoader();
+    const [gameSettings, setGameSettings] = useState(null);
     const [mode, setMode] = useState(MODE_MENU);
+
+    const handleStartGame = useCallback(
+        options => {
+            setGameSettings(options);
+            setMode(MODE_GAME);
+        },
+        [setGameSettings, setMode],
+    );
 
     useEffect(() => {
         document.querySelector(
@@ -40,11 +50,20 @@ const RootContainer = () => {
         );
     }
 
-    if (mode === MODE_GAME) {
-        return <GameContainer />;
+    if (mode === MODE_SETTINGS) {
+        return <SettingsContainer onStartGame={handleStartGame} />;
     }
 
-    return <MenuContainer onSelectGameMode={() => setMode(MODE_GAME)} />;
+    if (mode === MODE_GAME) {
+        return (
+            <GameContainer
+                settings={gameSettings}
+                onRestart={() => setMode(MODE_SETTINGS)}
+            />
+        );
+    }
+
+    return <MenuContainer onSelectMode={() => setMode(MODE_SETTINGS)} />;
 };
 
 export default RootContainer;
