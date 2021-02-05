@@ -16,5 +16,6 @@ html {
 body{
     width: 100%;
     height: 100%;
-    backdrop-filter: blur(5px);
+    padding: 1px 0 0;
+    backdrop-filter: blur(5px) sepia(.5);
 }
