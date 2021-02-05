@@ -6,7 +6,6 @@
  * started at 01/02/2021
  */
 
-import React from "react";
 import ReactDOM from "react-dom";
 
 import "bulma";

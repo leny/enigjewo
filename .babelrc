@@ -14,6 +14,7 @@
             {
                 "root": ["./src"],
                 "alias": {
+                    "assets": "./src/assets",
                     "core": "./src/core",
                     "hooks": "./src/core/hooks",
                     "icons": "./src/assets/icons",
