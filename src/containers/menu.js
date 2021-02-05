@@ -14,7 +14,7 @@ import Button from "components/commons/button";
 const MenuContainer = ({onSelectGameMode}) => (
     <section className={"section"}>
         <div className={"container"}>
-            <div className={classnames("notification", "is-primary")}>
+            <div className={classnames("notification")}>
                 <h1 className={"title"}>{"Enigjewo"}</h1>
                 <h2 className={"subtitle"}>{"A Geoguessr clone"}</h2>
 
