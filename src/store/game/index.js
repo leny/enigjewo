@@ -31,7 +31,7 @@ export const GameStoreContext = createContext();
 export const initState = () => ({
     difficulty: DEFAULT_DIFFICULTY,
     rounds: {
-        total: 2,
+        total: 5,
         current: 0,
         duration: DEFAULT_ROUND_DURATION,
     },
