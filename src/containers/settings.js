@@ -13,6 +13,7 @@ import PropTypes from "prop-types";
 import {useFormik} from "formik";
 
 import {NBSP} from "core/constants";
+import {maps} from "core/maps";
 
 import classnames from "classnames";
 
@@ -23,6 +24,7 @@ const SettingsContainer = ({onStartGame}) => {
         initialValues: {
             totalRounds: 5,
             roundDuration: 300,
+            map: "world",
         },
         onSubmit: data => {
             onStartGame(data);
@@ -112,6 +114,28 @@ const SettingsContainer = ({onStartGame}) => {
                                                   ).padStart(2, "0")}`
                                                 : "Infinite"}
                                         </strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={"field"}>
+                                <label htmlFor={"map"}>{"Map"}</label>
+                                <div className={"control"}>
+                                    <div className={"select"}>
+                                        <select
+                                            id={"map"}
+                                            name={"map"}
+                                            value={values.map}
+                                            onChange={handleChange}>
+                                            {Object.entries(maps).map(
+                                                ([key, {label}]) => (
+                                                    <option
+                                                        key={key}
+                                                        value={key}>
+                                                        {label}
+                                                    </option>
+                                                ),
+                                            )}
+                                        </select>
                                     </div>
                                 </div>
                             </div>
