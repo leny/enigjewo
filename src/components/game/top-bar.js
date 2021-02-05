@@ -23,8 +23,8 @@ import {noop, preventDefault, invertValue} from "core/utils";
 
 import {NBSP} from "core/constants";
 
-import halfTimeAlert from "sounds/half-time.mp3";
-import thirtySecondsRemainingAlert from "sounds/thirty-seconds-remaining.mp3";
+import halfTimeAlert from "url:../../sounds/half-time.mp3";
+import thirtySecondsRemainingAlert from "url:../../sounds/thirty-seconds-remaining.mp3";
 
 const TopBar = ({onTimerFinished = noop}) => {
     const {

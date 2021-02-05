@@ -8,8 +8,8 @@
 
 /* global google */
 
-import CorrectPositionIcon from "icons/correct-position.png";
-import Player1Icon from "icons/player-1.png";
+import CorrectPositionIcon from "url:../assets/icons/correct-position.png";
+import Player1Icon from "url:../assets/icons/player-1.png";
 
 const icons = {
     target: CorrectPositionIcon,
