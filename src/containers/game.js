@@ -6,8 +6,6 @@
  * started at 01/02/2021
  */
 
-/* eslint-disable */ // WIP
-
 import "styles/game.scss";
 
 import {useEffect, useCallback} from "react";
@@ -41,7 +39,7 @@ const GameContainer = ({settings, onRestart}) => {
 
     const handleEndMatch = useCallback(() => dispatch(endMatch()), []);
 
-    const handleRestart = useCallback(()=>onRestart(),[onRestart]);
+    const handleRestart = useCallback(() => onRestart(), [onRestart]);
 
     // launch match
     useEffect(handleNextRound, []);
@@ -73,7 +71,7 @@ const GameContainer = ({settings, onRestart}) => {
     if (state.step === STEP_PLAY) {
         return (
             <GameStoreContextProvider value={state}>
-                <Play onFinishRound={handleFinishRound} />;
+                <Play onFinishRound={handleFinishRound} />
             </GameStoreContextProvider>
         );
     }
