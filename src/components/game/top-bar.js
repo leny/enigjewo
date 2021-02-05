@@ -33,7 +33,11 @@ const TopBar = ({onTimerFinished = noop}) => {
     } = useContext(GameStoreContext);
     const [withSoundAlerts, setWithSoundAlerts] = useState(true);
     const [timerColorClassName, setTimerColorClassName] = useState(false);
-    const [{seconds, running}] = useTimer(duration, true, onTimerFinished);
+    const [{seconds, running}] = useTimer(
+        duration,
+        duration !== false,
+        onTimerFinished,
+    );
     const [playHalfTimeAlert] = useSound(halfTimeAlert);
     const [playThirtySecondsRemainingAlert] = useSound(
         thirtySecondsRemainingAlert,
@@ -85,30 +89,38 @@ const TopBar = ({onTimerFinished = noop}) => {
                     "is-justify-content-flex-start",
                     "is-align-items-center",
                 )}>
-                <a
-                    href={"#"}
-                    onClick={preventDefault(() =>
-                        setWithSoundAlerts(invertValue),
-                    )}
-                    className={classnames(
-                        "icon",
-                        !withSoundAlerts && "has-text-grey",
-                    )}
-                    title={
-                        withSoundAlerts ? "Disable alerts" : "Enable alerts"
-                    }>
-                    <FontAwesomeIcon
-                        icon={withSoundAlerts ? faBell : faBellSlash}
-                    />
-                </a>
-                <strong className={classnames(timerColorClassName)}>
-                    {String(Math.floor(seconds / 60)).padStart(2, "0")}
-                    <span
-                        className={classnames(seconds % 2 && "has-text-grey")}>
-                        {":"}
-                    </span>
-                    {String(seconds % 60).padStart(2, "0")}
-                </strong>
+                {duration !== false && (
+                    <a
+                        href={"#"}
+                        onClick={preventDefault(() =>
+                            setWithSoundAlerts(invertValue),
+                        )}
+                        className={classnames(
+                            "icon",
+                            !withSoundAlerts && "has-text-grey",
+                        )}
+                        title={
+                            withSoundAlerts ? "Disable alerts" : "Enable alerts"
+                        }>
+                        <FontAwesomeIcon
+                            icon={withSoundAlerts ? faBell : faBellSlash}
+                        />
+                    </a>
+                )}
+                {duration !== false ? (
+                    <strong className={classnames(timerColorClassName)}>
+                        {String(Math.floor(seconds / 60)).padStart(2, "0")}
+                        <span
+                            className={classnames(
+                                seconds % 2 && "has-text-grey",
+                            )}>
+                            {":"}
+                        </span>
+                        {String(seconds % 60).padStart(2, "0")}
+                    </strong>
+                ) : (
+                    NBSP
+                )}
             </span>
             <span className={classnames("top-bar__rounds")}>
                 <span className={classnames("has-text-grey")}>{"Round:"}</span>
