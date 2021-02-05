@@ -11,6 +11,7 @@
 import "styles/game.scss";
 
 import {useEffect, useCallback} from "react";
+import PropTypes from "prop-types";
 import {useThunkedReducer} from "core/hooks/use-thunked-reducer";
 
 import {STEP_PLAY, STEP_RESULTS, STEP_SUMMARY} from "store/game/types";
@@ -28,9 +29,8 @@ import Summary from "components/game/summary";
 
 const {Provider: GameStoreContextProvider} = GameStoreContext;
 
-const GameContainer = () => {
-    // TODO: inject game options
-    const [state, dispatch] = useThunkedReducer(reducer, null, initState);
+const GameContainer = ({settings, onRestart}) => {
+    const [state, dispatch] = useThunkedReducer(reducer, settings, initState);
 
     const handleFinishRound = useCallback(
         position => dispatch(computeResults(position, state)),
@@ -41,7 +41,7 @@ const GameContainer = () => {
 
     const handleEndMatch = useCallback(() => dispatch(endMatch()), []);
 
-    const handleRestart = useCallback(()=>console.log("Restart"),[]);
+    const handleRestart = useCallback(()=>onRestart(),[onRestart]);
 
     // launch match
     useEffect(handleNextRound, []);
@@ -88,6 +88,8 @@ const GameContainer = () => {
     );
 };
 
-GameContainer.propTypes = {};
+GameContainer.propTypes = {
+    settings: PropTypes.object,
+};
 
 export default GameContainer;
