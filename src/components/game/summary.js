@@ -6,7 +6,7 @@
  * started at 04/02/2021
  */
 
-/* eslint-disable */ // WIP
+/* global google */
 
 import "styles/game/summary.scss";
 
@@ -15,25 +15,50 @@ import PropTypes from "prop-types";
 import {useContext, useCallback} from "react";
 
 import {GameStoreContext} from "store/game";
-import {NBSP} from "core/constants";
 import {getMarkerIcon} from "core/icons";
 
 import Button from "components/commons/button";
 import GMap from "components/commons/map";
-import StreetView from "components/commons/street-view";
 
 const Summary = ({onRestart}) => {
     const {
         rounds: {total},
         currentRound: {score},
-        panoramas,
         positions,
         targets,
         distances,
         scores,
     } = useContext(GameStoreContext);
 
-    const handleMapReady = useCallback(map => {}, []);
+    const handleMapReady = useCallback(
+        map => {
+            const bounds = new google.maps.LatLngBounds();
+            map.setZoom(18);
+            Array.from(new Array(total).keys()).forEach(i => {
+                const polyLine = new google.maps.Polyline({
+                    path: [targets[i], positions[i]],
+                    strokeColor: "hsl(141, 53%, 53%)",
+                    strokeOpacity: 1.0,
+                    strokeWeight: 3,
+                });
+                polyLine.setMap(map);
+                const targetMarker = new google.maps.Marker({
+                    position: targets[i],
+                    map,
+                    icon: getMarkerIcon("target"),
+                });
+                const positionMarker = new google.maps.Marker({
+                    position: positions[i],
+                    map,
+                    icon: getMarkerIcon("player1"),
+                });
+                bounds.extend(targetMarker.getPosition());
+                bounds.extend(positionMarker.getPosition());
+            });
+            map.fitBounds(bounds, {top: 30, right: 30, bottom: 30, left: 30});
+        },
+        [positions, targets, total],
+    );
 
     return (
         <div className={classnames("columns", "is-centered")}>
@@ -52,17 +77,6 @@ const Summary = ({onRestart}) => {
                             {"Summary"}
                         </span>
                     </header>
-                    <div
-                        className={classnames(
-                            "card-content",
-                            "has-text-centered",
-                        )}>
-                        <p>
-                            {"Total score:"}
-                            {NBSP}
-                            <strong>{`${score}pts`}</strong>
-                        </p>
-                    </div>
                     <div className={classnames("card-image")}>
                         <table
                             className={classnames(
@@ -72,11 +86,7 @@ const Summary = ({onRestart}) => {
                             )}>
                             <thead>
                                 <tr>
-                                    <th>
-                                        <abbr title={"Round number"}>
-                                            {"Rnd"}
-                                        </abbr>
-                                    </th>
+                                    <th>{"# Round"}</th>
                                     <th>{"Distance"}</th>
                                     <th>{"Score"}</th>
                                 </tr>
@@ -104,7 +114,9 @@ const Summary = ({onRestart}) => {
                                                 className={classnames(
                                                     scores[i] === 5000 &&
                                                         "has-text-success",
-                                                )}>{`${scores[i]}pts`}</span>
+                                                )}>
+                                                {`${scores[i]}pts`}
+                                            </span>
                                         </td>
                                     </tr>
                                 ))}
