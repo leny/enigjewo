@@ -6,10 +6,10 @@
  * started at 01/02/2021
  */
 
-import ReactDOM from "react-dom";
+import {render} from "react-dom";
 
 import "bulma";
 
 import Root from "./containers/root";
 
-ReactDOM.render(<Root />, document.querySelector("#app"));
+render(<Root />, document.querySelector("#app"));
