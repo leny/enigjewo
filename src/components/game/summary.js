@@ -33,16 +33,11 @@ const Summary = ({onRestart}) => {
         scores,
     } = useContext(GameStoreContext);
 
-    const handleMapReady = useCallback(
-        map => {
-
-        },
-        [],
-    );
+    const handleMapReady = useCallback(map => {}, []);
 
     return (
         <div className={classnames("columns", "is-centered")}>
-            <div className={classnames("column", "is-four-fifths", "section")}>
+            <div className={classnames("column", "is-two-thirds", "section")}>
                 <div className={"card"}>
                     <header
                         className={classnames(
@@ -63,12 +58,58 @@ const Summary = ({onRestart}) => {
                             "has-text-centered",
                         )}>
                         <p>
-                            <small>
-                                {"Total score:"}
-                                {NBSP}
-                                <strong>{`${score}pts`}</strong>
-                            </small>
+                            {"Total score:"}
+                            {NBSP}
+                            <strong>{`${score}pts`}</strong>
                         </p>
+                    </div>
+                    <div className={classnames("card-image")}>
+                        <table
+                            className={classnames(
+                                "table",
+                                "is-striped",
+                                "is-fullwidth",
+                            )}>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <abbr title={"Round number"}>
+                                            {"Rnd"}
+                                        </abbr>
+                                    </th>
+                                    <th>{"Distance"}</th>
+                                    <th>{"Score"}</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <td />
+                                    <th>{"Total:"}</th>
+                                    <td>{`${score}pts`}</td>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                {Array.from(new Array(total).keys()).map(i => (
+                                    <tr key={`round-${i + 1}`}>
+                                        <td>{i + 1}</td>
+                                        <td>
+                                            {distances[i] > 2000
+                                                ? `${Math.floor(
+                                                      distances[i] / 1000,
+                                                  )}km`
+                                                : `${distances[i]}m`}
+                                        </td>
+                                        <td>
+                                            <span
+                                                className={classnames(
+                                                    scores[i] === 5000 &&
+                                                        "has-text-success",
+                                                )}>{`${scores[i]}pts`}</span>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                     <div
                         className={classnames(
@@ -78,11 +119,11 @@ const Summary = ({onRestart}) => {
                             "mt-1",
                             "mb-0",
                         )}>
-                            <GMap
-                                className={classnames("summary__map")}
-                                position={targets[0]}
-                                onMapReady={handleMapReady}
-                            />
+                        <GMap
+                            className={classnames("summary__map")}
+                            position={targets[0]}
+                            onMapReady={handleMapReady}
+                        />
                     </div>
                     <footer className={"card-footer"}>
                         <Button
