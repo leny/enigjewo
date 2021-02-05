@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "npx eslint --fix --cache src",
-    "work": "npx parcel src/index.html",
+    "work": "npx parcel serve src/index.html",
     "build": "npx parcel build src/index.html"
   },
   "author": "leny <info@flatland.be>",
@@ -24,7 +24,7 @@
     "eslint-plugin-unicorn": "^27.0.0",
     "husky": "^4.3.8",
     "lint-staged": "^10.5.3",
-    "parcel-bundler": "^1.12.4",
+    "parcel": "^2.0.0-beta.1",
     "prettier": "^2.2.1",
     "sass": "^1.32.5",
     "typescript": "^4.1.3"

@@ -11,5 +11,6 @@ bower_components
 *.swp
 .eslintcache
 .cache
+.parcel-cache
 dist
 .env
