@@ -10,16 +10,20 @@ import "styles/settings.scss";
 
 import PropTypes from "prop-types";
 
+import {useEffect, useRef} from "react";
 import {useFormik} from "formik";
 
 import {NBSP} from "core/constants";
-import {maps} from "core/maps";
+import {maps, loadGeoJSON} from "core/maps";
+import bbox from "@turf/bbox";
 
 import classnames from "classnames";
 
 import Button from "components/commons/button";
+import GMap from "components/commons/map";
 
 const SettingsContainer = ({onStartGame}) => {
+    const gmap = useRef(null);
     const {handleSubmit, handleChange, values} = useFormik({
         initialValues: {
             totalRounds: 5,
@@ -30,6 +34,30 @@ const SettingsContainer = ({onStartGame}) => {
             onStartGame(data);
         },
     });
+
+    useEffect(() => {
+        if (!gmap.current) {
+            return;
+        }
+
+        gmap.current.setZoom(1);
+        gmap.current.setCenter({lat: 0, lng: 0});
+        gmap.current.data.forEach(f => gmap.current.data.remove(f));
+
+        if (values.map !== "world") {
+            (async () => {
+                const geoJSON = await loadGeoJSON(values.map);
+                const [west, south, east, north] = bbox(geoJSON);
+                gmap.current.data.addGeoJson(geoJSON);
+                gmap.current.data.setStyle({
+                    fillColor: "hsl(204, 86%, 53%)",
+                    strokeColor: "hsl(217, 71%, 53%)",
+                    strokeWeight: 2,
+                });
+                gmap.current.fitBounds({north, east, south, west});
+            })();
+        }
+    }, [gmap.current, values.map]);
 
     return (
         <div className={classnames("columns", "is-centered")}>
@@ -139,6 +167,9 @@ const SettingsContainer = ({onStartGame}) => {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div className={"card-image"}>
+                            <GMap className={"settings__map"} ref={gmap} />
                         </div>
                         <footer className={"card-footer"}>
                             <Button
