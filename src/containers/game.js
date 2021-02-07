@@ -81,11 +81,33 @@ const GameContainer = ({settings, onRestart}) => {
 
     // state === STEP_LOADING
     return (
-        <section className={"section"}>
-            <div className={classnames("container", "has-text-centered")}>
-                <Loading variant={"info"} size={"large"} />
+        <div className={classnames("columns", "is-centered")}>
+            <div className={classnames("column", "is-two-thirds", "section")}>
+                <div className={"card"}>
+                    <header
+                        className={classnames(
+                            "card-header",
+                            "has-background-info",
+                        )}>
+                        <span
+                            className={classnames(
+                                "card-header-title",
+                                "has-text-white",
+                            )}>
+                            {"Loading…"}
+                        </span>
+                    </header>
+                    <div
+                        className={classnames(
+                            "card-content",
+                            "py-5",
+                            "has-text-centered",
+                        )}>
+                        <Loading variant={"info"} size={"large"} />
+                    </div>
+                </div>
             </div>
-        </section>
+        </div>
     );
 };
 
