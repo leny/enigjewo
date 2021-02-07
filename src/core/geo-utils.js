@@ -9,6 +9,7 @@
 import {point} from "@turf/helpers";
 import distance from "@turf/distance";
 import bbox from "@turf/bbox";
+import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
 import randomPositionInPolygon from "random-position-in-polygon";
 
 export const getMaxDistanceBbox = box => {
@@ -67,4 +68,18 @@ export const isGeoJSONValid = ({type, features}) => {
         );
     }
     return false;
+};
+
+export const isInGeoJSON = (pnt, geoJSON) => {
+    if (geoJSON.type === "Feature") {
+        return geoJSON.geometry.type === "Point"
+            ? distance(geoJSON, pnt, {units: "kilometers"}) < 0.05
+            : booleanPointInPolygon(pnt, geoJSON);
+    }
+    return geoJSON.features.some(feature => {
+        if (feature.geometry.type === "Point") {
+            return distance(feature, pnt, {units: "kilometers"}) < 0.05;
+        }
+        return booleanPointInPolygon(pnt, feature);
+    });
 };

@@ -9,7 +9,8 @@
 /* global google */
 
 import {DEBUG} from "core/constants";
-import {getRandomLatLng} from "core/geo-utils";
+import {point} from "@turf/helpers";
+import {getRandomLatLng, isInGeoJSON} from "core/geo-utils";
 
 let service;
 
@@ -27,6 +28,23 @@ export const getRandomPanorama = geoJSON =>
                 },
                 (data, status) => {
                     if (status !== "OK" || !data?.location) {
+                        getPanorama();
+                        return;
+                    }
+
+                    if (
+                        geoJSON &&
+                        !isInGeoJSON(
+                            point([
+                                data.location.latLng.lng(),
+                                data.location.latLng.lat(),
+                            ]),
+                            geoJSON,
+                        )
+                    ) {
+                        DEBUG &&
+                            console.warn("DEBUG:isInGeoJSON returned false!");
+                        // TODO: count attempts & throw error?
                         getPanorama();
                         return;
                     }
