@@ -30,7 +30,9 @@ export const GameStoreContext = createContext();
 export const initState = ({
     totalRounds = 5,
     roundDuration = DEFAULT_ROUND_DURATION,
+    map = "world",
 }) => ({
+    map,
     difficulty: DEFAULT_DIFFICULTY,
     rounds: {
         total: totalRounds,
@@ -66,10 +68,11 @@ export const reducer = (state, {type, ...payload}) => {
                 step: STEP_LOADING,
             };
         case ACTION_START_ROUND: {
-            const {panorama, target} = payload;
+            const {panorama, target, difficulty} = payload;
 
             return {
                 ...state,
+                difficulty,
                 panoramas: [...state.panoramas, panorama],
                 targets: [...state.targets, target],
                 currentRound: {

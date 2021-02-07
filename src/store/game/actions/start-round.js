@@ -6,12 +6,35 @@
  * started at 03/02/2021
  */
 
+import {DEFAULT_DIFFICULTY} from "core/constants";
 import {ACTION_PREPARE_ROUND, ACTION_START_ROUND} from "store/game/types";
 
 import {getRandomPanorama} from "core/street-view";
+import {getGeoJSONDifficulty} from "core/geo-utils";
+import {loadGeoJSON} from "core/maps";
 
-export default () => async dispatch => {
+export default map => async dispatch => {
     dispatch({type: ACTION_PREPARE_ROUND});
-    const {panorama, position} = await getRandomPanorama();
-    dispatch({type: ACTION_START_ROUND, panorama, target: position});
+
+    if (map === "world") {
+        const {panorama, position} = await getRandomPanorama();
+        dispatch({
+            type: ACTION_START_ROUND,
+            panorama,
+            target: position,
+            difficulty: DEFAULT_DIFFICULTY,
+        });
+        return;
+    }
+
+    const geoJSON = await loadGeoJSON(map);
+    const difficulty = getGeoJSONDifficulty(geoJSON);
+    const {panorama, position} = await getRandomPanorama(geoJSON);
+
+    dispatch({
+        type: ACTION_START_ROUND,
+        panorama,
+        target: position,
+        difficulty,
+    });
 };
