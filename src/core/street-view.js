@@ -13,15 +13,14 @@ import {getRandomLatLng} from "core/geo-utils";
 
 let service;
 
-// TODO inject bounds
-export const getRandomPanorama = () =>
+export const getRandomPanorama = geoJSON =>
     new Promise(resolve => {
         let getPanorama;
 
         (getPanorama = () => {
             (service ||= new google.maps.StreetViewService()).getPanorama(
                 {
-                    location: getRandomLatLng().position,
+                    location: getRandomLatLng(geoJSON).position,
                     radius: 100000,
                     preference: "nearest",
                     source: "outdoor",
