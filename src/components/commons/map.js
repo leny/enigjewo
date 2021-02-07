@@ -58,7 +58,7 @@ const GMap = forwardRef(
 );
 
 GMap.propTypes = {
-    position: PropTypes.object.isRequired,
+    position: PropTypes.object,
     zoom: PropTypes.number,
     options: PropTypes.object,
     onMapReady: PropTypes.func,
