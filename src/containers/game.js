@@ -35,7 +35,10 @@ const GameContainer = ({settings, onRestart}) => {
         [state],
     );
 
-    const handleNextRound = useCallback(() => dispatch(startRound()), []);
+    const handleNextRound = useCallback(
+        () => dispatch(startRound(state.map)),
+        [],
+    );
 
     const handleEndMatch = useCallback(() => dispatch(endMatch()), []);
 
