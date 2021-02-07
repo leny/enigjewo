@@ -8,6 +8,7 @@
 
 import {DEFAULT_DIFFICULTY} from "core/constants";
 import {ACTION_PREPARE_ROUND, ACTION_START_ROUND} from "store/game/types";
+import bbox from "@turf/bbox";
 
 import {getRandomPanorama} from "core/street-view";
 import {getGeoJSONDifficulty} from "core/geo-utils";
@@ -21,6 +22,7 @@ export default map => async dispatch => {
         dispatch({
             type: ACTION_START_ROUND,
             panorama,
+            bounds: null,
             target: position,
             difficulty: DEFAULT_DIFFICULTY,
         });
@@ -28,12 +30,14 @@ export default map => async dispatch => {
     }
 
     const geoJSON = await loadGeoJSON(map);
+    const [west, south, east, north] = bbox(geoJSON);
     const difficulty = getGeoJSONDifficulty(geoJSON);
     const {panorama, position} = await getRandomPanorama(geoJSON);
 
     dispatch({
         type: ACTION_START_ROUND,
         panorama,
+        bounds: {north, east, south, west},
         target: position,
         difficulty,
     });

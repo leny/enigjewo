@@ -35,6 +35,7 @@ export const initState = ({
 }) => ({
     map,
     difficulty: DEFAULT_DIFFICULTY,
+    bounds: null,
     rounds: {
         total: totalRounds,
         current: 0,
@@ -69,11 +70,12 @@ export const reducer = (state, {type, ...payload}) => {
                 step: STEP_LOADING,
             };
         case ACTION_START_ROUND: {
-            const {panorama, target, difficulty} = payload;
+            const {panorama, target, difficulty, bounds} = payload;
 
             return {
                 ...state,
                 difficulty,
+                bounds,
                 panoramas: [...state.panoramas, panorama],
                 targets: [...state.targets, target],
                 currentRound: {

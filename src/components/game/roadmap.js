@@ -10,7 +10,8 @@
 
 import "styles/game/roadmap.scss";
 
-import {useState, useCallback, useRef} from "react";
+import {useState, useEffect, useContext, useCallback, useRef} from "react";
+import {GameStoreContext} from "store/game";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 
@@ -43,6 +44,7 @@ const Roadmap = ({
     onUpdatePosition,
     onGuessPosition,
 }) => {
+    const {bounds} = useContext(GameStoreContext);
     const [center] = useState(startPosition);
     const [showNotes, setShowNotes] = useState(null);
     const [notes, setNotes] = useState("");
@@ -50,6 +52,14 @@ const Roadmap = ({
     const [size, setSize] = useState(SIZE_SMALL);
     const [isPinned, setIsPinned] = useState(false);
     const gmap = useRef(null);
+
+    useEffect(() => {
+        if (!(gmap.current && bounds)) {
+            return;
+        }
+
+        gmap.current.fitBounds(bounds);
+    }, [gmap.current, bounds]);
 
     const handleClickOnMap = useCallback(
         (map, {latLng}) => {
