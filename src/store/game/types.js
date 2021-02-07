@@ -13,6 +13,7 @@ export const STEP_RESULTS = "results";
 
 export const ACTION_PREPARE_ROUND = "store.game.action.prepare_round";
 export const ACTION_START_ROUND = "store.game.action.start_round";
+export const ACTION_PREPARE_RESULTS = "store.game.action.prepare_results";
 export const ACTION_COMPUTE_RESULTS = "store.game.action.compute_results";
 export const ACTION_SHOW_RESULTS = "store.game.action.show_results";
 export const ACTION_SHOW_SUMMARY = "store.game.action.show_summary";

@@ -17,8 +17,6 @@ import StreetView from "components/commons/street-view";
 import Roadmap from "components/game/roadmap";
 import TopBar from "components/game/top-bar";
 
-import {getRandomLatLng} from "core/geo-utils";
-
 const Play = ({onFinishRound}) => {
     const {
         currentRound: {panorama},
@@ -42,10 +40,10 @@ const Play = ({onFinishRound}) => {
         setPosition,
     ]);
 
-    const handleFinishRound = useCallback(
-        () => onFinishRound(position || getRandomLatLng().position),
-        [position, onFinishRound],
-    );
+    const handleFinishRound = useCallback(() => onFinishRound(position), [
+        position,
+        onFinishRound,
+    ]);
 
     return (
         <>

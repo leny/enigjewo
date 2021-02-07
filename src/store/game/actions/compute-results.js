@@ -8,14 +8,28 @@
 
 /* global google */
 
-import {ACTION_COMPUTE_RESULTS, ACTION_SHOW_RESULTS} from "store/game/types";
+import {
+    ACTION_PREPARE_RESULTS,
+    ACTION_COMPUTE_RESULTS,
+    ACTION_SHOW_RESULTS,
+} from "store/game/types";
+
+import {getRandomLatLng} from "core/geo-utils";
+import {loadGeoJSON} from "core/maps";
 
 export default (
-    position,
-    {difficulty, currentRound: {index}, targets},
-) => dispatch => {
-    dispatch({type: ACTION_COMPUTE_RESULTS, position});
+    pos,
+    {map, difficulty, currentRound: {index}, targets},
+) => async dispatch => {
+    dispatch({type: ACTION_PREPARE_RESULTS});
+    let position = pos,
+        geoJSON;
+    if (!position) {
+        geoJSON = await loadGeoJSON(map);
+        position = getRandomLatLng(geoJSON).position;
+    }
 
+    dispatch({type: ACTION_COMPUTE_RESULTS, position});
     const distance = Math.floor(
         google.maps.geometry.spherical.computeDistanceBetween(
             new google.maps.LatLng(targets[index - 1]),

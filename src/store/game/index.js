@@ -18,6 +18,7 @@ import {
     STEP_SUMMARY,
     ACTION_PREPARE_ROUND,
     ACTION_START_ROUND,
+    ACTION_PREPARE_RESULTS,
     ACTION_COMPUTE_RESULTS,
     ACTION_SHOW_RESULTS,
     ACTION_SHOW_SUMMARY,
@@ -83,6 +84,11 @@ export const reducer = (state, {type, ...payload}) => {
                 step: STEP_PLAY,
             };
         }
+        case ACTION_PREPARE_RESULTS:
+            return {
+                ...state,
+                step: STEP_LOADING,
+            };
         case ACTION_COMPUTE_RESULTS: {
             const {position} = payload;
 
