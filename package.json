@@ -2,7 +2,6 @@
   "name": "enigjewo",
   "version": "0.0.1",
   "description": "A _remake_ of **GeoGuessr** with React & Firebase",
-  "main": "index.js",
   "scripts": {
     "lint": "npx eslint --fix --cache src",
     "work": "npx parcel serve src/index.html",
