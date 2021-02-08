@@ -44,20 +44,24 @@ const Roadmap = ({
     onUpdatePosition,
     onGuessPosition,
 }) => {
-    const {bounds} = useContext(GameStoreContext);
+    const {
+        settings: {bounds},
+    } = useContext(GameStoreContext);
     const [center] = useState(startPosition);
     const [showNotes, setShowNotes] = useState(null);
     const [notes, setNotes] = useState("");
     const [marker, setMarker] = useState(null);
     const [size, setSize] = useState(SIZE_SMALL);
     const [isPinned, setIsPinned] = useState(false);
+    const [ready, setReady] = useState(false);
     const gmap = useRef(null);
 
     useEffect(() => {
-        if (!(gmap.current && bounds)) {
+        if (!(gmap.current && bounds) || ready) {
             return;
         }
 
+        setReady(true);
         gmap.current.fitBounds(bounds);
     }, [gmap.current, bounds]);
 

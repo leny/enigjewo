@@ -28,9 +28,12 @@ import thirtySecondsRemainingAlert from "url:../../sounds/thirty-seconds-remaini
 
 const TopBar = ({onTimerFinished = noop}) => {
     const {
-        rounds: {duration, current, total},
-        currentRound: {score},
+        settings: {duration, rounds: total},
+        currentRound: {index: current},
+        players,
+        player,
     } = useContext(GameStoreContext);
+    const {score} = players[player];
     const [withSoundAlerts, setWithSoundAlerts] = useState(true);
     const [timerColorClassName, setTimerColorClassName] = useState(false);
     const [{seconds, running}] = useTimer(

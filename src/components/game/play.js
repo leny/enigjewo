@@ -19,8 +19,10 @@ import TopBar from "components/game/top-bar";
 
 const Play = ({onFinishRound}) => {
     const {
-        currentRound: {panorama},
+        currentRound: {index},
+        rounds,
     } = useContext(GameStoreContext);
+    const {panorama} = rounds[`rnd-${index}`];
     const [position, setPosition] = useState(null);
     const streetView = useRef(null);
     const handleResetPanorama = useCallback(() => {

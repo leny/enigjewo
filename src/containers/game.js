@@ -12,8 +12,10 @@ import {useEffect, useCallback} from "react";
 import PropTypes from "prop-types";
 import {useThunkedReducer} from "core/hooks/use-thunked-reducer";
 
+import {DEBUG} from "core/constants";
 import {STEP_PLAY, STEP_RESULTS, STEP_SUMMARY} from "store/game/types";
 import {initState, reducer, GameStoreContext} from "store/game";
+import startMatch from "store/game/actions/start-match";
 import startRound from "store/game/actions/start-round";
 import computeResults from "store/game/actions/compute-results";
 import endMatch from "store/game/actions/end-match";
@@ -28,24 +30,27 @@ import Summary from "components/game/summary";
 const {Provider: GameStoreContextProvider} = GameStoreContext;
 
 const GameContainer = ({settings, onRestart}) => {
-    const [state, dispatch] = useThunkedReducer(reducer, settings, initState);
+    const [state, dispatch] = useThunkedReducer(reducer, null, initState);
+    DEBUG && console.log("DEBUG:state:", state);
 
     const handleFinishRound = useCallback(
         position => dispatch(computeResults(position, state)),
         [state],
     );
 
-    const handleNextRound = useCallback(
-        () => dispatch(startRound(state.map)),
-        [],
-    );
+    const handleNextRound = useCallback(() => dispatch(startRound(state)), [
+        state,
+    ]);
 
     const handleEndMatch = useCallback(() => dispatch(endMatch()), []);
 
     const handleRestart = useCallback(() => onRestart(), [onRestart]);
 
     // launch match
-    useEffect(handleNextRound, []);
+    useEffect(() => {
+        dispatch(startMatch(settings));
+        dispatch(startRound({settings}));
+    }, []);
 
     useEffect(() => {
         const html = document.querySelector("html");

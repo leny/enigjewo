@@ -12,7 +12,7 @@ import "styles/game/results.scss";
 
 import classnames from "classnames";
 import PropTypes from "prop-types";
-import {useContext, useMemo, useEffect, useRef} from "react";
+import {useContext, useEffect, useRef} from "react";
 import {renderToStaticMarkup} from "react-dom/server";
 
 import {GameStoreContext} from "store/game";
@@ -24,24 +24,21 @@ import GMap from "components/commons/map";
 import StreetView from "components/commons/street-view";
 
 const Results = ({onNext, onEnd}) => {
-    const {
-        rounds: {total},
-        currentRound: {index, score: totalScore},
-        panoramas,
-        positions,
-        targets,
-        distances,
-        scores,
-        ended,
-    } = useContext(GameStoreContext);
     const gmap = useRef(null);
     const streetView = useRef(null);
 
-    const distance = useMemo(() => distances[index - 1], [distances, index]);
-    const score = useMemo(() => scores[index - 1], [scores, index]);
-    const position = useMemo(() => positions[index - 1], [positions, index]);
-    const panorama = useMemo(() => panoramas[index - 1], [panoramas, index]);
-    const target = useMemo(() => targets[index - 1], [targets, index]);
+    const {
+        settings: {rounds: total},
+        currentRound: {index},
+        rounds,
+        entries,
+        players,
+        player,
+        ended,
+    } = useContext(GameStoreContext);
+    const {score: totalScore} = players[player];
+    const {score, distance, position} = entries[`rnd-${index}-${player}`];
+    const {panorama, target} = rounds[`rnd-${index}`];
 
     useEffect(() => {
         if (!gmap.current) {

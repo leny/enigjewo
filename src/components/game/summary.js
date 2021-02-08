@@ -24,12 +24,11 @@ import GMap from "components/commons/map";
 
 const Summary = ({onRestart}) => {
     const {
-        rounds: {total},
-        currentRound: {score},
-        positions,
-        targets,
-        distances,
-        scores,
+        settings: {rounds: total},
+        rounds,
+        entries,
+        player,
+        players,
     } = useContext(GameStoreContext);
     const gmap = useRef(null);
 
@@ -40,9 +39,12 @@ const Summary = ({onRestart}) => {
 
         const bounds = new google.maps.LatLngBounds();
         gmap.current.setZoom(18);
-        Array.from(new Array(total).keys()).forEach(i => {
+        Array.from(new Array(total).keys(), i => i + 1).forEach(i => {
+            const {target} = rounds[`rnd-${i}`];
+            const {position, distance, score} = entries[`rnd-${i}-${player}`];
+
             const polyLine = new google.maps.Polyline({
-                path: [targets[i], positions[i]],
+                path: [target, position],
                 strokeColor: "hsl(141, 53%, 53%)",
                 strokeOpacity: 1.0,
                 strokeWeight: 3,
@@ -53,15 +55,15 @@ const Summary = ({onRestart}) => {
                     <>
                         <h5 className={"mb-1"}>{`Round #${i + 1}: Target`}</h5>
                         <p>
-                            {`${targets[i].lat.toFixed(4)}, ${targets[
-                                i
-                            ].lng.toFixed(4)}`}
+                            {`${target.lat.toFixed(4)}, ${target.lng.toFixed(
+                                4,
+                            )}`}
                         </p>
                     </>,
                 ),
             });
             const targetMarker = new google.maps.Marker({
-                position: targets[i],
+                position: target,
                 map: gmap.current,
                 icon: getMarkerIcon("target"),
             });
@@ -75,29 +77,29 @@ const Summary = ({onRestart}) => {
                             {`Round #${i + 1}: Your guess`}
                         </h5>
                         <p>
-                            {distances[i] > 2000
-                                ? `${Math.floor(distances[i] / 1000)}km`
-                                : `${distances[i]}m`}
+                            {distance > 2000
+                                ? `${Math.floor(distance / 1000)}km`
+                                : `${distance}m`}
                             {`${NBSP}-${NBSP}`}
                             <strong
                                 className={classnames(
-                                    scores[i] === 5000 && "has-text-success",
+                                    score === 5000 && "has-text-success",
                                 )}>
-                                {`${scores[i]}pts`}
+                                {`${score}pts`}
                             </strong>
                         </p>
                         <p>
                             <small>
-                                {`${positions[i].lat.toFixed(4)}, ${positions[
-                                    i
-                                ].lng.toFixed(4)}`}
+                                {`${position.lat.toFixed(
+                                    4,
+                                )}, ${position.lng.toFixed(4)}`}
                             </small>
                         </p>
                     </>,
                 ),
             });
             const positionMarker = new google.maps.Marker({
-                position: positions[i],
+                position,
                 map: gmap.current,
                 icon: getMarkerIcon("player1"),
             });
@@ -113,7 +115,7 @@ const Summary = ({onRestart}) => {
             bottom: 30,
             left: 30,
         });
-    }, [gmap.current, positions, targets, total, scores, distances]);
+    }, [gmap.current, entries, player, rounds, total]);
 
     return (
         <div className={classnames("columns", "is-centered")}>
@@ -143,38 +145,61 @@ const Summary = ({onRestart}) => {
                                 <tr>
                                     <th>{"# Round"}</th>
                                     <th>{"Distance"}</th>
+                                    <th>{"Duration"}</th>
                                     <th>{"Score"}</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
-                                    <td />
+                                    <td colSpan={2} />
                                     <th>{"Total:"}</th>
-                                    <td>{`${score}pts`}</td>
+                                    <td>{`${players[player].score}pts`}</td>
                                 </tr>
                             </tfoot>
                             <tbody>
-                                {Array.from(new Array(total).keys()).map(i => (
-                                    <tr key={`round-${i + 1}`}>
-                                        <td>{i + 1}</td>
-                                        <td>
-                                            {distances[i] > 2000
-                                                ? `${Math.floor(
-                                                      distances[i] / 1000,
-                                                  )}km`
-                                                : `${distances[i]}m`}
-                                        </td>
-                                        <td>
-                                            <span
-                                                className={classnames(
-                                                    scores[i] === 5000 &&
-                                                        "has-text-success",
-                                                )}>
-                                                {`${scores[i]}pts`}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                ))}
+                                {Array.from(
+                                    new Array(total).keys(),
+                                    i => i + 1,
+                                ).map(i => {
+                                    const {
+                                        distance,
+                                        score,
+                                        startedAt,
+                                        endedAt,
+                                    } = entries[`rnd-${i}-${player}`];
+                                    const duration = Math.round(
+                                        (endedAt - startedAt) / 1000,
+                                    );
+
+                                    return (
+                                        <tr key={`round-${i}`}>
+                                            <td>{i}</td>
+                                            <td>
+                                                {distance > 2000
+                                                    ? `${Math.floor(
+                                                          distance / 1000,
+                                                      )}km`
+                                                    : `${distance}m`}
+                                            </td>
+                                            <td>
+                                                {`${String(
+                                                    Math.floor(duration / 60),
+                                                ).padStart(2, "0")}:${String(
+                                                    duration % 60,
+                                                ).padStart(2, "0")}`}
+                                            </td>
+                                            <td>
+                                                <span
+                                                    className={classnames(
+                                                        score === 5000 &&
+                                                            "has-text-success",
+                                                    )}>
+                                                    {`${score}pts`}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>
@@ -189,7 +214,6 @@ const Summary = ({onRestart}) => {
                         <GMap
                             className={classnames("summary__map")}
                             ref={gmap}
-                            position={targets[0]}
                         />
                     </div>
                     <footer className={"card-footer"}>

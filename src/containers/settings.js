@@ -13,7 +13,7 @@ import PropTypes from "prop-types";
 import {useEffect, useRef} from "react";
 import {useFormik} from "formik";
 
-import {NBSP} from "core/constants";
+import {NBSP, DEFAULT_ROUND_DURATION, DEFAULT_ROUNDS} from "core/constants";
 import {maps, loadGeoJSON} from "core/maps";
 import bbox from "@turf/bbox";
 
@@ -26,12 +26,25 @@ const SettingsContainer = ({onStartGame}) => {
     const gmap = useRef(null);
     const {handleSubmit, handleChange, values} = useFormik({
         initialValues: {
-            totalRounds: 5,
-            roundDuration: 300,
+            totalRounds: DEFAULT_ROUNDS,
+            roundDuration: DEFAULT_ROUND_DURATION,
             map: "world",
         },
-        onSubmit: data => {
-            onStartGame(data);
+        onSubmit: ({totalRounds: rounds, roundDuration: duration, map}) => {
+            // TODO: multiplayer settings
+            onStartGame({
+                code: `solo-${map}`,
+                title: `Solo Game: ${maps[map].label}`,
+                rounds,
+                duration,
+                map,
+                isMulti: false,
+                player: {
+                    key: "solo-player",
+                    name: "Solo Player",
+                    isOwner: true,
+                },
+            });
         },
     });
 
