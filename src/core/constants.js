@@ -14,6 +14,7 @@ export const MODE_SETTINGS = "settings";
 
 export const GMAP_API_KEY = process.env.GMAP_API_KEY;
 
+export const DEFAULT_ROUNDS = 5;
 export const DEFAULT_ROUND_DURATION = 300; // five minutes
 export const DEFAULT_DIFFICULTY = 2000;
 
