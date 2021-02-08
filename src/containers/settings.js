@@ -24,25 +24,37 @@ import GMap from "components/commons/map";
 
 const SettingsContainer = ({onStartGame}) => {
     const gmap = useRef(null);
-    const {handleSubmit, handleChange, values} = useFormik({
+    const {handleSubmit, handleChange, values, setFieldValue} = useFormik({
         initialValues: {
             totalRounds: DEFAULT_ROUNDS,
             roundDuration: DEFAULT_ROUND_DURATION,
             map: "world",
+            isMulti: false,
+            name: "Player",
+            isOwner: true,
+            title: "My awesome game",
         },
-        onSubmit: ({totalRounds: rounds, roundDuration: duration, map}) => {
+        onSubmit: ({
+            totalRounds: rounds,
+            roundDuration: duration,
+            map,
+            title,
+            isMulti,
+            name,
+            isOwner,
+        }) => {
             // TODO: multiplayer settings
             onStartGame({
                 code: `solo-${map}`,
-                title: `Solo Game: ${maps[map].label}`,
+                title: title || `Solo Game: ${maps[map].label}`,
                 rounds,
                 duration,
                 map,
-                isMulti: false,
+                isMulti,
                 player: {
                     key: "solo-player",
-                    name: "Solo Player",
-                    isOwner: true,
+                    name,
+                    isOwner,
                 },
             });
         },
@@ -72,6 +84,41 @@ const SettingsContainer = ({onStartGame}) => {
         }
     }, [gmap.current, values.map]);
 
+    let $multiplayerFields;
+
+    if (values.isMulti) {
+        $multiplayerFields = (
+            <>
+                <div className={"field"}>
+                    <label htmlFor={"title"}>{"Title of the game"}</label>
+                    <div className={"control"}>
+                        <input
+                            type={"text"}
+                            id={"title"}
+                            name={"title"}
+                            className={"input"}
+                            value={values.title}
+                            onChange={handleChange}
+                        />
+                    </div>
+                </div>
+                <div className={"field"}>
+                    <label htmlFor={"name"}>{"Your nickname"}</label>
+                    <div className={"control"}>
+                        <input
+                            type={"text"}
+                            id={"name"}
+                            name={"name"}
+                            className={"input"}
+                            value={values.name}
+                            onChange={handleChange}
+                        />
+                    </div>
+                </div>
+            </>
+        );
+    }
+
     return (
         <div className={classnames("columns", "is-centered")}>
             <div className={classnames("column", "is-two-thirds", "section")}>
@@ -91,6 +138,38 @@ const SettingsContainer = ({onStartGame}) => {
                             </span>
                         </header>
                         <div className={classnames("card-content")}>
+                            <div
+                                className={classnames(
+                                    "field",
+                                    "has-addons",
+                                    "is-justify-content-center",
+                                )}>
+                                <div className={"control"}>
+                                    <Button
+                                        label={"Solo Game"}
+                                        variant={"info"}
+                                        className={classnames(
+                                            values.isMulti && "is-outlined",
+                                        )}
+                                        onClick={() =>
+                                            setFieldValue("isMulti", false)
+                                        }
+                                    />
+                                </div>
+                                <div className={"control"}>
+                                    <Button
+                                        label={"Multiplayer Game"}
+                                        variant={"info"}
+                                        className={classnames(
+                                            values.isMulti || "is-outlined",
+                                        )}
+                                        onClick={() =>
+                                            setFieldValue("isMulti", true)
+                                        }
+                                    />
+                                </div>
+                            </div>
+                            {$multiplayerFields}
                             <div className={"field"}>
                                 <label htmlFor={"totalRounds"}>
                                     {"Number of rounds"}

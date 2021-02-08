@@ -20,8 +20,12 @@ const MenuContainer = ({onSelectMode}) => (
 
                 <p>{"Please, launch the game."}</p>
             </div>
-            <div>
-                <Button label={"Start a game"} onClick={() => onSelectMode()} />
+            <div className={"has-text-centered"}>
+                <Button
+                    label={"Start a game"}
+                    size={"large"}
+                    onClick={() => onSelectMode()}
+                />
             </div>
         </div>
     </section>
