@@ -11,11 +11,16 @@ html {
     height: 100%;
     background-size: cover;
     background-position: bottom center;
+    background-attachment: fixed;
 }
 
-body{
+body {
     width: 100%;
     height: 100%;
-    padding: 1px 0 0;
+    padding: 1px 0;
+}
+
+#app {
+    min-height: 100vh;
     backdrop-filter: blur(5px) sepia(.5);
 }
