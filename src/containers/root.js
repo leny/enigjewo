@@ -63,7 +63,12 @@ const RootContainer = () => {
         );
     }
 
-    return <MenuContainer onSelectMode={() => setMode(MODE_SETTINGS)} />;
+    return (
+        <MenuContainer
+            onPrepareGame={() => setMode(MODE_SETTINGS)}
+            onJoinGame={() => console.warn("Join Game!")}
+        />
+    );
 };
 
 export default RootContainer;
