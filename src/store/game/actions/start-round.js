@@ -14,7 +14,7 @@ import {getRandomPanorama} from "core/street-view";
 import {getGeoJSONDifficulty} from "core/geo-utils";
 import {loadGeoJSON} from "core/maps";
 
-export default map => async dispatch => {
+export default ({settings: {map}}) => async dispatch => {
     dispatch({type: ACTION_PREPARE_ROUND});
 
     if (map === "world") {
@@ -25,6 +25,7 @@ export default map => async dispatch => {
             bounds: null,
             target: position,
             difficulty: DEFAULT_DIFFICULTY,
+            now: Date.now(),
         });
         return;
     }
@@ -40,5 +41,6 @@ export default map => async dispatch => {
         bounds: {north, east, south, west},
         target: position,
         difficulty,
+        now: Date.now(),
     });
 };

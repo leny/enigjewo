@@ -19,9 +19,10 @@ import {loadGeoJSON} from "core/maps";
 
 export default (
     pos,
-    {map, difficulty, currentRound: {index}, targets},
+    {settings: {map, difficulty}, rounds, currentRound: {index: round}},
 ) => async dispatch => {
-    dispatch({type: ACTION_PREPARE_RESULTS});
+    const {target} = rounds[`rnd-${round}`];
+    dispatch({type: ACTION_PREPARE_RESULTS, now: Date.now()});
     let position = pos,
         geoJSON;
     if (!position) {
@@ -32,7 +33,7 @@ export default (
     dispatch({type: ACTION_COMPUTE_RESULTS, position});
     const distance = Math.floor(
         google.maps.geometry.spherical.computeDistanceBetween(
-            new google.maps.LatLng(targets[index - 1]),
+            new google.maps.LatLng(target),
             new google.maps.LatLng(position),
         ),
     );
