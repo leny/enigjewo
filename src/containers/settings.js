@@ -15,8 +15,8 @@ import {useFormik} from "formik";
 
 import {NBSP, DEFAULT_ROUND_DURATION, DEFAULT_ROUNDS} from "core/constants";
 import {maps, loadGeoJSON} from "core/maps";
+import {hashid} from "core/utils";
 import bbox from "@turf/bbox";
-
 import classnames from "classnames";
 
 import Button from "components/commons/button";
@@ -45,14 +45,19 @@ const SettingsContainer = ({onStartGame}) => {
         }) => {
             // TODO: multiplayer settings
             onStartGame({
-                code: `solo-${map}`,
+                code: hashid(),
                 title: title || `Solo Game: ${maps[map].label}`,
                 rounds,
                 duration,
                 map,
                 isMulti,
                 player: {
-                    key: "solo-player",
+                    key: hashid(
+                        name
+                            .split("")
+                            .map((s, i) => name.charCodeAt(i))
+                            .join(""),
+                    ),
                     name,
                     isOwner,
                 },
