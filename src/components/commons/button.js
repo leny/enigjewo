@@ -15,6 +15,7 @@ const Button = ({
     className,
     label,
     disabled,
+    size = "normal",
     variant = "info",
     type = "button",
     onClick,
@@ -22,7 +23,12 @@ const Button = ({
     <button
         type={type}
         disabled={disabled}
-        className={classnames("button", `is-${variant}`, className)}
+        className={classnames(
+            "button",
+            `is-${variant}`,
+            `is-${size}`,
+            className,
+        )}
         onClick={onClick}>
         {label}
     </button>
@@ -32,6 +38,7 @@ Button.propTypes = {
     type: PropTypes.string,
     label: PropTypes.string.isRequired,
     variant: PropTypes.string,
+    size: PropTypes.string,
     disabled: PropTypes.bool,
     onClick: PropTypes.func,
 };
