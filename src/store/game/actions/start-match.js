@@ -9,6 +9,8 @@
 import {ACTION_PREPARE_GAME, ACTION_SEND_SETTINGS} from "store/game/types";
 import startRound from "store/game/actions/start-round";
 
+import {db} from "core/firebase";
+
 export default settings => dispatch => {
     dispatch({type: ACTION_PREPARE_GAME, ...settings});
 
@@ -17,6 +19,36 @@ export default settings => dispatch => {
         return;
     }
 
-    // TODO: send settings to firebase
+    const {
+        code,
+        title,
+        map,
+        rounds,
+        duration,
+        player: {key, icon, name, isOwner},
+    } = settings;
+    const game = {
+        code,
+        title,
+        settings: {
+            map,
+            rounds,
+            duration,
+        },
+        rounds: {},
+        entries: {},
+        players: {
+            [key]: {
+                icon,
+                name,
+                isOwner,
+            },
+        },
+        started: false,
+        ended: false,
+    };
+
+    db.ref(`games/${code}`).set(game);
+    window.addEventListener("unload", () => db.ref(`games/${code}`).remove());
     dispatch({type: ACTION_SEND_SETTINGS});
 };
