@@ -113,10 +113,14 @@ const Lobby = () => {
                         )}>
                         <div className={classnames("mb-2")}>
                             <strong
-                                className={classnames("is-block", "is-size-2")}>
+                                className={classnames(
+                                    "is-block",
+                                    "is-size-2",
+                                    "is-family-code",
+                                )}>
                                 <Copiable text={code}>{code}</Copiable>
                             </strong>
-                            <span className={"is-size-5"}>
+                            <span className={("is-size-5", "is-family-code")}>
                                 <Copiable text={gameURL}>{gameURL}</Copiable>
                             </span>
                         </div>
