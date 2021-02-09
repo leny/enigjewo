@@ -68,7 +68,7 @@ const GameContainer = ({settings, onRestart}) => {
 
     if (state.step === STEP_SUMMARY) {
         return (
-            <GameStoreContextProvider value={state}>
+            <GameStoreContextProvider value={{...state, dispatch}}>
                 <Summary onRestart={handleRestart} />
             </GameStoreContextProvider>
         );
@@ -76,7 +76,7 @@ const GameContainer = ({settings, onRestart}) => {
 
     if (state.step === STEP_RESULTS) {
         return (
-            <GameStoreContextProvider value={state}>
+            <GameStoreContextProvider value={{...state, dispatch}}>
                 <Results onNext={handleNextRound} onEnd={handleEndMatch} />
             </GameStoreContextProvider>
         );
@@ -84,7 +84,7 @@ const GameContainer = ({settings, onRestart}) => {
 
     if (state.step === STEP_PLAY) {
         return (
-            <GameStoreContextProvider value={state}>
+            <GameStoreContextProvider value={{...state, dispatch}}>
                 <Play onFinishRound={handleFinishRound} />
             </GameStoreContextProvider>
         );
@@ -92,7 +92,7 @@ const GameContainer = ({settings, onRestart}) => {
 
     if (state.step === STEP_LOBBY) {
         return (
-            <GameStoreContextProvider value={state}>
+            <GameStoreContextProvider value={{...state, dispatch}}>
                 <Lobby />
             </GameStoreContextProvider>
         );
