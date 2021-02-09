@@ -13,6 +13,14 @@ export const MODE_GAME = "game";
 export const MODE_SETTINGS = "settings";
 
 export const GMAP_API_KEY = process.env.GMAP_API_KEY;
+export const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY;
+export const FIREBASE_AUTH_DOMAIN = process.env.FIREBASE_AUTH_DOMAIN;
+export const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID;
+export const FIREBASE_DATABASE_URL = process.env.FIREBASE_DATABASE_URL;
+export const FIREBASE_STORAGE_BUCKET = process.env.FIREBASE_STORAGE_BUCKET;
+export const FIREBASE_MESSAGE_SENDER_ID =
+    process.env.FIREBASE_MESSAGE_SENDER_ID;
+export const FIREBASE_APP_ID = process.env.FIREBASE_APP_ID;
 
 export const DEFAULT_ROUNDS = 5;
 export const DEFAULT_ROUND_DURATION = 300; // five minutes
