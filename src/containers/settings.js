@@ -44,7 +44,6 @@ const SettingsContainer = ({onStartGame}) => {
             name,
             isOwner,
         }) => {
-            // TODO: multiplayer settings
             onStartGame({
                 code: hashid(),
                 title: title || `Solo Game: ${maps[map].label}`,
@@ -54,10 +53,11 @@ const SettingsContainer = ({onStartGame}) => {
                 isMulti,
                 player: {
                     key: hashid(
-                        name
-                            .split("")
-                            .map((s, i) => name.charCodeAt(i))
-                            .join(""),
+                        Date.now() +
+                            name
+                                .split("")
+                                .map((s, i) => name.charCodeAt(i))
+                                .reduce((a, i) => a + i, 0),
                     ),
                     name,
                     isOwner,

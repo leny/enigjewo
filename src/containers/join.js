@@ -37,10 +37,11 @@ const JoinContainer = ({code, onJoinGame}) => {
                     join: true,
                     player: {
                         key: hashid(
-                            name
-                                .split("")
-                                .map((s, i) => name.charCodeAt(i))
-                                .join(""),
+                            Date.now() +
+                                name
+                                    .split("")
+                                    .map((s, i) => name.charCodeAt(i))
+                                    .reduce((a, i) => a + i, 0),
                         ),
                         name,
                         isOwner: false,
@@ -131,20 +132,21 @@ const JoinContainer = ({code, onJoinGame}) => {
                                 </div>
                             </div>
 
-                            {(!game || game.started || game.ended) && (
-                                <div
-                                    className={classnames(
-                                        "notification",
-                                        "is-danger",
-                                        "mt-2",
-                                    )}>
-                                    <strong>{"ERROR:"}</strong>
-                                    {NBSP}
-                                    {
-                                        "Invalid code. Please check the URL & retry."
-                                    }
-                                </div>
-                            )}
+                            {!checkingCode &&
+                                (!game || game.started || game.ended) && (
+                                    <div
+                                        className={classnames(
+                                            "notification",
+                                            "is-danger",
+                                            "mt-2",
+                                        )}>
+                                        <strong>{"ERROR:"}</strong>
+                                        {NBSP}
+                                        {
+                                            "Invalid code. Please check the URL & retry."
+                                        }
+                                    </div>
+                                )}
                         </div>
                         <footer className={"card-footer"}>
                             <Button

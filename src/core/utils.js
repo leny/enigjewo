@@ -29,4 +29,4 @@ const hashids = new Hashids(
     0,
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
 );
-export const hashid = (value = Date.now()) => hashids.encode(value);
+export const hashid = (value = Date.now()) => hashids.encode(+value);
