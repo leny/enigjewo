@@ -6,7 +6,7 @@
  * started at 08/02/2021
  */
 
-import {ACTION_PREPARE_GAME} from "store/game/types";
+import {ACTION_PREPARE_GAME, ACTION_SEND_SETTINGS} from "store/game/types";
 import startRound from "store/game/actions/start-round";
 
 export default settings => dispatch => {
@@ -14,5 +14,9 @@ export default settings => dispatch => {
 
     if (settings.isMulti === false) {
         dispatch(startRound({settings}));
+        return;
     }
+
+    // TODO: send settings to firebase
+    dispatch({type: ACTION_SEND_SETTINGS});
 };

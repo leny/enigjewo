@@ -9,10 +9,12 @@
 import {DEBUG} from "core/constants";
 import {
     STEP_LOADING,
+    STEP_LOBBY,
     STEP_PLAY,
     STEP_RESULTS,
     STEP_SUMMARY,
     ACTION_PREPARE_GAME,
+    ACTION_SEND_SETTINGS,
     ACTION_PREPARE_ROUND,
     ACTION_START_ROUND,
     ACTION_PREPARE_RESULTS,
@@ -109,6 +111,11 @@ export const reducer = (state, {type, ...payload}) => {
                 step: STEP_LOADING,
             };
         }
+        case ACTION_SEND_SETTINGS:
+            return {
+                ...state,
+                step: STEP_LOBBY,
+            };
         case ACTION_PREPARE_ROUND:
             return {
                 ...state,
