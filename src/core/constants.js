@@ -11,6 +11,7 @@ export const DEBUG = process.env.NODE_ENV !== "production";
 export const MODE_MENU = "menu";
 export const MODE_GAME = "game";
 export const MODE_SETTINGS = "settings";
+export const MODE_JOIN = "join";
 
 export const GMAP_API_KEY = process.env.GMAP_API_KEY;
 export const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY;

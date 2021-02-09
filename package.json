@@ -44,6 +44,7 @@
     "firebase": "^8.2.6",
     "formik": "^2.2.6",
     "hashids": "^2.2.8",
+    "qs": "^6.9.6",
     "random-position-in-polygon": "^1.0.3",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
