@@ -13,7 +13,12 @@ import PropTypes from "prop-types";
 import {useThunkedReducer} from "core/hooks/use-thunked-reducer";
 
 import {DEBUG} from "core/constants";
-import {STEP_PLAY, STEP_RESULTS, STEP_SUMMARY} from "store/game/types";
+import {
+    STEP_LOBBY,
+    STEP_PLAY,
+    STEP_RESULTS,
+    STEP_SUMMARY,
+} from "store/game/types";
 import {initState, reducer, GameStoreContext} from "store/game";
 import startMatch from "store/game/actions/start-match";
 import startRound from "store/game/actions/start-round";
@@ -23,6 +28,7 @@ import endMatch from "store/game/actions/end-match";
 import classnames from "classnames";
 
 import Loading from "components/commons/loading";
+import Lobby from "components/game/lobby";
 import Play from "components/game/play";
 import Results from "components/game/results";
 import Summary from "components/game/summary";
@@ -79,6 +85,14 @@ const GameContainer = ({settings, onRestart}) => {
         return (
             <GameStoreContextProvider value={state}>
                 <Play onFinishRound={handleFinishRound} />
+            </GameStoreContextProvider>
+        );
+    }
+
+    if (state.step === STEP_LOBBY) {
+        return (
+            <GameStoreContextProvider value={state}>
+                <Lobby />
             </GameStoreContextProvider>
         );
     }
