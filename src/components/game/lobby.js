@@ -17,6 +17,8 @@ import {maps, loadGeoJSON} from "core/maps";
 import {getMarkerIcon} from "core/icons";
 import bbox from "@turf/bbox";
 import classnames from "classnames";
+import {db} from "core/firebase";
+import receivingPlayerInfos from "store/game/actions/receiving-player-infos";
 
 import Button from "components/commons/button";
 import GMap from "components/commons/map";
@@ -25,6 +27,7 @@ import Copiable from "components/commons/copiable";
 const Lobby = () => {
     const gmap = useRef(null);
     const {
+        dispatch,
         code,
         title,
         settings: {map, rounds, duration},
@@ -33,6 +36,20 @@ const Lobby = () => {
     } = useContext(GameStoreContext);
     const player = players[key];
     const gameURL = `${location.protocol}//${location.host}${location.pathname}?c=${code}`;
+
+    useEffect(() => {
+        db.ref(`games/${code}/players`).on(
+            "child_added",
+            snapshot =>
+                snapshot.key !== key &&
+                dispatch(
+                    receivingPlayerInfos({
+                        [snapshot.key]: snapshot.val(),
+                    }),
+                ),
+        );
+        return () => db.ref(`games/${code}/players`).off("child_added");
+    }, []);
 
     useEffect(() => {
         if (!gmap.current) {

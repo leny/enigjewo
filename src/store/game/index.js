@@ -16,6 +16,7 @@ import {
     ACTION_PREPARE_GAME,
     ACTION_JOIN_GAME,
     ACTION_SEND_PLAYER_INFOS,
+    ACTION_RECEIVE_PLAYER_INFOS,
     ACTION_SEND_SETTINGS,
     ACTION_PREPARE_ROUND,
     ACTION_START_ROUND,
@@ -113,6 +114,11 @@ export const reducer = (state, {type, ...payload}) => {
                 step: STEP_LOADING,
             };
         }
+        case ACTION_SEND_SETTINGS:
+            return {
+                ...state,
+                step: STEP_LOBBY,
+            };
         case ACTION_JOIN_GAME:
             return {...state, step: STEP_LOADING};
         case ACTION_SEND_PLAYER_INFOS: {
@@ -128,11 +134,11 @@ export const reducer = (state, {type, ...payload}) => {
                 step: STEP_LOBBY,
             };
         }
-        case ACTION_SEND_SETTINGS:
-            return {
-                ...state,
-                step: STEP_LOBBY,
-            };
+        case ACTION_RECEIVE_PLAYER_INFOS: {
+            const {players} = payload;
+
+            return {...state, players: {...state.players, ...players}};
+        }
         case ACTION_PREPARE_ROUND:
             return {
                 ...state,
