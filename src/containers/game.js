@@ -21,6 +21,7 @@ import {
 } from "store/game/types";
 import {initState, reducer, GameStoreContext} from "store/game";
 import startMatch from "store/game/actions/start-match";
+import joinMatch from "store/game/actions/join-match";
 import startRound from "store/game/actions/start-round";
 import computeResults from "store/game/actions/compute-results";
 import endMatch from "store/game/actions/end-match";
@@ -54,7 +55,7 @@ const GameContainer = ({settings, onRestart}) => {
 
     // launch match
     useEffect(() => {
-        dispatch(startMatch(settings));
+        dispatch((settings.join ? joinMatch : startMatch)(settings));
     }, []);
 
     useEffect(() => {
