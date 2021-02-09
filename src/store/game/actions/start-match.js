@@ -7,7 +7,12 @@
  */
 
 import {ACTION_PREPARE_GAME} from "store/game/types";
+import startRound from "store/game/actions/start-round";
 
 export default settings => dispatch => {
     dispatch({type: ACTION_PREPARE_GAME, ...settings});
+
+    if (settings.isMulti === false) {
+        dispatch(startRound({settings}));
+    }
 };

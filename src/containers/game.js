@@ -49,7 +49,6 @@ const GameContainer = ({settings, onRestart}) => {
     // launch match
     useEffect(() => {
         dispatch(startMatch(settings));
-        dispatch(startRound({settings}));
     }, []);
 
     useEffect(() => {
