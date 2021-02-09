@@ -14,6 +14,7 @@ import {GameStoreContext} from "store/game";
 
 import {NBSP} from "core/constants";
 import {maps, loadGeoJSON} from "core/maps";
+import {getMarkerIcon} from "core/icons";
 import bbox from "@turf/bbox";
 import classnames from "classnames";
 
@@ -141,14 +142,13 @@ const Lobby = () => {
                         <div
                             className={classnames(
                                 "column",
-                                "is-half",
+                                "is-two-thirds",
                                 "p-0",
                                 "has-background-info-light",
                             )}>
                             <GMap className={"lobby__map"} ref={gmap} />
                         </div>
-                        <div
-                            className={classnames("column", "is-half", "pt-0")}>
+                        <div className={classnames("column", "pt-0")}>
                             <ul>
                                 <li>
                                     <strong>{"Rounds:"}</strong>
@@ -171,6 +171,26 @@ const Lobby = () => {
                                     {NBSP}
                                     {maps[map].label}
                                 </li>
+                            </ul>
+                            <hr />
+                            <h6
+                                className={classnames(
+                                    "has-text-centered",
+                                    "mb-3",
+                                )}>
+                                {"Players"}
+                            </h6>
+                            <ul>
+                                {Object.values(players).map(({name, icon}) => (
+                                    <li key={name}>
+                                        <img
+                                            className={"lobby__player-icon"}
+                                            src={getMarkerIcon(icon).url}
+                                        />
+                                        {NBSP}
+                                        {name}
+                                    </li>
+                                ))}
                             </ul>
                         </div>
                     </div>
