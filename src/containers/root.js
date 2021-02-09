@@ -13,11 +13,12 @@ import classnames from "classnames";
 import "styles/main.scss";
 import bcgImage from "url:../assets/bcg.jpg";
 
-import {MODE_MENU, MODE_GAME, MODE_SETTINGS} from "core/constants";
+import {MODE_MENU, MODE_GAME, MODE_SETTINGS, MODE_JOIN} from "core/constants";
 
 import MenuContainer from "containers/menu";
 import GameContainer from "containers/game";
 import SettingsContainer from "containers/settings";
+import JoinContainer from "containers/join";
 
 import Loading from "components/commons/loading";
 
@@ -25,6 +26,7 @@ const RootContainer = () => {
     const [loading] = useGMapAPILoader();
     const [gameSettings, setGameSettings] = useState(null);
     const [mode, setMode] = useState(MODE_MENU);
+    const [code, setCode] = useState(null);
 
     const handleStartGame = useCallback(
         options => {
@@ -33,6 +35,11 @@ const RootContainer = () => {
         },
         [setGameSettings, setMode],
     );
+
+    const handleJoinGame = useCallback(options => {
+        setGameSettings(options);
+        setMode(MODE_GAME);
+    }, []);
 
     useEffect(() => {
         document.querySelector(
@@ -48,6 +55,10 @@ const RootContainer = () => {
                 </div>
             </section>
         );
+    }
+
+    if (mode === MODE_JOIN) {
+        return <JoinContainer code={code} onJoinGame={handleJoinGame} />;
     }
 
     if (mode === MODE_SETTINGS) {
@@ -66,7 +77,10 @@ const RootContainer = () => {
     return (
         <MenuContainer
             onPrepareGame={() => setMode(MODE_SETTINGS)}
-            onJoinGame={() => console.warn("Join Game!")}
+            onJoinGame={gameCode => {
+                setMode(MODE_JOIN);
+                setCode(gameCode);
+            }}
         />
     );
 };
