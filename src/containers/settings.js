@@ -60,6 +60,7 @@ const SettingsContainer = ({onStartGame}) => {
                     ),
                     name,
                     isOwner,
+                    icon: "white", // TODO
                 },
             });
         },

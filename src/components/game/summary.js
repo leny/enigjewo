@@ -42,6 +42,7 @@ const Summary = ({onRestart}) => {
         Array.from(new Array(total).keys(), i => i + 1).forEach(i => {
             const {target} = rounds[`rnd-${i}`];
             const {position, distance, score} = entries[`rnd-${i}-${player}`];
+            const {icon} = players[player];
 
             const polyLine = new google.maps.Polyline({
                 path: [target, position],
@@ -101,7 +102,7 @@ const Summary = ({onRestart}) => {
             const positionMarker = new google.maps.Marker({
                 position,
                 map: gmap.current,
-                icon: getMarkerIcon("player1"),
+                icon: getMarkerIcon(icon),
             });
             positionMarker.addListener("click", () =>
                 positionInfoWindow.open(gmap.current, positionMarker),

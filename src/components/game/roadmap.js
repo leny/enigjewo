@@ -46,7 +46,10 @@ const Roadmap = ({
 }) => {
     const {
         settings: {bounds},
+        players,
+        player: key,
     } = useContext(GameStoreContext);
+    const {icon} = players[key];
     const [center] = useState(startPosition);
     const [showNotes, setShowNotes] = useState(null);
     const [notes, setNotes] = useState("");
@@ -74,7 +77,7 @@ const Roadmap = ({
                     new google.maps.Marker({
                         position: latLng,
                         map,
-                        icon: getMarkerIcon("player1"),
+                        icon: getMarkerIcon(icon),
                     }),
                 );
                 return;

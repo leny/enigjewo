@@ -45,6 +45,7 @@ const Results = ({onNext, onEnd}) => {
             return;
         }
 
+        const {icon} = players[player];
         const polyLine = new google.maps.Polyline({
             path: [target, position],
             strokeColor: "hsl(141, 53%, 53%)",
@@ -99,7 +100,7 @@ const Results = ({onNext, onEnd}) => {
         const positionMarker = new google.maps.Marker({
             position,
             map: gmap.current,
-            icon: getMarkerIcon("player1"),
+            icon: getMarkerIcon(icon),
         });
         positionMarker.addListener("click", () =>
             positionInfoWindow.open(gmap.current, positionMarker),
@@ -114,7 +115,7 @@ const Results = ({onNext, onEnd}) => {
             bottom: 30,
             left: 30,
         });
-    }, [gmap.current, position, target, score, distance]);
+    }, [gmap.current, position, target, score, distance, players, player]);
 
     return (
         <div className={classnames("columns", "is-centered")}>

@@ -42,6 +42,7 @@ export const initState = () => ({
             name String
             isOwner (multi) Bool: is owner of the game - will run actions to initiate rounds
             score Number: computed from entries
+            icon String
         }*/
     },
     rounds: {
@@ -83,7 +84,7 @@ export const reducer = (state, {type, ...payload}) => {
                 duration,
                 map,
                 isMulti,
-                player: {key, name, isOwner},
+                player: {key, name, isOwner, icon},
             } = payload;
 
             return {
@@ -102,6 +103,7 @@ export const reducer = (state, {type, ...payload}) => {
                         name,
                         isOwner,
                         score: 0,
+                        icon,
                     },
                 },
                 step: STEP_LOADING,
@@ -187,7 +189,7 @@ export const reducer = (state, {type, ...payload}) => {
                 players: {
                     ...state.players,
                     [state.player]: {
-                        ...state.player,
+                        ...state.players[state.player],
                         score: Array.from(
                             new Array(state.currentRound.index - 1).keys(),
                             i => i + 1,

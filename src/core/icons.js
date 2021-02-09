@@ -9,11 +9,11 @@
 /* global google */
 
 import CorrectPositionIcon from "url:../assets/icons/correct-position.png";
-import Player1Icon from "url:../assets/icons/player-1.png";
+import WhitePlayerIcon from "url:../assets/icons/player-white.png";
 
 const icons = {
     target: CorrectPositionIcon,
-    player1: Player1Icon,
+    white: WhitePlayerIcon,
 };
 
 export const getMarkerIcon = icon => ({
