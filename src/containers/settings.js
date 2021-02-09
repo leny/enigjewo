@@ -15,6 +15,7 @@ import {useFormik} from "formik";
 
 import {NBSP, DEFAULT_ROUND_DURATION, DEFAULT_ROUNDS} from "core/constants";
 import {maps, loadGeoJSON} from "core/maps";
+import {getRandomPlayerColor} from "core/icons";
 import {hashid} from "core/utils";
 import bbox from "@turf/bbox";
 import classnames from "classnames";
@@ -60,7 +61,7 @@ const SettingsContainer = ({onStartGame}) => {
                     ),
                     name,
                     isOwner,
-                    icon: "white", // TODO
+                    icon: isMulti ? getRandomPlayerColor() : "white",
                 },
             });
         },
