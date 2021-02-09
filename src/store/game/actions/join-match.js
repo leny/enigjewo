@@ -6,11 +6,22 @@
  * started at 09/02/2021
  */
 
-import {ACTION_JOIN_GAME} from "store/game/types";
-// import {db} from "core/firebase";
+import {ACTION_JOIN_GAME, ACTION_SEND_PLAYER_INFOS} from "store/game/types";
+import {db} from "core/firebase";
 
-export default settings => dispatch => {
+export default settings => async dispatch => {
     dispatch({type: ACTION_JOIN_GAME, ...settings});
 
-    console.log("join(settings):", settings);
+    const {
+        code,
+        player: {key, icon, name, isOwner},
+    } = settings;
+
+    await db.ref(`games/${code}/players`).update({
+        [key]: {icon, name, isOwner},
+    });
+
+    const game = (await db.ref(`games/${code}`).get()).val();
+
+    dispatch({type: ACTION_SEND_PLAYER_INFOS, ...game, player: key});
 };

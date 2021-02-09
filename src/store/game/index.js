@@ -15,6 +15,7 @@ import {
     STEP_SUMMARY,
     ACTION_PREPARE_GAME,
     ACTION_JOIN_GAME,
+    ACTION_SEND_PLAYER_INFOS,
     ACTION_SEND_SETTINGS,
     ACTION_PREPARE_ROUND,
     ACTION_START_ROUND,
@@ -114,6 +115,19 @@ export const reducer = (state, {type, ...payload}) => {
         }
         case ACTION_JOIN_GAME:
             return {...state, step: STEP_LOADING};
+        case ACTION_SEND_PLAYER_INFOS: {
+            const {code, title, settings, players, player} = payload;
+
+            return {
+                ...state,
+                code,
+                title,
+                settings: {...settings, isMulti: true},
+                players,
+                player,
+                step: STEP_LOBBY,
+            };
+        }
         case ACTION_SEND_SETTINGS:
             return {
                 ...state,
