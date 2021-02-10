@@ -6,6 +6,8 @@
  * started at 09/02/2021
  */
 
+import PropTypes from "prop-types";
+
 import "styles/lobby.scss";
 
 import {useContext, useEffect, useRef} from "react";
@@ -24,7 +26,7 @@ import Button from "components/commons/button";
 import GMap from "components/commons/map";
 import Copiable from "components/commons/copiable";
 
-const Lobby = () => {
+const Lobby = ({onStartMatch}) => {
     const gmap = useRef(null);
     const {
         dispatch,
@@ -95,11 +97,12 @@ const Lobby = () => {
 
         $footer = (
             <Button
-                type={"submit"}
+                type={"button"}
                 disabled={playersCount < 2}
                 label={playersCount < 2 ? "Waiting for players…" : "Start Game"}
                 variant={"link"}
                 className={classnames("card-footer-item", "no-top-radius")}
+                onClick={onStartMatch}
             />
         );
     }
@@ -234,6 +237,8 @@ const Lobby = () => {
     );
 };
 
-Lobby.propTypes = {};
+Lobby.propTypes = {
+    onStartMatch: PropTypes.func.isRequired,
+};
 
 export default Lobby;

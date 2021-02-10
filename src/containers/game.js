@@ -93,7 +93,7 @@ const GameContainer = ({settings, onRestart}) => {
     if (state.step === STEP_LOBBY) {
         return (
             <GameStoreContextProvider value={{...state, dispatch}}>
-                <Lobby />
+                <Lobby onStartMatch={handleNextRound} />
             </GameStoreContextProvider>
         );
     }
