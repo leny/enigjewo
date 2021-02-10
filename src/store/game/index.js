@@ -19,6 +19,7 @@ import {
     ACTION_RECEIVE_PLAYER_INFOS,
     ACTION_SEND_SETTINGS,
     ACTION_PREPARE_ROUND,
+    ACTION_SEND_ROUND_PARAMS,
     ACTION_START_ROUND,
     ACTION_PREPARE_RESULTS,
     ACTION_COMPUTE_RESULTS,
@@ -152,6 +153,11 @@ reducersMap.set(ACTION_PREPARE_ROUND, state => ({
     currentRound: {
         index: state.currentRound.index + 1,
     },
+    step: STEP_LOADING,
+}));
+
+reducersMap.set(ACTION_SEND_ROUND_PARAMS, state => ({
+    ...state,
     step: STEP_LOADING,
 }));
 
