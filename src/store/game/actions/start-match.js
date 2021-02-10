@@ -9,7 +9,7 @@
 import {ACTION_PREPARE_GAME, ACTION_SEND_SETTINGS} from "store/game/types";
 import startRound from "store/game/actions/start-round";
 
-import {db} from "core/firebase";
+import {db, cleanGame} from "core/firebase";
 
 export default settings => dispatch => {
     dispatch({type: ACTION_PREPARE_GAME, ...settings});
@@ -49,6 +49,6 @@ export default settings => dispatch => {
     };
 
     db.ref(`games/${code}`).set(game);
-    window.addEventListener("unload", () => db.ref(`games/${code}`).remove());
+    window.addEventListener("unload", cleanGame(code));
     dispatch({type: ACTION_SEND_SETTINGS});
 };

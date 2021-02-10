@@ -30,3 +30,9 @@ firebase.initializeApp({
 });
 
 export const db = firebase.database();
+
+export const cleanGame = code => async () => {
+    const game = (await db.ref(`games/${code}`).once("value")).val();
+
+    !game.started && db.ref(`games/${code}`).remove();
+};

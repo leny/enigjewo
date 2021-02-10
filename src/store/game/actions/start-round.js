@@ -18,7 +18,7 @@ import {getRandomPanorama} from "core/street-view";
 import {getGeoJSONDifficulty} from "core/geo-utils";
 import {loadGeoJSON} from "core/maps";
 
-import {db} from "core/firebase";
+import {db, cleanGame} from "core/firebase";
 
 export default state => async dispatch => {
     const {
@@ -67,4 +67,5 @@ export default state => async dispatch => {
     });
     await db.ref(`games/${code}/currentRound`).set({index});
     dispatch({type: ACTION_SEND_ROUND_PARAMS});
+    window.removeEventListener("unload", cleanGame(code));
 };
