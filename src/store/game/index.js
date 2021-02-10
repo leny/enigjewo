@@ -23,6 +23,7 @@ import {
     ACTION_SEND_PLAYER_ROUND_START_TIME,
     ACTION_PREPARE_RESULTS,
     ACTION_COMPUTE_RESULTS,
+    ACTION_RECEIVE_PLAYER_RESULTS,
     ACTION_SHOW_RESULTS,
     ACTION_SHOW_SUMMARY,
 } from "./types";
@@ -252,7 +253,9 @@ reducersMap.set(ACTION_SHOW_RESULTS, (state, {distance, score}) => {
                     i => i + 1,
                 ).reduce(
                     (acc, ind) =>
-                        acc + state.entries[`rnd-${ind}-${state.player}`].score,
+                        acc +
+                        (state.entries[`rnd-${ind}-${state.player}`].score ||
+                            0),
                     score,
                 ),
             },
@@ -269,6 +272,27 @@ reducersMap.set(ACTION_SHOW_RESULTS, (state, {distance, score}) => {
         ended: state.currentRound.index === state.settings.rounds,
     };
 });
+
+reducersMap.set(ACTION_RECEIVE_PLAYER_RESULTS, (state, {entries}) => ({
+    ...state,
+    entries,
+    players: Object.fromEntries(
+        Object.entries(state.players).map(([key, player]) => [
+            key,
+            {
+                ...player,
+                score: Array.from(
+                    new Array(state.currentRound.index).keys(),
+                    i => i + 1,
+                ).reduce(
+                    (acc, ind) =>
+                        acc + (entries[`rnd-${ind}-${key}`].score || 0),
+                    0,
+                ),
+            },
+        ]),
+    ),
+}));
 
 reducersMap.set(ACTION_SHOW_SUMMARY, state => ({
     ...state,
