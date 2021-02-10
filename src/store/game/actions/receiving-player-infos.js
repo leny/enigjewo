@@ -8,6 +8,6 @@
 
 import {ACTION_RECEIVE_PLAYER_INFOS} from "store/game/types";
 
-export default players => dispatch => {
-    dispatch({type: ACTION_RECEIVE_PLAYER_INFOS, players});
+export default payload => dispatch => {
+    dispatch({type: ACTION_RECEIVE_PLAYER_INFOS, ...payload});
 };

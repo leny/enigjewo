@@ -44,7 +44,8 @@ const Lobby = () => {
                 snapshot.key !== key &&
                 dispatch(
                     receivingPlayerInfos({
-                        [snapshot.key]: snapshot.val(),
+                        key: snapshot.key,
+                        player: snapshot.val(),
                     }),
                 ),
         );
