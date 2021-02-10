@@ -77,176 +77,191 @@ export const initState = () => ({
     ended: false,
 });
 
+const reducersMap = new Map();
+
+reducersMap.set(
+    ACTION_PREPARE_GAME,
+    (
+        state,
+        {
+            code,
+            title,
+            rounds,
+            duration,
+            map,
+            isMulti,
+            player: {key, name, isOwner, icon},
+        },
+    ) => ({
+        ...state,
+        code,
+        title,
+        settings: {rounds, duration, isMulti, map},
+        player: key,
+        players: {
+            [key]: {
+                name,
+                isOwner,
+                score: 0,
+                icon,
+            },
+        },
+        step: STEP_LOADING,
+    }),
+);
+
+reducersMap.set(ACTION_SEND_SETTINGS, state => ({
+    ...state,
+    step: STEP_LOBBY,
+}));
+
+reducersMap.set(ACTION_JOIN_GAME, state => ({...state, step: STEP_LOADING}));
+
+reducersMap.set(
+    ACTION_SEND_PLAYER_INFOS,
+    (state, {code, title, settings, players, player}) => ({
+        ...state,
+        code,
+        title,
+        settings: {...settings, isMulti: true},
+        players: {
+            ...players,
+            [player]: {
+                ...players[player],
+                score: 0,
+            },
+        },
+        player,
+        step: STEP_LOBBY,
+    }),
+);
+
+reducersMap.set(ACTION_RECEIVE_PLAYER_INFOS, (state, {key, player}) => ({
+    ...state,
+    players: {
+        ...state.players,
+        [key]: {
+            ...player,
+            score: 0,
+        },
+    },
+}));
+
+reducersMap.set(ACTION_PREPARE_ROUND, state => ({
+    ...state,
+    currentRound: {
+        index: state.currentRound.index + 1,
+    },
+    step: STEP_LOADING,
+}));
+
+reducersMap.set(
+    ACTION_START_ROUND,
+    (state, {panorama, target, difficulty, bounds, now}) => {
+        const key = `rnd-${state.currentRound.index}-${state.player}`;
+
+        return {
+            ...state,
+            settings: {
+                ...state.settings,
+                difficulty,
+                bounds,
+            },
+            rounds: {
+                ...state.rounds,
+                [`rnd-${state.currentRound.index}`]: {
+                    panorama,
+                    target,
+                },
+            },
+            entries: {
+                ...state.entries,
+                [key]: {
+                    startedAt: now,
+                },
+            },
+            currentRound: {
+                ...state.currentRound,
+                startedAt: now,
+            },
+            step: STEP_PLAY,
+        };
+    },
+);
+
+reducersMap.set(ACTION_PREPARE_RESULTS, (state, {now}) => {
+    const key = `rnd-${state.currentRound.index}-${state.player}`;
+
+    return {
+        ...state,
+        entries: {
+            ...state.entries,
+            [key]: {
+                ...state.entries[key],
+                endedAt: now,
+            },
+        },
+        step: STEP_LOADING,
+    };
+});
+
+reducersMap.set(ACTION_COMPUTE_RESULTS, (state, {position}) => {
+    const key = `rnd-${state.currentRound.index}-${state.player}`;
+
+    return {
+        ...state,
+        entries: {
+            ...state.entries,
+            [key]: {
+                ...state.entries[key],
+                position,
+            },
+        },
+        step: STEP_LOADING,
+    };
+});
+
+reducersMap.set(ACTION_SHOW_RESULTS, (state, {distance, score}) => {
+    const key = `rnd-${state.currentRound.index}-${state.player}`;
+
+    return {
+        ...state,
+        players: {
+            ...state.players,
+            [state.player]: {
+                ...state.players[state.player],
+                score: Array.from(
+                    new Array(state.currentRound.index - 1).keys(),
+                    i => i + 1,
+                ).reduce(
+                    (acc, ind) =>
+                        acc + state.entries[`rnd-${ind}-${state.player}`].score,
+                    score,
+                ),
+            },
+        },
+        entries: {
+            ...state.entries,
+            [key]: {
+                ...state.entries[key],
+                distance,
+                score,
+            },
+        },
+        step: STEP_RESULTS,
+        ended: state.currentRound.index === state.settings.rounds,
+    };
+});
+
+reducersMap.set(ACTION_SHOW_SUMMARY, state => ({
+    ...state,
+    step: STEP_SUMMARY,
+}));
+
 export const reducer = (state, {type, ...payload}) => {
     DEBUG && console.log("DEBUG:reducer:", {type, payload});
 
-    switch (type) {
-        case ACTION_PREPARE_GAME: {
-            const {
-                code,
-                title,
-                rounds,
-                duration,
-                map,
-                isMulti,
-                player: {key, name, isOwner, icon},
-            } = payload;
-
-            return {
-                ...state,
-                code,
-                title,
-                settings: {
-                    rounds,
-                    duration,
-                    isMulti,
-                    map,
-                },
-                player: key,
-                players: {
-                    [key]: {
-                        name,
-                        isOwner,
-                        score: 0,
-                        icon,
-                    },
-                },
-                step: STEP_LOADING,
-            };
-        }
-        case ACTION_SEND_SETTINGS:
-            return {
-                ...state,
-                step: STEP_LOBBY,
-            };
-        case ACTION_JOIN_GAME:
-            return {...state, step: STEP_LOADING};
-        case ACTION_SEND_PLAYER_INFOS: {
-            const {code, title, settings, players, player} = payload;
-
-            return {
-                ...state,
-                code,
-                title,
-                settings: {...settings, isMulti: true},
-                players,
-                player,
-                step: STEP_LOBBY,
-            };
-        }
-        case ACTION_RECEIVE_PLAYER_INFOS: {
-            const {players} = payload;
-
-            return {...state, players: {...state.players, ...players}};
-        }
-        case ACTION_PREPARE_ROUND:
-            return {
-                ...state,
-                currentRound: {
-                    index: state.currentRound.index + 1,
-                },
-                step: STEP_LOADING,
-            };
-        case ACTION_START_ROUND: {
-            const {panorama, target, difficulty, bounds, now} = payload;
-            const key = `rnd-${state.currentRound.index}-${state.player}`;
-
-            return {
-                ...state,
-                settings: {
-                    ...state.settings,
-                    difficulty,
-                    bounds,
-                },
-                rounds: {
-                    ...state.rounds,
-                    [`rnd-${state.currentRound.index}`]: {
-                        panorama,
-                        target,
-                    },
-                },
-                entries: {
-                    ...state.entries,
-                    [key]: {
-                        startedAt: now,
-                    },
-                },
-                currentRound: {
-                    ...state.currentRound,
-                    startedAt: now,
-                },
-                step: STEP_PLAY,
-            };
-        }
-        case ACTION_PREPARE_RESULTS: {
-            const {now} = payload;
-            const key = `rnd-${state.currentRound.index}-${state.player}`;
-
-            return {
-                ...state,
-                entries: {
-                    ...state.entries,
-                    [key]: {
-                        ...state.entries[key],
-                        endedAt: now,
-                    },
-                },
-                step: STEP_LOADING,
-            };
-        }
-        case ACTION_COMPUTE_RESULTS: {
-            const {position} = payload;
-            const key = `rnd-${state.currentRound.index}-${state.player}`;
-
-            return {
-                ...state,
-                entries: {
-                    ...state.entries,
-                    [key]: {
-                        ...state.entries[key],
-                        position,
-                    },
-                },
-                step: STEP_LOADING,
-            };
-        }
-        case ACTION_SHOW_RESULTS: {
-            const {distance, score} = payload;
-            const key = `rnd-${state.currentRound.index}-${state.player}`;
-
-            return {
-                ...state,
-                players: {
-                    ...state.players,
-                    [state.player]: {
-                        ...state.players[state.player],
-                        score: Array.from(
-                            new Array(state.currentRound.index - 1).keys(),
-                            i => i + 1,
-                        ).reduce(
-                            (acc, ind) =>
-                                acc +
-                                state.entries[`rnd-${ind}-${state.player}`]
-                                    .score,
-                            score,
-                        ),
-                    },
-                },
-                entries: {
-                    ...state.entries,
-                    [key]: {
-                        ...state.entries[key],
-                        distance,
-                        score,
-                    },
-                },
-                step: STEP_RESULTS,
-                ended: state.currentRound.index === state.settings.rounds,
-            };
-        }
-        case ACTION_SHOW_SUMMARY:
-            return {...state, step: STEP_SUMMARY};
-        default:
-            return state;
-    }
+    return reducersMap.has(type)
+        ? reducersMap.get(type)(state, payload)
+        : state;
 };
