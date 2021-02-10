@@ -26,6 +26,7 @@ import {
     ACTION_RECEIVE_PLAYER_RESULTS,
     ACTION_SHOW_RESULTS,
     ACTION_SHOW_SUMMARY,
+    ACTION_SEND_ENDED_GAME,
 } from "./types";
 
 import {createContext} from "react";
@@ -297,6 +298,11 @@ reducersMap.set(ACTION_RECEIVE_PLAYER_RESULTS, (state, {entries}) => ({
 reducersMap.set(ACTION_SHOW_SUMMARY, state => ({
     ...state,
     step: STEP_SUMMARY,
+}));
+
+reducersMap.set(ACTION_SEND_ENDED_GAME, state => ({
+    ...state,
+    ended: true,
 }));
 
 export const reducer = (state, {type, ...payload}) => {
