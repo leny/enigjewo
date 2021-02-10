@@ -84,7 +84,9 @@ const Lobby = () => {
                 "card-footer-item",
                 "no-top-radius",
             )}>
-            {"Waiting for game start…"}
+            {`Waiting for ${
+                Object.values(players).find(({isOwner}) => isOwner).name
+            } to start the game…`}
         </span>
     );
 
@@ -124,35 +126,40 @@ const Lobby = () => {
                             {title}
                         </span>
                     </header>
-                    <div
-                        className={classnames(
-                            "card-content",
-                            "has-text-centered",
-                        )}>
-                        <div className={classnames("mb-2")}>
-                            <strong
-                                className={classnames(
-                                    "is-block",
-                                    "is-size-2",
-                                    "is-family-code",
-                                )}>
-                                <Copiable text={code}>{code}</Copiable>
-                            </strong>
-                            <span className={("is-size-5", "is-family-code")}>
-                                <Copiable text={gameURL}>{gameURL}</Copiable>
-                            </span>
-                        </div>
+                    {player.isOwner && (
                         <div
                             className={classnames(
-                                "notification",
-                                "is-info",
-                                "is-light",
+                                "card-content",
+                                "has-text-centered",
                             )}>
-                            {
-                                "Send the code or the URL to the players & wait for them to join the game."
-                            }
+                            <div className={classnames("mb-2")}>
+                                <strong
+                                    className={classnames(
+                                        "is-block",
+                                        "is-size-2",
+                                        "is-family-code",
+                                    )}>
+                                    <Copiable text={code}>{code}</Copiable>
+                                </strong>
+                                <span
+                                    className={("is-size-5", "is-family-code")}>
+                                    <Copiable text={gameURL}>
+                                        {gameURL}
+                                    </Copiable>
+                                </span>
+                            </div>
+                            <div
+                                className={classnames(
+                                    "notification",
+                                    "is-info",
+                                    "is-light",
+                                )}>
+                                {
+                                    "Send the code or the URL to the players & wait for them to join the game."
+                                }
+                            </div>
                         </div>
-                    </div>
+                    )}
                     <div
                         className={classnames(
                             "card-image",
@@ -170,7 +177,11 @@ const Lobby = () => {
                             )}>
                             <GMap className={"lobby__map"} ref={gmap} />
                         </div>
-                        <div className={classnames("column", "pt-0")}>
+                        <div
+                            className={classnames(
+                                "column",
+                                `pt-${player.isOwner ? "0" : "2"}`,
+                            )}>
                             <ul>
                                 <li>
                                     <strong>{"Rounds:"}</strong>
