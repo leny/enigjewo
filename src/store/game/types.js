@@ -40,12 +40,6 @@ export const ACTION_WAIT_FOR_PLAYERS_RESULTS =
     "store.game.actions.action_wait_for_players_results";
 export const ACTION_RECEIVE_PLAYER_RESULTS =
     "store.game.actions.action_receive_player_results";
-export const ACTION_WAIT_FOR_PLAYERS_READY_STATE =
-    "store.game.actions.action_wait_for_players_ready_state";
-export const ACTION_SEND_READY_STATE =
-    "store.game.actions.action_send_ready_state";
-export const ACTION_RECEIVE_PLAYER_READY_STATE =
-    "store.game.actions.action_receive_player_ready_state";
 export const ACTION_SEND_ENDED_GAME =
     "store.game.actions.action_send_ended_game";
 export const ACTION_SHOW_SUMMARY = "store.game.actions.action_show_summary";

@@ -14,15 +14,23 @@ import {
     ACTION_SHOW_RESULTS,
 } from "store/game/types";
 
+import {db} from "core/firebase";
 import {getRandomLatLng} from "core/geo-utils";
 import {loadGeoJSON} from "core/maps";
 
 export default (
     pos,
-    {settings: {map, difficulty}, rounds, currentRound: {index: round}},
+    {
+        code,
+        settings: {map, difficulty, isMulti},
+        rounds,
+        currentRound: {index: round},
+        player,
+    },
 ) => async dispatch => {
+    const now = Date.now();
     const {target} = rounds[`rnd-${round}`];
-    dispatch({type: ACTION_PREPARE_RESULTS, now: Date.now()});
+    dispatch({type: ACTION_PREPARE_RESULTS, now});
     let position = pos,
         geoJSON;
     if (!position) {
@@ -50,6 +58,15 @@ export default (
                 Math.round(5000 * Math.exp(-(distance / 1000 / difficulty))),
             ),
         );
+    }
+
+    if (isMulti) {
+        await db.ref(`games/${code}/entries/rnd-${round}-${player}`).update({
+            position,
+            distance,
+            score,
+            endedAt: now,
+        });
     }
 
     dispatch({
