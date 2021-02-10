@@ -10,7 +10,7 @@ import PropTypes from "prop-types";
 
 import "styles/lobby.scss";
 
-import {useContext, useEffect, useRef} from "react";
+import {useCallback, useContext, useEffect, useRef, useState} from "react";
 
 import {GameStoreContext} from "store/game";
 
@@ -21,6 +21,7 @@ import bbox from "@turf/bbox";
 import classnames from "classnames";
 import {db} from "core/firebase";
 import receivingPlayerInfos from "store/game/actions/receiving-player-infos";
+import receivingRoundParams from "store/game/actions/receiving-round-params";
 
 import Button from "components/commons/button";
 import GMap from "components/commons/map";
@@ -28,6 +29,7 @@ import Copiable from "components/commons/copiable";
 
 const Lobby = ({onStartMatch}) => {
     const gmap = useRef(null);
+    const [preparing, setPreparing] = useState(false);
     const {
         dispatch,
         code,
@@ -38,6 +40,11 @@ const Lobby = ({onStartMatch}) => {
     } = useContext(GameStoreContext);
     const player = players[key];
     const gameURL = `${location.protocol}//${location.host}${location.pathname}?c=${code}`;
+
+    const handleStartMatch = useCallback(() => {
+        setPreparing(true);
+        onStartMatch();
+    }, [setPreparing, onStartMatch]);
 
     useEffect(() => {
         db.ref(`games/${code}/players`).on(
@@ -51,7 +58,12 @@ const Lobby = ({onStartMatch}) => {
                     }),
                 ),
         );
-        return () => db.ref(`games/${code}/players`).off("child_added");
+        db.ref(`games/${code}/currentRound`).once("child_added", () =>
+            dispatch(receivingRoundParams(code)),
+        );
+        return () => {
+            db.ref(`games/${code}/players`).off("child_added");
+        };
     }, []);
 
     useEffect(() => {
@@ -98,11 +110,16 @@ const Lobby = ({onStartMatch}) => {
         $footer = (
             <Button
                 type={"button"}
-                disabled={playersCount < 2}
-                label={playersCount < 2 ? "Waiting for players…" : "Start Game"}
+                disabled={preparing || playersCount < 2}
+                loading={preparing}
+                label={
+                    preparing || playersCount < 2
+                        ? "Waiting for players…"
+                        : "Start Game"
+                }
                 variant={"link"}
                 className={classnames("card-footer-item", "no-top-radius")}
-                onClick={onStartMatch}
+                onClick={handleStartMatch}
             />
         );
     }

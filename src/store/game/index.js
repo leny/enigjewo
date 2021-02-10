@@ -158,7 +158,9 @@ reducersMap.set(ACTION_PREPARE_ROUND, state => ({
 
 reducersMap.set(ACTION_SEND_ROUND_PARAMS, state => ({
     ...state,
-    step: STEP_LOADING,
+    currentRound: {
+        index: state.currentRound.index + 1,
+    },
 }));
 
 reducersMap.set(

@@ -27,7 +27,7 @@ export default state => async dispatch => {
         currentRound: {index},
     } = state;
 
-    dispatch({type: ACTION_PREPARE_ROUND});
+    !isMulti && dispatch({type: ACTION_PREPARE_ROUND});
 
     const payload = {
         type: ACTION_START_ROUND,
@@ -61,11 +61,11 @@ export default state => async dispatch => {
         bounds: payload.bounds,
         difficulty: payload.difficulty,
     });
-    await db.ref(`games/${code}/rounds/rnd-${index}`).set({
+    await db.ref(`games/${code}/rounds/rnd-${index + 1}`).set({
         panorama: payload.panorama,
         target: payload.target,
     });
-    await db.ref(`games/${code}/currentRound`).set({index});
+    await db.ref(`games/${code}/currentRound`).set({index: index + 1});
     dispatch({type: ACTION_SEND_ROUND_PARAMS});
     window.removeEventListener("unload", cleanGame(code));
 };
