@@ -24,7 +24,7 @@ export default state => async dispatch => {
     const {
         code,
         settings: {map, isMulti},
-        currentRound: {index},
+        currentRound: {index = 0} = {},
     } = state;
 
     !isMulti && dispatch({type: ACTION_PREPARE_ROUND});
@@ -53,7 +53,7 @@ export default state => async dispatch => {
     }
 
     if (!isMulti) {
-        dispatch({type: ACTION_START_ROUND, ...payload});
+        dispatch({type: ACTION_START_ROUND, ...payload, index: index + 1});
         return;
     }
 
@@ -66,6 +66,7 @@ export default state => async dispatch => {
         target: payload.target,
     });
     await db.ref(`games/${code}/currentRound`).set({index: index + 1});
+    await db.ref(`games/${code}`).update({started: true});
     dispatch({type: ACTION_SEND_ROUND_PARAMS});
     window.removeEventListener("unload", cleanGame(code));
 };

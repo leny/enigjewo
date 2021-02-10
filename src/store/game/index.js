@@ -19,8 +19,8 @@ import {
     ACTION_RECEIVE_PLAYER_INFOS,
     ACTION_SEND_SETTINGS,
     ACTION_PREPARE_ROUND,
-    ACTION_SEND_ROUND_PARAMS,
     ACTION_START_ROUND,
+    ACTION_SEND_PLAYER_ROUND_START_TIME,
     ACTION_PREPARE_RESULTS,
     ACTION_COMPUTE_RESULTS,
     ACTION_SHOW_RESULTS,
@@ -156,17 +156,10 @@ reducersMap.set(ACTION_PREPARE_ROUND, state => ({
     step: STEP_LOADING,
 }));
 
-reducersMap.set(ACTION_SEND_ROUND_PARAMS, state => ({
-    ...state,
-    currentRound: {
-        index: state.currentRound.index + 1,
-    },
-}));
-
 reducersMap.set(
     ACTION_START_ROUND,
-    (state, {panorama, target, difficulty, bounds, now}) => {
-        const key = `rnd-${state.currentRound.index}-${state.player}`;
+    (state, {index, panorama, target, difficulty, bounds, now}) => {
+        const key = `rnd-${index}-${state.player}`;
 
         return {
             ...state,
@@ -177,7 +170,7 @@ reducersMap.set(
             },
             rounds: {
                 ...state.rounds,
-                [`rnd-${state.currentRound.index}`]: {
+                [`rnd-${index}`]: {
                     panorama,
                     target,
                 },
@@ -190,12 +183,28 @@ reducersMap.set(
             },
             currentRound: {
                 ...state.currentRound,
+                index,
                 startedAt: now,
             },
             step: STEP_PLAY,
         };
     },
 );
+
+reducersMap.set(ACTION_SEND_PLAYER_ROUND_START_TIME, (state, {now}) => {
+    const key = `rnd-${state.currentRound.index}-${state.player}`;
+
+    return {
+        ...state,
+        entries: {
+            ...state.entries,
+            [key]: {
+                ...(state.entries[key] || {}),
+                startedAt: now,
+            },
+        },
+    };
+});
 
 reducersMap.set(ACTION_PREPARE_RESULTS, (state, {now}) => {
     const key = `rnd-${state.currentRound.index}-${state.player}`;
