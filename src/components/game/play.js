@@ -8,10 +8,12 @@
 
 import "styles/game/play.scss";
 
-import {useCallback, useContext, useState, useRef} from "react";
+import {useCallback, useContext, useEffect, useState, useRef} from "react";
 import {GameStoreContext} from "store/game";
 
 import PropTypes from "prop-types";
+
+import sendPlayerRoundStartTime from "store/game/actions/send-player-round-start-time";
 
 import StreetView from "components/commons/street-view";
 import Roadmap from "components/game/roadmap";
@@ -19,8 +21,11 @@ import TopBar from "components/game/top-bar";
 
 const Play = ({onFinishRound}) => {
     const {
+        dispatch,
+        code,
         currentRound: {index},
         rounds,
+        player,
     } = useContext(GameStoreContext);
     const {panorama} = rounds[`rnd-${index}`];
     const [position, setPosition] = useState(null);
@@ -46,6 +51,10 @@ const Play = ({onFinishRound}) => {
         position,
         onFinishRound,
     ]);
+
+    useEffect(() => {
+        dispatch(sendPlayerRoundStartTime({code, index, player}));
+    }, []);
 
     return (
         <>
