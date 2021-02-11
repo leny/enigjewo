@@ -22,6 +22,7 @@ import classnames from "classnames";
 
 import Button from "components/commons/button";
 import GMap from "components/commons/map";
+import Box from "components/commons/box";
 import Input from "components/form/input";
 import Select from "components/form/select";
 import Selector from "components/form/selector";
@@ -95,47 +96,20 @@ const SettingsContainer = ({onStartGame}) => {
         }
     }, [gmap.current, values.map]);
 
-    let $multiplayerFields;
-
-    if (values.isMulti) {
-        $multiplayerFields = (
-            <>
-                <Input
-                    id={"title"}
-                    name={"title"}
-                    label={"Title of the game"}
-                    value={values.title}
-                    onChange={handleChange}
-                />
-                <Input
-                    id={"name"}
-                    name={"name"}
-                    label={"Your nickname"}
-                    value={values.name}
-                    onChange={handleChange}
-                />
-            </>
-        );
-    }
+    const $footer = (
+        <Button
+            type={"submit"}
+            label={"Start"}
+            variant={"link"}
+            className={classnames("card-footer-item", "no-top-radius")}
+        />
+    );
 
     return (
         <div className={classnames("columns", "is-centered")}>
             <div className={classnames("column", "is-two-thirds", "section")}>
                 <form action={"#"} onSubmit={handleSubmit}>
-                    <div className={"card"}>
-                        <header
-                            className={classnames(
-                                "card-header",
-                                "has-background-info",
-                            )}>
-                            <span
-                                className={classnames(
-                                    "card-header-title",
-                                    "has-text-white",
-                                )}>
-                                {"Start a Game"}
-                            </span>
-                        </header>
+                    <Box title={"Start a Game"} footer={$footer}>
                         <div className={classnames("card-content")}>
                             <Selector
                                 id={"mode-selector"}
@@ -146,7 +120,24 @@ const SettingsContainer = ({onStartGame}) => {
                                 ]}
                                 onChange={val => setFieldValue("isMulti", val)}
                             />
-                            {$multiplayerFields}
+                            {values.isMulti && (
+                                <Input
+                                    id={"title"}
+                                    name={"title"}
+                                    label={"Title of the game"}
+                                    value={values.title}
+                                    onChange={handleChange}
+                                />
+                            )}
+                            {values.isMulti && (
+                                <Input
+                                    id={"name"}
+                                    name={"name"}
+                                    label={"Your nickname"}
+                                    value={values.name}
+                                    onChange={handleChange}
+                                />
+                            )}
                             <Input
                                 id={"totalRounds"}
                                 name={"totalRounds"}
@@ -178,18 +169,7 @@ const SettingsContainer = ({onStartGame}) => {
                         <div className={"card-image"}>
                             <GMap className={"settings__map"} ref={gmap} />
                         </div>
-                        <footer className={"card-footer"}>
-                            <Button
-                                type={"submit"}
-                                label={"Start"}
-                                variant={"link"}
-                                className={classnames(
-                                    "card-footer-item",
-                                    "no-top-radius",
-                                )}
-                            />
-                        </footer>
-                    </div>
+                    </Box>
                 </form>
             </div>
         </div>
