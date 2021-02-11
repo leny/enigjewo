@@ -17,12 +17,14 @@ import {GameStoreContext} from "store/game";
 import {NBSP} from "core/constants";
 import {maps, loadGeoJSON} from "core/maps";
 import {getMarkerIcon} from "core/icons";
+import {readableDuration} from "core/utils";
 import bbox from "@turf/bbox";
 import classnames from "classnames";
 import {db} from "core/firebase";
 import receivingPlayerInfos from "store/game/actions/receiving-player-infos";
 import receivingRoundParams from "store/game/actions/receiving-round-params";
 
+import Box from "components/commons/box";
 import Button from "components/commons/button";
 import GMap from "components/commons/map";
 import Copiable from "components/commons/copiable";
@@ -132,20 +134,7 @@ const Lobby = ({onStartMatch}) => {
                     "is-three-quarters",
                     "section",
                 )}>
-                <div className={"card"}>
-                    <header
-                        className={classnames(
-                            "card-header",
-                            "has-background-info",
-                        )}>
-                        <span
-                            className={classnames(
-                                "card-header-title",
-                                "has-text-white",
-                            )}>
-                            {title}
-                        </span>
-                    </header>
+                <Box title={title} footer={$footer}>
                     {player.isOwner && (
                         <div
                             className={classnames(
@@ -219,11 +208,7 @@ const Lobby = ({onStartMatch}) => {
                                     <strong>{"Duration:"}</strong>
                                     {NBSP}
                                     {duration
-                                        ? `${String(
-                                              Math.floor(duration / 60),
-                                          ).padStart(2, "0")}:${String(
-                                              duration % 60,
-                                          ).padStart(2, "0")}`
+                                        ? readableDuration(duration)
                                         : "Infinite"}
                                 </li>
                                 <li>
@@ -254,8 +239,7 @@ const Lobby = ({onStartMatch}) => {
                             </ul>
                         </div>
                     </div>
-                    <footer className={"card-footer"}>{$footer}</footer>
-                </div>
+                </Box>
             </div>
         </div>
     );
