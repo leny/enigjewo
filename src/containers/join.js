@@ -23,7 +23,7 @@ import Button from "components/commons/button";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTimes, faCheck} from "@fortawesome/free-solid-svg-icons";
 
-const JoinContainer = ({code, onJoinGame}) => {
+const JoinContainer = ({code, onJoinGame, onShowSummary}) => {
     const [checkingCode, setCheckingCode] = useState(true);
     const [game, setGame] = useState(null);
     const {handleSubmit, handleChange, values} = useFormik({
@@ -31,6 +31,11 @@ const JoinContainer = ({code, onJoinGame}) => {
             name: "",
         },
         onSubmit: ({name}) => {
+            if (game.ended) {
+                onShowSummary(game);
+                return;
+            }
+
             name &&
                 onJoinGame({
                     code,
@@ -116,24 +121,26 @@ const JoinContainer = ({code, onJoinGame}) => {
                                     )}
                                 </div>
                             </div>
-                            <div className={"field"}>
-                                <label htmlFor={"name"}>
-                                    {"Your nickname"}
-                                </label>
-                                <div className={"control"}>
-                                    <input
-                                        type={"text"}
-                                        id={"name"}
-                                        name={"name"}
-                                        className={"input"}
-                                        value={values.name}
-                                        onChange={handleChange}
-                                    />
+                            {!checkingCode && game && !game.started && (
+                                <div className={"field"}>
+                                    <label htmlFor={"name"}>
+                                        {"Your nickname"}
+                                    </label>
+                                    <div className={"control"}>
+                                        <input
+                                            type={"text"}
+                                            id={"name"}
+                                            name={"name"}
+                                            className={"input"}
+                                            value={values.name}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
+                            )}
 
                             {!checkingCode &&
-                                (!game || game.started || game.ended) && (
+                                (!game || (game.started && !game.ended)) && (
                                     <div
                                         className={classnames(
                                             "notification",
@@ -147,15 +154,29 @@ const JoinContainer = ({code, onJoinGame}) => {
                                         }
                                     </div>
                                 )}
+
+                            {!checkingCode && game && game.ended && (
+                                <div
+                                    className={classnames(
+                                        "notification",
+                                        "is-warning",
+                                        "mt-2",
+                                    )}>
+                                    {
+                                        "This game is already finish. You can consult the results."
+                                    }
+                                </div>
+                            )}
                         </div>
                         <footer className={"card-footer"}>
                             <Button
                                 type={"submit"}
-                                label={"Start"}
+                                label={game?.ended ? "Show summary" : "Start"}
                                 variant={"link"}
                                 disabled={
-                                    !(game && !(game.started && game.ended)) ||
-                                    !values.name
+                                    !game ||
+                                    (!game.started && !values.name) ||
+                                    (game.started && !game.ended)
                                 }
                                 className={classnames(
                                     "card-footer-item",
@@ -172,6 +193,7 @@ const JoinContainer = ({code, onJoinGame}) => {
 
 JoinContainer.propTypes = {
     onJoinGame: PropTypes.func.isRequired,
+    onShowSummary: PropTypes.func.isRequired,
 };
 
 export default JoinContainer;

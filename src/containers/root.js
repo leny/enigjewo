@@ -41,6 +41,14 @@ const RootContainer = () => {
         setMode(MODE_GAME);
     }, []);
 
+    const handleShowSummary = useCallback(
+        game => {
+            setGameSettings({ended: true, code, game});
+            setMode(MODE_GAME);
+        },
+        [code],
+    );
+
     useEffect(() => {
         document.querySelector(
             "html",
@@ -58,7 +66,13 @@ const RootContainer = () => {
     }
 
     if (mode === MODE_JOIN) {
-        return <JoinContainer code={code} onJoinGame={handleJoinGame} />;
+        return (
+            <JoinContainer
+                code={code}
+                onJoinGame={handleJoinGame}
+                onShowSummary={handleShowSummary}
+            />
+        );
     }
 
     if (mode === MODE_SETTINGS) {

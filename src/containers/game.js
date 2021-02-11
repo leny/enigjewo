@@ -25,6 +25,7 @@ import joinMatch from "store/game/actions/join-match";
 import startRound from "store/game/actions/start-round";
 import computeResults from "store/game/actions/compute-results";
 import endMatch from "store/game/actions/end-match";
+import injectGameSummary from "store/game/actions/inject-game-summary";
 
 import classnames from "classnames";
 
@@ -55,6 +56,10 @@ const GameContainer = ({settings, onRestart}) => {
 
     // launch match
     useEffect(() => {
+        if (settings.ended) {
+            dispatch(injectGameSummary(settings.game));
+            return;
+        }
         dispatch((settings.join ? joinMatch : startMatch)(settings));
     }, []);
 
