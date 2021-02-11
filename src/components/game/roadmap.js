@@ -11,6 +11,7 @@
 import "styles/game/roadmap.scss";
 
 import {useState, useEffect, useContext, useCallback, useRef} from "react";
+import {useLocalStorage} from "react-use-storage";
 import {GameStoreContext} from "store/game";
 import PropTypes from "prop-types";
 import classnames from "classnames";
@@ -23,6 +24,8 @@ import {
     faThumbtack,
     faExpandAlt,
     faCompressAlt,
+    faLongArrowAltDown,
+    faLongArrowAltUp,
     faFlag,
     faStickyNote,
     faMapMarkerAlt,
@@ -56,9 +59,15 @@ const Roadmap = ({
     const [showNotes, setShowNotes] = useState(null);
     const [notes, setNotes] = useState("");
     const [marker, setMarker] = useState(null);
-    const [isDocked, setIsDocked] = useState(false);
-    const [size, setSize] = useState(SIZE_SMALL);
-    const [isPinned, setIsPinned] = useState(false);
+    const [isDocked, setIsDocked] = useLocalStorage(
+        "roadmap-ui-is-docked",
+        false,
+    );
+    const [size, setSize] = useLocalStorage("roadmap-ui-size", SIZE_SMALL);
+    const [isPinned, setIsPinned] = useLocalStorage(
+        "roadmap-ui-is-pinned",
+        false,
+    );
     const [ready, setReady] = useState(false);
     const gmap = useRef(null);
 
@@ -72,8 +81,8 @@ const Roadmap = ({
     }, [gmap.current, bounds, ready]);
 
     const handleToggleDockedMode = useCallback(() => {
-        setIsDocked(invertValue);
-    }, [setIsDocked]);
+        setIsDocked(!isDocked);
+    }, [setIsDocked, isDocked]);
 
     const handleClickOnMap = useCallback(
         (map, {latLng}) => {
@@ -104,35 +113,33 @@ const Roadmap = ({
         [setShowNotes],
     );
 
-    const handlePinBox = useCallback(() => setIsPinned(invertValue), [
+    const handlePinBox = useCallback(() => setIsPinned(!isPinned), [
         setIsPinned,
+        isPinned,
     ]);
 
     const handleGrowBox = useCallback(
         () =>
             setSize(
-                v =>
-                    ({
-                        [SIZE_SMALL]: SIZE_MEDIUM,
-                        [SIZE_MEDIUM]: SIZE_BIG,
-                        [SIZE_BIG]: SIZE_BIG,
-                    }[v]),
+                {
+                    [SIZE_SMALL]: SIZE_MEDIUM,
+                    [SIZE_MEDIUM]: SIZE_BIG,
+                    [SIZE_BIG]: SIZE_BIG,
+                }[size],
             ),
-        [setSize],
+        [setSize, size],
     );
 
     const handleShrinkBox = useCallback(
         () =>
-            setSize(v =>
-                setSize(
-                    {
-                        [SIZE_SMALL]: SIZE_SMALL,
-                        [SIZE_MEDIUM]: SIZE_SMALL,
-                        [SIZE_BIG]: SIZE_MEDIUM,
-                    }[v],
-                ),
+            setSize(
+                {
+                    [SIZE_SMALL]: SIZE_SMALL,
+                    [SIZE_MEDIUM]: SIZE_SMALL,
+                    [SIZE_BIG]: SIZE_MEDIUM,
+                }[size],
             ),
-        [setSize],
+        [setSize, size],
     );
 
     return (
@@ -199,13 +206,13 @@ const Roadmap = ({
                         onClick={handleToggleDockedMode}
                     />
                     <ToolIcon
-                        icon={faCompressAlt}
+                        icon={isDocked ? faLongArrowAltDown : faCompressAlt}
                         title={"Shrink roadmap"}
                         disabled={size === SIZE_SMALL}
                         onClick={handleShrinkBox}
                     />
                     <ToolIcon
-                        icon={faExpandAlt}
+                        icon={isDocked ? faLongArrowAltUp : faExpandAlt}
                         title={"Expand roadmap"}
                         disabled={size === SIZE_BIG}
                         onClick={handleGrowBox}
