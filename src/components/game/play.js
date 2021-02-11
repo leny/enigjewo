@@ -54,6 +54,14 @@ const Play = ({onFinishRound}) => {
     ]);
 
     useEffect(() => {
+        const html = document.querySelector("html");
+
+        html.classList.add("bust-scroll");
+
+        return () => html.classList.remove("bust-scroll");
+    }, []);
+
+    useEffect(() => {
         isMulti && dispatch(sendPlayerRoundStartTime({code, index, player}));
     }, []);
 
