@@ -30,16 +30,19 @@ const Summary = ({onRestart}) => {
     const {
         dispatch,
         code,
+        title,
         settings: {rounds: total, isMulti},
         rounds,
         entries,
         player,
         players,
+        ended,
+        injected,
     } = useContext(GameStoreContext);
     const gmap = useRef(null);
 
     useEffect(() => {
-        if (isMulti && players[player].isOwner) {
+        if (!ended && isMulti && players[player].isOwner) {
             dispatch(sendEndGameState({code}));
         }
     }, []);
@@ -55,7 +58,9 @@ const Summary = ({onRestart}) => {
             const {target} = rounds[`rnd-${i}`];
             if (isMulti) {
                 const bestScore = Math.max(
-                    ...Object.values(players).map(({score}) => score),
+                    ...Object.entries(entries)
+                        .filter(([key]) => key.startsWith(`rnd-${i}`))
+                        .map(([, {score}]) => score),
                 );
 
                 Object.entries(players).forEach(([key, {icon, name}]) => {
@@ -68,7 +73,7 @@ const Summary = ({onRestart}) => {
                         strokeColor:
                             score === bestScore
                                 ? "hsl(141, 53%, 53%)"
-                                : "hsl(348, 100%, 61%)",
+                                : "hsl(48, 100%, 29%)",
                         strokeOpacity: 1.0,
                         strokeWeight: 3,
                     });
@@ -284,7 +289,7 @@ const Summary = ({onRestart}) => {
                                 "card-header-title",
                                 "has-text-white",
                             )}>
-                            {"Summary"}
+                            {`${title}: Summary`}
                         </span>
                     </header>
                     {!isMulti && (
@@ -374,17 +379,123 @@ const Summary = ({onRestart}) => {
                         )}>
                         {$content}
                     </div>
-                    <footer className={"card-footer"}>
-                        <Button
-                            label={"Restart a Match"}
-                            variant={"link"}
-                            className={classnames(
-                                "card-footer-item",
-                                "no-top-radius",
-                            )}
-                            onClick={onRestart}
-                        />
-                    </footer>
+                    {isMulti && (
+                        <div className={classnames("card-image")}>
+                            <table
+                                className={classnames(
+                                    "table",
+                                    "is-striped",
+                                    "is-fullwidth",
+                                )}>
+                                <thead>
+                                    <tr>
+                                        <th>{"# Round"}</th>
+                                        <th>{"Player"}</th>
+                                        <th>{"Distance"}</th>
+                                        <th>{"Duration"}</th>
+                                        <th>{"Score"}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {Array.from(
+                                        new Array(total).keys(),
+                                        i => i + 1,
+                                    ).map(i =>
+                                        Object.entries(players).map(
+                                            ([key, {name, icon}], idx) => {
+                                                const {
+                                                    distance,
+                                                    score,
+                                                    startedAt,
+                                                    endedAt,
+                                                } = entries[`rnd-${i}-${key}`];
+                                                const duration = Math.round(
+                                                    (endedAt - startedAt) /
+                                                        1000,
+                                                );
+
+                                                return (
+                                                    <tr key={`rnd-${i}-${key}`}>
+                                                        {idx === 0 && (
+                                                            <td
+                                                                rowSpan={
+                                                                    Object.keys(
+                                                                        players,
+                                                                    ).length
+                                                                }>
+                                                                {i}
+                                                            </td>
+                                                        )}
+                                                        <td>
+                                                            <img
+                                                                className={
+                                                                    "results__player-icon"
+                                                                }
+                                                                src={
+                                                                    getMarkerIcon(
+                                                                        icon,
+                                                                    ).url
+                                                                }
+                                                            />
+                                                            {NBSP}
+                                                            {name}
+                                                        </td>
+                                                        <td>
+                                                            {distance > 2000
+                                                                ? `${Math.floor(
+                                                                      distance /
+                                                                          1000,
+                                                                  )}km`
+                                                                : `${distance}m`}
+                                                        </td>
+                                                        <td>
+                                                            {`${String(
+                                                                Math.floor(
+                                                                    duration /
+                                                                        60,
+                                                                ),
+                                                            ).padStart(
+                                                                2,
+                                                                "0",
+                                                            )}:${String(
+                                                                duration % 60,
+                                                            ).padStart(
+                                                                2,
+                                                                "0",
+                                                            )}`}
+                                                        </td>
+                                                        <td>
+                                                            <span
+                                                                className={classnames(
+                                                                    score ===
+                                                                        5000 &&
+                                                                        "has-text-success",
+                                                                )}>
+                                                                {`${score}pts`}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            },
+                                        ),
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                    {!injected && (
+                        <footer className={"card-footer"}>
+                            <Button
+                                label={"Restart a Match"}
+                                variant={"link"}
+                                className={classnames(
+                                    "card-footer-item",
+                                    "no-top-radius",
+                                )}
+                                onClick={onRestart}
+                            />
+                        </footer>
+                    )}
                 </div>
             </div>
         </div>
