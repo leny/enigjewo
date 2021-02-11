@@ -27,6 +27,7 @@ import {
     ACTION_SHOW_RESULTS,
     ACTION_SHOW_SUMMARY,
     ACTION_SEND_ENDED_GAME,
+    ACTION_INJECT_SUMMARY,
 } from "./types";
 
 import {createContext} from "react";
@@ -303,6 +304,35 @@ reducersMap.set(ACTION_SHOW_SUMMARY, state => ({
 reducersMap.set(ACTION_SEND_ENDED_GAME, state => ({
     ...state,
     ended: true,
+}));
+
+reducersMap.set(ACTION_INJECT_SUMMARY, (state, game) => ({
+    ...state,
+    ...game,
+    settings: {
+        ...game.settings,
+        isMulti: true,
+    },
+    player: Object.keys(game.players)[0],
+    players: Object.fromEntries(
+        Object.entries(game.players).map(([key, player]) => [
+            key,
+            {
+                ...player,
+                score: Array.from(
+                    new Array(game.settings.rounds).keys(),
+                    i => i + 1,
+                ).reduce(
+                    (acc, ind) =>
+                        acc + (game.entries[`rnd-${ind}-${key}`].score || 0),
+                    0,
+                ),
+            },
+        ]),
+    ),
+    step: STEP_SUMMARY,
+    ended: true,
+    injected: true,
 }));
 
 export const reducer = (state, {type, ...payload}) => {
