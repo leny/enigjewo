@@ -19,9 +19,9 @@ import {hashid} from "core/utils";
 import {db} from "core/firebase";
 import classnames from "classnames";
 
+import Box from "components/commons/box";
 import Button from "components/commons/button";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faTimes, faCheck} from "@fortawesome/free-solid-svg-icons";
+import Input from "components/form/input";
 
 const JoinContainer = ({code, onJoinGame, onShowSummary}) => {
     const [checkingCode, setCheckingCode] = useState(true);
@@ -63,82 +63,49 @@ const JoinContainer = ({code, onJoinGame, onShowSummary}) => {
         })();
     }, [code]);
 
+    const $footer = (
+        <Button
+            type={"submit"}
+            label={game?.ended ? "Show summary" : "Start"}
+            variant={"link"}
+            disabled={
+                !game ||
+                (!game.started && !values.name) ||
+                (game.started && !game.ended)
+            }
+            className={classnames("card-footer-item", "no-top-radius")}
+        />
+    );
+
     return (
         <div className={classnames("columns", "is-centered")}>
             <div className={classnames("column", "is-two-thirds", "section")}>
                 <form action={"#"} onSubmit={handleSubmit}>
-                    <div className={"card"}>
-                        <header
-                            className={classnames(
-                                "card-header",
-                                "has-background-info",
-                            )}>
-                            <span
-                                className={classnames(
-                                    "card-header-title",
-                                    "has-text-white",
-                                )}>
-                                {"Join a Game"}
-                            </span>
-                        </header>
+                    <Box title={"Join a Game"} footer={$footer}>
                         <div className={classnames("card-content")}>
-                            <div className={classnames("field")}>
-                                <label htmlFor={"code"}>{"Game Code"}</label>
-                                <div
-                                    className={classnames(
-                                        "control",
-                                        checkingCode && "is-loading",
-                                        !checkingCode && "has-icons-right",
-                                    )}>
-                                    <input
-                                        type={"text"}
-                                        id={"code"}
-                                        name={"code"}
-                                        className={"input"}
-                                        value={code}
-                                        readOnly
-                                        disabled
-                                    />
-                                    {!checkingCode && (
-                                        <span
-                                            className={classnames(
-                                                "icon",
-                                                "is-small",
-                                                "is-right",
-                                            )}>
-                                            <FontAwesomeIcon
-                                                icon={
-                                                    game &&
-                                                    !(
-                                                        game?.started &&
-                                                        game?.ended
-                                                    )
-                                                        ? faCheck
-                                                        : faTimes
-                                                }
-                                            />
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
+                            <Input
+                                id={"code"}
+                                name={"code"}
+                                label={"Game Code"}
+                                value={code}
+                                readOnly
+                                disabled
+                                loading={checkingCode}
+                                isValid={
+                                    !checkingCode &&
+                                    game &&
+                                    !(game?.started && game?.ended)
+                                }
+                            />
                             {!checkingCode && game && !game.started && (
-                                <div className={"field"}>
-                                    <label htmlFor={"name"}>
-                                        {"Your nickname"}
-                                    </label>
-                                    <div className={"control"}>
-                                        <input
-                                            type={"text"}
-                                            id={"name"}
-                                            name={"name"}
-                                            className={"input"}
-                                            value={values.name}
-                                            onChange={handleChange}
-                                        />
-                                    </div>
-                                </div>
+                                <Input
+                                    id={"name"}
+                                    name={"name"}
+                                    label={"Your nickname"}
+                                    value={values.name}
+                                    onChange={handleChange}
+                                />
                             )}
-
                             {!checkingCode &&
                                 (!game || (game.started && !game.ended)) && (
                                     <div
@@ -154,7 +121,6 @@ const JoinContainer = ({code, onJoinGame, onShowSummary}) => {
                                         }
                                     </div>
                                 )}
-
                             {!checkingCode && game && game.ended && (
                                 <div
                                     className={classnames(
@@ -168,23 +134,7 @@ const JoinContainer = ({code, onJoinGame, onShowSummary}) => {
                                 </div>
                             )}
                         </div>
-                        <footer className={"card-footer"}>
-                            <Button
-                                type={"submit"}
-                                label={game?.ended ? "Show summary" : "Start"}
-                                variant={"link"}
-                                disabled={
-                                    !game ||
-                                    (!game.started && !values.name) ||
-                                    (game.started && !game.ended)
-                                }
-                                className={classnames(
-                                    "card-footer-item",
-                                    "no-top-radius",
-                                )}
-                            />
-                        </footer>
-                    </div>
+                    </Box>
                 </form>
             </div>
         </div>
