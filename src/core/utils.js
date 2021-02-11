@@ -30,3 +30,8 @@ const hashids = new Hashids(
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
 );
 export const hashid = (value = Date.now()) => hashids.encode(+value);
+
+export const readableDuration = duration =>
+    `${String(~~(duration / 60)).padStart(2, "0")}:${String(
+        duration % 60,
+    ).padStart(2, "0")}`;
