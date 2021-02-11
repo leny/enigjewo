@@ -24,6 +24,7 @@ const Play = ({onFinishRound}) => {
         dispatch,
         code,
         currentRound: {index},
+        settings: {isMulti},
         rounds,
         player,
     } = useContext(GameStoreContext);
@@ -53,7 +54,7 @@ const Play = ({onFinishRound}) => {
     ]);
 
     useEffect(() => {
-        dispatch(sendPlayerRoundStartTime({code, index, player}));
+        isMulti && dispatch(sendPlayerRoundStartTime({code, index, player}));
     }, []);
 
     return (
