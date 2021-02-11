@@ -13,8 +13,6 @@ import {db} from "core/firebase";
 export default code => async dispatch => {
     const game = (await db.ref(`games/${code}`).once("value")).val();
 
-    console.log("game:", game);
-
     const {
         settings: {bounds, difficulty},
         rounds,
