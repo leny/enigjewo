@@ -102,12 +102,17 @@ const Results = ({onNext, onEnd}) => {
                 return;
             }
 
+            const bestRoundScore = Math.max(
+                ...Object.entries(entries)
+                    .filter(([k]) => k.startsWith(`rnd-${index}`))
+                    .map(([, {score: scr}]) => scr),
+            );
             const polyLine = new google.maps.Polyline({
                 path: [target, position],
                 strokeColor:
-                    score === bestScore
+                    score === bestRoundScore
                         ? "hsl(141, 53%, 53%)"
-                        : "hsl(348, 100%, 61%)",
+                        : "hsl(48, 100%, 29%)",
                 strokeOpacity: 1.0,
                 strokeWeight: 3,
             });
