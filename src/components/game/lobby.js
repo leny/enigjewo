@@ -195,7 +195,14 @@ const Lobby = ({onStartMatch}) => {
                                 "p-0",
                                 "has-background-info-light",
                             )}>
-                            <GMap className={"lobby__map"} ref={gmap} />
+                            <GMap
+                                className={
+                                    player.isOwner
+                                        ? "lobby__map"
+                                        : "lobby__map--extended"
+                                }
+                                ref={gmap}
+                            />
                         </div>
                         <div
                             className={classnames(

@@ -10,6 +10,9 @@
     &__map {
         min-height: 33vh;
         height: 100%;
+        &--extended {
+            min-height: 66vh;
+        }
     }
     &__player-icon {
         vertical-align: middle;
