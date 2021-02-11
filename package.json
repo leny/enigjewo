@@ -8,7 +8,11 @@
     "work": "npx parcel serve src/index.html",
     "build": "npx parcel build src/index.html"
   },
-  "author": "leny <info@flatland.be>",
+  "author": {
+    "name": "leny",
+    "email": "info@flatland.be",
+    "url": "https://leny.me"
+  },
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.12.10",

@@ -16,6 +16,8 @@ import {parse} from "qs";
 import {NBSP} from "core/constants";
 import {withValue} from "core/utils";
 
+import {version} from "../../package.json";
+
 import Button from "components/commons/button";
 
 const MenuContainer = ({onPrepareGame, onJoinGame}) => {
@@ -92,6 +94,15 @@ const MenuContainer = ({onPrepareGame, onJoinGame}) => {
                             />
                         </div>
                     </div>
+                </div>
+                <hr />
+                <div
+                    className={classnames(
+                        "has-text-centered",
+                        "has-text-grey-lighter",
+                        "is-family-code",
+                    )}>
+                    {`version ${version}`}
                 </div>
             </div>
         </div>
