@@ -27,9 +27,7 @@ import computeResults from "store/game/actions/compute-results";
 import endMatch from "store/game/actions/end-match";
 import injectGameSummary from "store/game/actions/inject-game-summary";
 
-import classnames from "classnames";
-
-import Loading from "components/commons/loading";
+import Loading from "components/game/loading";
 import Lobby from "components/game/lobby";
 import Play from "components/game/play";
 import Results from "components/game/results";
@@ -104,35 +102,7 @@ const GameContainer = ({settings, onRestart}) => {
     }
 
     // state === STEP_LOADING
-    return (
-        <div className={classnames("columns", "is-centered")}>
-            <div className={classnames("column", "is-two-thirds", "section")}>
-                <div className={"card"}>
-                    <header
-                        className={classnames(
-                            "card-header",
-                            "has-background-info",
-                        )}>
-                        <span
-                            className={classnames(
-                                "card-header-title",
-                                "has-text-white",
-                            )}>
-                            {"Loading…"}
-                        </span>
-                    </header>
-                    <div
-                        className={classnames(
-                            "card-content",
-                            "py-5",
-                            "has-text-centered",
-                        )}>
-                        <Loading variant={"info"} size={"large"} />
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+    return <Loading />;
 };
 
 GameContainer.propTypes = {
