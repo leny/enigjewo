@@ -13,7 +13,7 @@ import PropTypes from "prop-types";
 import {useEffect, useRef} from "react";
 import {useFormik} from "formik";
 
-import {NBSP, DEFAULT_ROUND_DURATION, DEFAULT_ROUNDS} from "core/constants";
+import {DEFAULT_ROUND_DURATION, DEFAULT_ROUNDS} from "core/constants";
 import {maps, loadGeoJSON} from "core/maps";
 import {getRandomPlayerColor} from "core/icons";
 import {hashid} from "core/utils";
@@ -22,6 +22,10 @@ import classnames from "classnames";
 
 import Button from "components/commons/button";
 import GMap from "components/commons/map";
+import Input from "components/form/input";
+import Select from "components/form/select";
+import Selector from "components/form/selector";
+import DurationSelector from "components/settings/duration";
 
 const SettingsContainer = ({onStartGame}) => {
     const gmap = useRef(null);
@@ -96,32 +100,20 @@ const SettingsContainer = ({onStartGame}) => {
     if (values.isMulti) {
         $multiplayerFields = (
             <>
-                <div className={"field"}>
-                    <label htmlFor={"title"}>{"Title of the game"}</label>
-                    <div className={"control"}>
-                        <input
-                            type={"text"}
-                            id={"title"}
-                            name={"title"}
-                            className={"input"}
-                            value={values.title}
-                            onChange={handleChange}
-                        />
-                    </div>
-                </div>
-                <div className={"field"}>
-                    <label htmlFor={"name"}>{"Your nickname"}</label>
-                    <div className={"control"}>
-                        <input
-                            type={"text"}
-                            id={"name"}
-                            name={"name"}
-                            className={"input"}
-                            value={values.name}
-                            onChange={handleChange}
-                        />
-                    </div>
-                </div>
+                <Input
+                    id={"title"}
+                    name={"title"}
+                    label={"Title of the game"}
+                    value={values.title}
+                    onChange={handleChange}
+                />
+                <Input
+                    id={"name"}
+                    name={"name"}
+                    label={"Your nickname"}
+                    value={values.name}
+                    onChange={handleChange}
+                />
             </>
         );
     }
@@ -145,127 +137,43 @@ const SettingsContainer = ({onStartGame}) => {
                             </span>
                         </header>
                         <div className={classnames("card-content")}>
-                            <div
-                                className={classnames(
-                                    "field",
-                                    "has-addons",
-                                    "is-justify-content-center",
-                                )}>
-                                <div className={"control"}>
-                                    <Button
-                                        label={"Solo Game"}
-                                        variant={"info"}
-                                        className={classnames(
-                                            values.isMulti && "is-outlined",
-                                        )}
-                                        onClick={() =>
-                                            setFieldValue("isMulti", false)
-                                        }
-                                    />
-                                </div>
-                                <div className={"control"}>
-                                    <Button
-                                        label={"Multiplayer Game"}
-                                        variant={"info"}
-                                        className={classnames(
-                                            values.isMulti || "is-outlined",
-                                        )}
-                                        onClick={() =>
-                                            setFieldValue("isMulti", true)
-                                        }
-                                    />
-                                </div>
-                            </div>
+                            <Selector
+                                id={"mode-selector"}
+                                value={values.isMulti}
+                                choices={[
+                                    {name: "Solo Game", value: false},
+                                    {name: "Multiplayer Game", value: true},
+                                ]}
+                                onChange={val => setFieldValue("isMulti", val)}
+                            />
                             {$multiplayerFields}
-                            <div className={"field"}>
-                                <label htmlFor={"totalRounds"}>
-                                    {"Number of rounds"}
-                                </label>
-                                <div className={"control"}>
-                                    <input
-                                        type={"number"}
-                                        id={"totalRounds"}
-                                        name={"totalRounds"}
-                                        className={"input"}
-                                        min={1}
-                                        value={values.totalRounds}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </div>
-                            <div className={"field"}>
-                                <label htmlFor={"roundDuration"}>
-                                    {"Round duration"}
-                                    {NBSP}
-                                    <small className={"has-text-grey"}>
-                                        {"(in minutes)"}
-                                    </small>
-                                </label>
-                                <div
-                                    className={classnames(
-                                        "control",
-                                        "is-flex",
-                                        "is-align-content-space-between",
-                                        "is-align-items-center",
-                                    )}>
-                                    <div
-                                        className={classnames(
-                                            "settings__duration-range",
-                                        )}>
-                                        <input
-                                            type={"range"}
-                                            name={"roundDuration"}
-                                            id={"roundDuration"}
-                                            min={0}
-                                            value={values.roundDuration}
-                                            step={30}
-                                            max={600}
-                                            onChange={handleChange}
-                                        />
-                                    </div>
-                                    <div
-                                        className={classnames(
-                                            "settings__duration-value",
-                                            "px-2",
-                                            "has-text-centered",
-                                        )}>
-                                        <strong>
-                                            {values.roundDuration
-                                                ? `${String(
-                                                      ~~(
-                                                          values.roundDuration /
-                                                          60
-                                                      ),
-                                                  ).padStart(2, "0")}:${String(
-                                                      values.roundDuration % 60,
-                                                  ).padStart(2, "0")}`
-                                                : "Infinite"}
-                                        </strong>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={"field"}>
-                                <label htmlFor={"map"}>{"Map"}</label>
-                                <div className={"control"}>
-                                    <div className={"select"}>
-                                        <select
-                                            id={"map"}
-                                            name={"map"}
-                                            value={values.map}
-                                            onChange={handleChange}>
-                                            {Object.entries(maps).map(
-                                                ([key, {label}]) => (
-                                                    <option
-                                                        key={key}
-                                                        value={key}>
-                                                        {label}
-                                                    </option>
-                                                ),
-                                            )}
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
+                            <Input
+                                id={"totalRounds"}
+                                name={"totalRounds"}
+                                label={"Number of rounds"}
+                                type={"number"}
+                                value={values.totalRounds}
+                                min={1}
+                                onChange={handleChange}
+                            />
+                            <DurationSelector
+                                id={"roundDuration"}
+                                name={"roundDuration"}
+                                value={values.roundDuration}
+                                onChange={handleChange}
+                            />
+                            <Select
+                                id={"map"}
+                                name={"map"}
+                                label={"Map"}
+                                choices={Object.fromEntries(
+                                    Object.entries(
+                                        maps,
+                                    ).map(([key, {label}]) => [key, label]),
+                                )}
+                                value={values.map}
+                                onChange={handleChange}
+                            />
                         </div>
                         <div className={"card-image"}>
                             <GMap className={"settings__map"} ref={gmap} />
