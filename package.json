@@ -1,6 +1,6 @@
 {
   "name": "enigjewo",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "private": true,
   "description": "A _remake_ of **GeoGuessr** with React & Firebase",
   "scripts": {
