@@ -26,6 +26,8 @@ import {
     faFlag,
     faStickyNote,
     faMapMarkerAlt,
+    faWindowRestore,
+    faWindowMaximize,
 } from "@fortawesome/free-solid-svg-icons";
 
 import {withValue, isFalsy} from "core/utils";
@@ -54,6 +56,7 @@ const Roadmap = ({
     const [showNotes, setShowNotes] = useState(null);
     const [notes, setNotes] = useState("");
     const [marker, setMarker] = useState(null);
+    const [isDocked, setIsDocked] = useState(false);
     const [size, setSize] = useState(SIZE_SMALL);
     const [isPinned, setIsPinned] = useState(false);
     const [ready, setReady] = useState(false);
@@ -66,7 +69,11 @@ const Roadmap = ({
 
         setReady(true);
         gmap.current.fitBounds(bounds);
-    }, [gmap.current, bounds]);
+    }, [gmap.current, bounds, ready]);
+
+    const handleToggleDockedMode = useCallback(() => {
+        setIsDocked(invertValue);
+    }, [setIsDocked]);
 
     const handleClickOnMap = useCallback(
         (map, {latLng}) => {
@@ -85,7 +92,7 @@ const Roadmap = ({
 
             marker.setPosition(latLng);
         },
-        [marker, setMarker, onUpdatePosition],
+        [marker, setMarker, onUpdatePosition, icon],
     );
 
     const handleCenterMap = useCallback(() => {
@@ -136,7 +143,8 @@ const Roadmap = ({
                 "is-flex-direction-column",
                 "is-justify-content-start",
                 "is-align-content-center",
-                `roadmap--is-${isPinned ? "pinned" : "floating"}`,
+                isDocked || `roadmap--is-${isPinned ? "pinned" : "floating"}`,
+                isDocked && `roadmap--is-docked`,
                 size === SIZE_MEDIUM && "roadmap--size-medium",
                 size === SIZE_BIG && "roadmap--size-big",
             )}>
@@ -186,6 +194,11 @@ const Roadmap = ({
                 </span>
                 <span>
                     <ToolIcon
+                        icon={isDocked ? faWindowRestore : faWindowMaximize}
+                        title={`${isDocked ? "Floating" : "Docked"} roadmap`}
+                        onClick={handleToggleDockedMode}
+                    />
+                    <ToolIcon
                         icon={faCompressAlt}
                         title={"Shrink roadmap"}
                         disabled={size === SIZE_SMALL}
@@ -197,22 +210,25 @@ const Roadmap = ({
                         disabled={size === SIZE_BIG}
                         onClick={handleGrowBox}
                     />
-                    <ToolIcon
-                        icon={faThumbtack}
-                        title={"Pin roadmap"}
-                        active={isPinned}
-                        onClick={handlePinBox}
-                    />
+                    {!isDocked && (
+                        <ToolIcon
+                            icon={faThumbtack}
+                            title={"Pin roadmap"}
+                            active={isPinned}
+                            onClick={handlePinBox}
+                        />
+                    )}
                 </span>
             </div>
             <GMap
-                className={classnames("roadmap__map", "my-1")}
+                className={classnames("roadmap__map", "mt-1", "mb-0")}
                 ref={gmap}
                 position={center}
                 zoom={startZoom}
                 onMapClick={handleClickOnMap}
             />
             <Button
+                className={"no-top-radius"}
                 variant={"dark"}
                 label={"Guess"}
                 disabled={!marker}

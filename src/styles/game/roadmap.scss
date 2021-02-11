@@ -25,6 +25,35 @@
         transition: width 0.25s ease-out, height 0.25s ease-out;
         background: lightgray; // tmp
     }
+    &--is-docked {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        opacity: 1;
+        .roadmap__map{
+            width: 100vw;
+            height: 30vh;
+        }
+        &.roadmap--size-medium {
+            .roadmap__map {
+                height: 45vh;
+            }
+        }
+        &.roadmap--size-big {
+            .roadmap__map {
+                height: 75vh;
+            }
+        }
+        .roadmap__tools {
+            padding-left: 1rem;
+            padding-right: 4.5rem;
+        }
+        .roadmap__notes {
+            width: 20vw;
+            margin-left: 1rem;
+        }
+    }
     &--is-pinned {
         opacity: 1;
         .roadmap__map {

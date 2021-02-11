@@ -33,6 +33,12 @@ const StreetView = forwardRef(
                     motionTrackingControl: false,
                     showRoadLabels: false,
                     panControl: true,
+                    panControlOptions: {
+                        position: google.maps.ControlPosition.RIGHT_TOP,
+                    },
+                    zoomControlOptions: {
+                        position: google.maps.ControlPosition.RIGHT_TOP,
+                    },
                     ...options,
                 },
             );
