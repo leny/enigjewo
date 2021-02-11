@@ -100,7 +100,7 @@ reducersMap.set(
         ...state,
         code,
         title,
-        settings: {rounds, duration, isMulti, map},
+        settings: {rounds, duration: duration || false, isMulti, map},
         player: key,
         players: {
             [key]: {
