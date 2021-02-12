@@ -11,6 +11,7 @@ import "styles/game/top-bar.scss";
 import classnames from "classnames";
 import PropTypes from "prop-types";
 import {useEffect, useState, useContext} from "react";
+import {useLocalStorage} from "react-use-storage";
 import {useTimer} from "core/hooks/use-timer";
 import useSound from "use-sound";
 
@@ -19,7 +20,7 @@ import {GameStoreContext} from "store/game";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBell, faBellSlash} from "@fortawesome/free-solid-svg-icons";
 
-import {noop, preventDefault, invertValue} from "core/utils";
+import {noop, preventDefault} from "core/utils";
 
 import {NBSP} from "core/constants";
 
@@ -34,7 +35,10 @@ const TopBar = ({onTimerFinished = noop}) => {
         player,
     } = useContext(GameStoreContext);
     const {score} = players[player];
-    const [withSoundAlerts, setWithSoundAlerts] = useState(true);
+    const [withSoundAlerts, setWithSoundAlerts] = useLocalStorage(
+        "topbar-ui-sound-alerts",
+        true,
+    );
     const [timerColorClassName, setTimerColorClassName] = useState(false);
     const [{seconds, running}] = useTimer(
         duration,
@@ -94,7 +98,7 @@ const TopBar = ({onTimerFinished = noop}) => {
                     <a
                         href={"#"}
                         onClick={preventDefault(() =>
-                            setWithSoundAlerts(invertValue),
+                            setWithSoundAlerts(!withSoundAlerts),
                         )}
                         className={classnames(
                             "icon",
