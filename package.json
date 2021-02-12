@@ -21,7 +21,7 @@
     "icons": "./src/assets/icons",
     "components": "./src/components",
     "containers": "./src/containers",
-    "sounds": "./src/sounds",
+    "sounds": "./src/assets/sounds",
     "store": "./src/store",
     "styles": "./src/styles"
   },

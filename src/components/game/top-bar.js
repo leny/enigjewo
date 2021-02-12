@@ -23,8 +23,8 @@ import {noop, preventDefault, invertValue} from "core/utils";
 
 import {NBSP} from "core/constants";
 
-import halfTimeAlert from "url:../../sounds/half-time.mp3";
-import thirtySecondsRemainingAlert from "url:../../sounds/thirty-seconds-remaining.mp3";
+import halfTimeAlert from "url:sounds/half-time.ogg";
+import lastSecondsAlert from "url:sounds/last-seconds.ogg";
 
 const TopBar = ({onTimerFinished = noop}) => {
     const {
@@ -42,9 +42,7 @@ const TopBar = ({onTimerFinished = noop}) => {
         onTimerFinished,
     );
     const [playHalfTimeAlert] = useSound(halfTimeAlert);
-    const [playThirtySecondsRemainingAlert] = useSound(
-        thirtySecondsRemainingAlert,
-    );
+    const [playThirtySecondsRemainingAlert] = useSound(lastSecondsAlert);
 
     useEffect(() => {
         if (!running) {
