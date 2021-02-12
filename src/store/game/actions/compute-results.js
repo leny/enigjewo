@@ -34,7 +34,9 @@ export default (
     let position = pos,
         geoJSON;
     if (!position) {
-        geoJSON = await loadGeoJSON(map);
+        if (map !== "world") {
+            geoJSON = await loadGeoJSON(map);
+        }
         position = getRandomLatLng(geoJSON).position;
     }
 
