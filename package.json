@@ -21,6 +21,7 @@
     "icons": "./src/assets/icons",
     "components": "./src/components",
     "containers": "./src/containers",
+    "maps": "./src/data/maps",
     "sounds": "./src/assets/sounds",
     "store": "./src/store",
     "styles": "./src/styles"

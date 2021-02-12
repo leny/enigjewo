@@ -8,9 +8,9 @@
 
 import axios from "axios";
 
-import europe from "url:../data/maps/europe.geojson";
-import belgium from "url:../data/maps/belgium.geojson";
-import france from "url:../data/maps/france.geojson";
+import europe from "url:maps/europe.geojson";
+import belgium from "url:maps/belgium.geojson";
+import france from "url:maps/france.geojson";
 
 export const maps = {
     world: {

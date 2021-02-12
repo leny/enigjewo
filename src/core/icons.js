@@ -8,23 +8,23 @@
 
 /* global google */
 
-import CorrectPositionIcon from "url:../assets/icons/correct-position.png";
-import BlackPlayerIcon from "url:../assets/icons/player-black.png";
-import BluePlayerIcon from "url:../assets/icons/player-blue.png";
-import CyanPlayerIcon from "url:../assets/icons/player-cyan.png";
-import GreenPlayerIcon from "url:../assets/icons/player-green.png";
-import LimePlayerIcon from "url:../assets/icons/player-lime.png";
-import MaroonPlayerIcon from "url:../assets/icons/player-maroon.png";
-import NavyPlayerIcon from "url:../assets/icons/player-navy.png";
-import OrangePlayerIcon from "url:../assets/icons/player-orange.png";
-import PinkPlayerIcon from "url:../assets/icons/player-pink.png";
-import PurplePlayerIcon from "url:../assets/icons/player-purple.png";
-import RedPlayerIcon from "url:../assets/icons/player-red.png";
-import TealPlayerIcon from "url:../assets/icons/player-teal.png";
-import TurquoisePlayerIcon from "url:../assets/icons/player-turquoise.png";
-import VioletPlayerIcon from "url:../assets/icons/player-violet.png";
-import WhitePlayerIcon from "url:../assets/icons/player-white.png";
-import YellowPlayerIcon from "url:../assets/icons/player-yellow.png";
+import CorrectPositionIcon from "url:icons/correct-position.png";
+import BlackPlayerIcon from "url:icons/player-black.png";
+import BluePlayerIcon from "url:icons/player-blue.png";
+import CyanPlayerIcon from "url:icons/player-cyan.png";
+import GreenPlayerIcon from "url:icons/player-green.png";
+import LimePlayerIcon from "url:icons/player-lime.png";
+import MaroonPlayerIcon from "url:icons/player-maroon.png";
+import NavyPlayerIcon from "url:icons/player-navy.png";
+import OrangePlayerIcon from "url:icons/player-orange.png";
+import PinkPlayerIcon from "url:icons/player-pink.png";
+import PurplePlayerIcon from "url:icons/player-purple.png";
+import RedPlayerIcon from "url:icons/player-red.png";
+import TealPlayerIcon from "url:icons/player-teal.png";
+import TurquoisePlayerIcon from "url:icons/player-turquoise.png";
+import VioletPlayerIcon from "url:icons/player-violet.png";
+import WhitePlayerIcon from "url:icons/player-white.png";
+import YellowPlayerIcon from "url:icons/player-yellow.png";
 
 export const playerColors = [
     "black",

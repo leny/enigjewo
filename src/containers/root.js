@@ -11,7 +11,7 @@ import {useGMapAPILoader} from "hooks/use-gmap-api-loader";
 import classnames from "classnames";
 
 import "styles/main.scss";
-import bcgImage from "url:../assets/bcg.jpg?as=webp&width=1920&quality=50";
+import bcgImage from "url:assets/bcg.jpg?as=webp&width=1920&quality=50";
 
 import {MODE_MENU, MODE_GAME, MODE_SETTINGS, MODE_JOIN} from "core/constants";
 
