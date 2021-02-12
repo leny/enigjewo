@@ -7,6 +7,7 @@
  */
 
 import Hashids from "hashids";
+import Alea from "alea";
 
 import {GMAP_API_KEY} from "core/constants";
 
@@ -35,3 +36,5 @@ export const readableDuration = duration =>
     `${String(~~(duration / 60)).padStart(2, "0")}:${String(
         duration % 60,
     ).padStart(2, "0")}`;
+
+export const random = new Alea(`${GMAP_API_KEY}-${Date.now()}`);

@@ -8,6 +8,8 @@
 
 /* global google */
 
+import {random} from "core/utils";
+
 import CorrectPositionIcon from "url:icons/correct-position.png";
 import BlackPlayerIcon from "url:icons/player-black.png";
 import BluePlayerIcon from "url:icons/player-blue.png";
@@ -46,7 +48,7 @@ export const playerColors = [
 ];
 
 export const getRandomPlayerColor = () =>
-    playerColors[~~(Math.random() * playerColors.length)];
+    playerColors[~~(random() * playerColors.length)];
 
 const icons = {
     target: CorrectPositionIcon,

@@ -10,7 +10,7 @@ import {point} from "@turf/helpers";
 import distance from "@turf/distance";
 import bbox from "@turf/bbox";
 import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
-import randomPositionInPolygon from "random-position-in-polygon";
+import {random} from "core/utils";
 
 export const getMaxDistanceBbox = box => {
     const bboxPlace = Object.values(box);
@@ -23,12 +23,17 @@ export const getMaxDistanceBbox = box => {
 export const getGeoJSONDifficulty = geoJSON =>
     getMaxDistanceBbox(bbox(geoJSON)) / 10;
 
+export const getRandomLatLngInBbox = ([a, x, b, y]) => ({
+    lng: random() * (b - a) + a,
+    lat: random() * (y - x) + x,
+});
+
 export const getRandomLatLng = geoJSON => {
     if (!geoJSON) {
         return {
             position: {
-                lat: Math.random() * 170 - 85,
-                lng: Math.random() * 360 - 180,
+                lat: random() * 170 - 85,
+                lng: random() * 360 - 180,
             },
         };
     }
@@ -38,25 +43,25 @@ export const getRandomLatLng = geoJSON => {
 
     if (geoJSON.type === "FeatureCollection") {
         const feature =
-            geoJSON.features[
-                Math.floor(Math.random() * geoJSON.features.length)
-            ];
+            geoJSON.features[Math.floor(random() * geoJSON.features.length)];
 
         if (feature.geometry.type === "point") {
             position = feature.geometry.coordinates;
             radius = 50;
         } else {
-            radius = getMaxDistanceBbox(bbox(feature)) * 100;
-            position = randomPositionInPolygon(feature);
+            const box = bbox(feature);
+            radius = getMaxDistanceBbox(box) * 100;
+            position = getRandomLatLngInBbox(box);
         }
     } else {
-        radius = getMaxDistanceBbox(bbox(geoJSON)) * 100;
-        position = randomPositionInPolygon(geoJSON);
+        const box = bbox(geoJSON);
+        radius = getMaxDistanceBbox(box) * 100;
+        position = getRandomLatLngInBbox(box);
     }
 
     return {
         radius,
-        position: {lat: position[1], lng: position[0]},
+        position,
     };
 };
 
