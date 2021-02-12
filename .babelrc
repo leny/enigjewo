@@ -8,25 +8,5 @@
             }
         ]
     ],
-    "plugins": [
-        [
-            "module-resolver",
-            {
-                "root": ["./src"],
-                "alias": {
-                    "assets": "./src/assets",
-                    "core": "./src/core",
-                    "hooks": "./src/core/hooks",
-                    "icons": "./src/assets/icons",
-                    "components": "./src/components",
-                    "containers": "./src/containers",
-                    "sounds": "./src/sounds",
-                    "store": "./src/store",
-                    "styles": "./src/styles"
-                }
-            }
-        ]
-    ],
-    "compact": false,
-    "comments": false
+    "plugins": []
 }
