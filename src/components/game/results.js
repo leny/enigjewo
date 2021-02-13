@@ -6,6 +6,8 @@
  * started at 04/02/2021
  */
 
+// TODO: split
+
 /* global google */
 
 import "styles/game/results.scss";
@@ -18,16 +20,22 @@ import {renderToStaticMarkup} from "react-dom/server";
 import {GameStoreContext} from "store/game";
 import {NBSP} from "core/constants";
 import {getMarkerIcon} from "core/icons";
-import {noop} from "core/utils";
+import {
+    noop,
+    preventDefault,
+    readableDuration,
+    readableDistance,
+} from "core/utils";
 
 import Button from "components/commons/button";
 import GMap from "components/commons/map";
 import StreetView from "components/commons/street-view";
 import receivingPlayerResults from "store/game/actions/receiving-player-results";
 import receivingRoundParams from "store/game/actions/receiving-round-params";
+import deactivatePlayer from "store/game/actions/deactivate-player";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCrown} from "@fortawesome/free-solid-svg-icons";
+import {faCrown, faWindowClose} from "@fortawesome/free-solid-svg-icons";
 
 import {db} from "core/firebase";
 
@@ -53,6 +61,12 @@ const Results = ({onNext, onEnd}) => {
     const bestScore = Math.max(
         ...Object.values(players).map(({score}) => score),
     );
+
+    const handleDeactivatePlayer = useCallback(key => {
+        if (isMulti) {
+            dispatch(deactivatePlayer(code, key));
+        }
+    }, []);
 
     const handleNextRoundOrSummary = useCallback(() => {
         setPreparing(true);
@@ -127,9 +141,7 @@ const Results = ({onNext, onEnd}) => {
                             }`}
                         </h5>
                         <p>
-                            {distance > 2000
-                                ? `${Math.floor(distance / 1000)}km`
-                                : `${distance}m`}
+                            {readableDistance(distance)}
                             {`${NBSP}-${NBSP}`}
                             <strong
                                 className={classnames(
@@ -153,7 +165,7 @@ const Results = ({onNext, onEnd}) => {
                 map: gmap.current,
                 icon: getMarkerIcon(icon),
             });
-            isMulti && positionInfoWindow.open(gmap.current, positionMarker);
+            // isMulti && positionInfoWindow.open(gmap.current, positionMarker);
             positionMarker.addListener("click", () =>
                 positionInfoWindow.open(gmap.current, positionMarker),
             );
@@ -217,11 +229,15 @@ const Results = ({onNext, onEnd}) => {
                             <th>{"Duration"}</th>
                             <th>{"Score"}</th>
                             <th>{"Total Score"}</th>
+                            {players[player].isOwner && <td />}
                         </tr>
                     </thead>
                     <tbody>
                         {Object.entries(players).map(
-                            ([key, {score: totalScore = 0, name, icon}]) => {
+                            ([
+                                key,
+                                {score: totalScore = 0, name, icon, isActive},
+                            ]) => {
                                 const $name = (
                                     <td>
                                         <img
@@ -235,6 +251,8 @@ const Results = ({onNext, onEnd}) => {
                                                     "has-text-success",
                                                     "has-text-weight-bold",
                                                 ],
+                                                !isActive &&
+                                                    "has-text-grey-light",
                                             )}>
                                             {name}
                                             {totalScore === bestScore && (
@@ -264,7 +282,9 @@ const Results = ({onNext, onEnd}) => {
                                                     "has-text-centered",
                                                     "is-italic",
                                                 )}>
-                                                {"Waiting…"}
+                                                {isActive
+                                                    ? "Waiting…"
+                                                    : "Deactivated"}
                                             </td>
                                             <td
                                                 className={
@@ -272,6 +292,37 @@ const Results = ({onNext, onEnd}) => {
                                                 }>
                                                 {`${totalScore}pts`}
                                             </td>
+                                            {players[player].isOwner &&
+                                            players[player].isActive ? (
+                                                <td>
+                                                    {isActive &&
+                                                        key !== player && (
+                                                            <a
+                                                                href={"#"}
+                                                                className={classnames(
+                                                                    "icon",
+                                                                    "has-text-danger",
+                                                                )}
+                                                                title={
+                                                                    "Deactivate this player"
+                                                                }
+                                                                onClick={preventDefault(
+                                                                    () =>
+                                                                        handleDeactivatePlayer(
+                                                                            key,
+                                                                        ),
+                                                                )}>
+                                                                <FontAwesomeIcon
+                                                                    icon={
+                                                                        faWindowClose
+                                                                    }
+                                                                />
+                                                            </a>
+                                                        )}
+                                                </td>
+                                            ) : (
+                                                <td />
+                                            )}
                                         </tr>
                                     );
                                 }
@@ -290,20 +341,8 @@ const Results = ({onNext, onEnd}) => {
                                 return (
                                     <tr key={key}>
                                         {$name}
-                                        <td>
-                                            {distance > 2000
-                                                ? `${Math.floor(
-                                                      distance / 1000,
-                                                  )}km`
-                                                : `${distance}m`}
-                                        </td>
-                                        <td>
-                                            {`${String(
-                                                Math.floor(duration / 60),
-                                            ).padStart(2, "0")}:${String(
-                                                duration % 60,
-                                            ).padStart(2, "0")}`}
-                                        </td>
+                                        <td>{readableDistance(distance)}</td>
+                                        <td>{readableDuration(duration)}</td>
                                         <td>
                                             <span
                                                 className={classnames(
@@ -314,6 +353,7 @@ const Results = ({onNext, onEnd}) => {
                                             </span>
                                         </td>
                                         <td>{`${totalScore}pts`}</td>
+                                        {players[player].isOwner && <td />}
                                     </tr>
                                 );
                             },
@@ -329,11 +369,7 @@ const Results = ({onNext, onEnd}) => {
         $results = (
             <div className={classnames("card-content", "has-text-centered")}>
                 <p>
-                    <strong>
-                        {distance > 2000
-                            ? `${Math.floor(distance / 1000)}km`
-                            : `${distance}m`}
-                    </strong>
+                    <strong>{readableDistance(distance)}</strong>
                     {`${NBSP}-${NBSP}`}
                     <strong
                         className={classnames(
@@ -353,9 +389,12 @@ const Results = ({onNext, onEnd}) => {
         );
     }
 
-    const allPlayersReady = Object.values(entries).every(
-        ({position}) => !!position,
-    );
+    const allPlayersReady = Object.entries(players)
+        .filter(([, {isActive}]) => isActive)
+        .reduce(
+            (acc, [key]) => acc && !!entries[`rnd-${index}-${key}`]?.position,
+            true,
+        );
 
     let $footer = (
         <span
