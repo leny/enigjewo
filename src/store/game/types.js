@@ -31,6 +31,8 @@ export const ACTION_RECEIVE_ROUND_PARAMS =
 export const ACTION_START_ROUND = "store.game.actions.action_start_round";
 export const ACTION_SEND_PLAYER_ROUND_START_TIME =
     "store.game.actions.action_send_player_round_start_time";
+export const ACTION_DEACTIVATE_PLAYER =
+    "store.game.actions.action_deactivate_player";
 export const ACTION_PREPARE_RESULTS =
     "store.game.actions.action_prepare_results";
 export const ACTION_COMPUTE_RESULTS =

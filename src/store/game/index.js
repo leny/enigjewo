@@ -21,6 +21,7 @@ import {
     ACTION_PREPARE_ROUND,
     ACTION_START_ROUND,
     ACTION_SEND_PLAYER_ROUND_START_TIME,
+    ACTION_DEACTIVATE_PLAYER,
     ACTION_PREPARE_RESULTS,
     ACTION_COMPUTE_RESULTS,
     ACTION_RECEIVE_PLAYER_RESULTS,
@@ -276,6 +277,17 @@ reducersMap.set(ACTION_SHOW_RESULTS, (state, {distance, score}) => {
         ended: state.currentRound.index === state.settings.rounds,
     };
 });
+
+reducersMap.set(ACTION_DEACTIVATE_PLAYER, (state, {player}) => ({
+    ...state,
+    players: {
+        ...state.players,
+        [player]: {
+            ...state.players[player],
+            isActive: false,
+        },
+    },
+}));
 
 reducersMap.set(ACTION_RECEIVE_PLAYER_RESULTS, (state, {entries}) => ({
     ...state,
