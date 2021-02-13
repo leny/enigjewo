@@ -14,6 +14,7 @@ module.exports = {
     extends: "@becode",
     plugins: ["react-hooks"],
     rules: {
+        "no-confusing-arrow": WARNING,
         "react-hooks/rules-of-hooks": ERROR,
         "react-hooks/exhaustive-deps": WARNING,
         // cf. https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html
