@@ -50,6 +50,7 @@ export const initState = () => ({
         /*[player_id]: {
             name String
             isOwner (multi) Bool: is owner of the game - will run actions to initiate rounds
+            isActive (multi) Bool: is active - can be marked unactive to continue game if player has issue
             score Number: computed from entries
             icon String
         }*/
@@ -106,6 +107,7 @@ reducersMap.set(
             [key]: {
                 name,
                 isOwner,
+                isActive: true,
                 score: 0,
                 icon,
             },

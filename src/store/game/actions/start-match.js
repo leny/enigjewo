@@ -42,6 +42,7 @@ export default settings => dispatch => {
                 icon,
                 name,
                 isOwner,
+                isActive: true,
             },
         },
         started: false,
