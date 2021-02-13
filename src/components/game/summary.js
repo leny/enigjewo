@@ -18,6 +18,7 @@ import {renderToStaticMarkup} from "react-dom/server";
 import {GameStoreContext} from "store/game";
 import {NBSP} from "core/constants";
 import {getMarkerIcon} from "core/icons";
+import {readableDuration, readableDistance} from "core/utils";
 
 import Button from "components/commons/button";
 import GMap from "components/commons/map";
@@ -64,9 +65,12 @@ const Summary = ({onRestart}) => {
                 );
 
                 Object.entries(players).forEach(([key, {icon, name}]) => {
-                    const {position, distance, score} = entries[
-                        `rnd-${i}-${key}`
-                    ];
+                    const {position, distance, score} =
+                        entries[`rnd-${i}-${key}`] || {};
+
+                    if (!position) {
+                        return;
+                    }
 
                     const polyLine = new google.maps.Polyline({
                         path: [target, position],
@@ -137,9 +141,7 @@ const Summary = ({onRestart}) => {
                                 {`Round #${i}: Your guess`}
                             </h5>
                             <p>
-                                {distance > 2000
-                                    ? `${Math.floor(distance / 1000)}km`
-                                    : `${distance}m`}
+                                {readableDistance(distance)}
                                 {`${NBSP}-${NBSP}`}
                                 <strong
                                     className={classnames(
@@ -219,9 +221,18 @@ const Summary = ({onRestart}) => {
                             .map(
                                 ([
                                     key,
-                                    {score: totalScore = 0, name, icon},
+                                    {
+                                        score: totalScore = 0,
+                                        name,
+                                        icon,
+                                        isActive,
+                                    },
                                 ]) => (
-                                    <li key={key}>
+                                    <li
+                                        key={key}
+                                        className={classnames(
+                                            !isActive && "has-text-grey-light",
+                                        )}>
                                         <span className={"is-block"}>
                                             <img
                                                 className={
@@ -326,31 +337,30 @@ const Summary = ({onRestart}) => {
                                             startedAt,
                                             endedAt,
                                         } = entries[`rnd-${i}-${player}`];
-                                        const duration = Math.round(
-                                            (endedAt - startedAt) / 1000,
-                                        );
+                                        const duration =
+                                            endedAt && startedAt
+                                                ? Math.round(
+                                                      (endedAt - startedAt) /
+                                                          1000,
+                                                  )
+                                                : null;
 
                                         return (
                                             <tr key={`round-${i}`}>
                                                 <td>{i}</td>
                                                 <td>
-                                                    {distance > 2000
-                                                        ? `${Math.floor(
-                                                              distance / 1000,
-                                                          )}km`
-                                                        : `${distance}m`}
+                                                    {distance
+                                                        ? readableDistance(
+                                                              distance,
+                                                          )
+                                                        : "-"}
                                                 </td>
                                                 <td>
-                                                    {`${String(
-                                                        Math.floor(
-                                                            duration / 60,
-                                                        ),
-                                                    ).padStart(
-                                                        2,
-                                                        "0",
-                                                    )}:${String(
-                                                        duration % 60,
-                                                    ).padStart(2, "0")}`}
+                                                    {duration
+                                                        ? readableDuration(
+                                                              duration,
+                                                          )
+                                                        : "-"}
                                                 </td>
                                                 <td>
                                                     <span
@@ -358,7 +368,9 @@ const Summary = ({onRestart}) => {
                                                             score === 5000 &&
                                                                 "has-text-success",
                                                         )}>
-                                                        {`${score}pts`}
+                                                        {score
+                                                            ? `${score}pts`
+                                                            : "-"}
                                                     </span>
                                                 </td>
                                             </tr>
@@ -402,26 +414,44 @@ const Summary = ({onRestart}) => {
                                         i => i + 1,
                                     ).map(i =>
                                         Object.entries(players).map(
-                                            ([key, {name, icon}], idx) => {
+                                            (
+                                                [key, {name, icon, isActive}],
+                                                idx,
+                                            ) => {
                                                 const {
                                                     distance,
                                                     score,
                                                     startedAt,
                                                     endedAt,
-                                                } = entries[`rnd-${i}-${key}`];
-                                                const duration = Math.round(
-                                                    (endedAt - startedAt) /
-                                                        1000,
-                                                );
+                                                } =
+                                                    entries[
+                                                        `rnd-${i}-${key}`
+                                                    ] || {};
+                                                const duration =
+                                                    endedAt && startedAt
+                                                        ? Math.round(
+                                                              (endedAt -
+                                                                  startedAt) /
+                                                                  1000,
+                                                          )
+                                                        : null;
 
                                                 return (
-                                                    <tr key={`rnd-${i}-${key}`}>
+                                                    <tr
+                                                        key={`rnd-${i}-${key}`}
+                                                        className={classnames(
+                                                            !isActive &&
+                                                                "has-text-grey-light",
+                                                        )}>
                                                         {idx === 0 && (
                                                             <td
                                                                 rowSpan={
                                                                     Object.keys(
                                                                         players,
                                                                     ).length
+                                                                }
+                                                                className={
+                                                                    "summary__round-cell"
                                                                 }>
                                                                 {i}
                                                             </td>
@@ -441,28 +471,18 @@ const Summary = ({onRestart}) => {
                                                             {name}
                                                         </td>
                                                         <td>
-                                                            {distance > 2000
-                                                                ? `${Math.floor(
-                                                                      distance /
-                                                                          1000,
-                                                                  )}km`
-                                                                : `${distance}m`}
+                                                            {distance
+                                                                ? readableDistance(
+                                                                      distance,
+                                                                  )
+                                                                : "-"}
                                                         </td>
                                                         <td>
-                                                            {`${String(
-                                                                Math.floor(
-                                                                    duration /
-                                                                        60,
-                                                                ),
-                                                            ).padStart(
-                                                                2,
-                                                                "0",
-                                                            )}:${String(
-                                                                duration % 60,
-                                                            ).padStart(
-                                                                2,
-                                                                "0",
-                                                            )}`}
+                                                            {duration
+                                                                ? readableDuration(
+                                                                      duration,
+                                                                  )
+                                                                : "-"}
                                                         </td>
                                                         <td>
                                                             <span
@@ -471,7 +491,9 @@ const Summary = ({onRestart}) => {
                                                                         5000 &&
                                                                         "has-text-success",
                                                                 )}>
-                                                                {`${score}pts`}
+                                                                {score
+                                                                    ? `${score}pts`
+                                                                    : "-"}
                                                             </span>
                                                         </td>
                                                     </tr>

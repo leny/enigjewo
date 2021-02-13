@@ -14,5 +14,11 @@
         height: 100%;
         min-height: 200px;
     }
+    &__round-cell {
+        width: 100px;
+        vertical-align: middle !important;
+        text-align: center !important;
+            border-right: 1px solid #dbdbdb !important;
+    }
 }
 
