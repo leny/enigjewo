@@ -18,7 +18,7 @@ export default settings => async dispatch => {
     } = settings;
 
     await db.ref(`games/${code}/players`).update({
-        [key]: {icon, name, isOwner},
+        [key]: {icon, name, isOwner, isActive: true},
     });
 
     const game = (await db.ref(`games/${code}`).get()).val();
