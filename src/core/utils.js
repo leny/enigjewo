@@ -37,4 +37,7 @@ export const readableDuration = duration =>
         duration % 60,
     ).padStart(2, "0")}`;
 
+export const readableDistance = distance =>
+    distance > 2000 ? `${Math.floor(distance / 1000)}km` : `${distance}m`;
+
 export const random = new Alea(`${GMAP_API_KEY}-${Date.now()}`);
