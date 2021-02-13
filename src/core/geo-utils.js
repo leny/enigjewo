@@ -6,6 +6,7 @@
  * started at 02/02/2021
  */
 
+import {DEBUG} from "core/constants";
 import {point} from "@turf/helpers";
 import distance from "@turf/distance";
 import bbox from "@turf/bbox";
@@ -30,11 +31,15 @@ export const getRandomLatLngInBbox = ([a, x, b, y]) => ({
 
 export const getRandomLatLng = geoJSON => {
     if (!geoJSON) {
+        const position = {
+            lat: random() * 170 - 85,
+            lng: random() * 360 - 180,
+        };
+
+        DEBUG && console.log("DEBUG:getRandomLatLng:", position);
+
         return {
-            position: {
-                lat: random() * 170 - 85,
-                lng: random() * 360 - 180,
-            },
+            position,
         };
     }
 
@@ -58,6 +63,8 @@ export const getRandomLatLng = geoJSON => {
         radius = getMaxDistanceBbox(box) * 100;
         position = getRandomLatLngInBbox(box);
     }
+
+    DEBUG && console.log("DEBUG:getRandomLatLng:", position);
 
     return {
         radius,
