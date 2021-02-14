@@ -302,7 +302,7 @@ reducersMap.set(ACTION_RECEIVE_PLAYER_RESULTS, (state, {entries}) => ({
                     i => i + 1,
                 ).reduce(
                     (acc, ind) =>
-                        acc + (entries[`rnd-${ind}-${key}`].score || 0),
+                        acc + (entries[`rnd-${ind}-${key}`]?.score || 0),
                     0,
                 ),
             },
