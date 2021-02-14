@@ -23,6 +23,9 @@ export const FIREBASE_MESSAGE_SENDER_ID =
     process.env.FIREBASE_MESSAGE_SENDER_ID;
 export const FIREBASE_APP_ID = process.env.FIREBASE_APP_ID;
 
+export const SENTRY_DSN = process.env.SENTRY_DSN;
+export const USE_SENTRY = process.end.NODE_ENV === "production";
+
 export const DEFAULT_ROUNDS = 5;
 export const DEFAULT_ROUND_DURATION = 300; // five minutes
 export const DEFAULT_DIFFICULTY = 2000;
