@@ -297,6 +297,7 @@ reducersMap.set(ACTION_RECEIVE_PLAYER_RESULTS, (state, {entries}) => ({
             key,
             {
                 ...player,
+                isActive: true,
                 score: Array.from(
                     new Array(state.currentRound.index).keys(),
                     i => i + 1,

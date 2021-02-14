@@ -69,6 +69,9 @@ export default (
             score,
             endedAt: now,
         });
+        await db.ref(`games/${code}/players/${player}`).update({
+            isActive: true,
+        });
     }
 
     dispatch({
