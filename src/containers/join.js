@@ -10,13 +10,13 @@ import "styles/settings.scss";
 
 import PropTypes from "prop-types";
 
-import {useEffect, useState} from "react";
+import {useEffect, useState, useMemo} from "react";
 import {useFormik} from "formik";
 import {useLocalStorage} from "react-use-storage";
 
 import {NBSP} from "core/constants";
 import {getRandomPlayerColor} from "core/icons";
-import {hashid, generatePlayerKey} from "core/utils";
+import {generatePlayerKey} from "core/utils";
 import {db} from "core/firebase";
 import classnames from "classnames";
 
@@ -24,7 +24,7 @@ import Box from "components/commons/box";
 import Button from "components/commons/button";
 import Input from "components/form/input";
 
-const JoinContainer = ({code, onJoinGame, onShowSummary}) => {
+const JoinContainer = ({code, onJoinGame, onContinueGame, onShowSummary}) => {
     const [checkingCode, setCheckingCode] = useState(true);
     const [game, setGame] = useState(null);
     const [rawPlayerKey, setRawPlayerKey] = useLocalStorage(
@@ -35,6 +35,15 @@ const JoinContainer = ({code, onJoinGame, onShowSummary}) => {
         "settings-player-name",
         "",
     );
+
+    const canContinue = useMemo(
+        () =>
+            !checkingCode &&
+            (!game || (game.started && !game.ended)) &&
+            !!game.players[rawPlayerKey],
+        [checkingCode, game, rawPlayerKey],
+    );
+
     const {handleSubmit, handleChange, values} = useFormik({
         initialValues: {
             name: rawPlayerName,
@@ -43,6 +52,14 @@ const JoinContainer = ({code, onJoinGame, onShowSummary}) => {
             if (game.ended) {
                 onShowSummary(game);
                 return;
+            }
+
+            if (canContinue) {
+                onContinueGame({
+                    code,
+                    continue: true,
+                    player: {key: rawPlayerKey},
+                });
             }
 
             if (name) {
@@ -54,13 +71,7 @@ const JoinContainer = ({code, onJoinGame, onShowSummary}) => {
                     code,
                     join: true,
                     player: {
-                        key: hashid(
-                            Date.now() +
-                                name
-                                    .split("")
-                                    .map((s, i) => name.charCodeAt(i))
-                                    .reduce((a, i) => a + i, 0),
-                        ),
+                        key,
                         name,
                         isOwner: false,
                         icon: getRandomPlayerColor(),
@@ -89,7 +100,7 @@ const JoinContainer = ({code, onJoinGame, onShowSummary}) => {
             disabled={
                 !game ||
                 (!game.started && !values.name) ||
-                (game.started && !game.ended)
+                (game.started && !game.ended && !canContinue)
             }
             className={classnames("card-footer-item", "no-top-radius")}
         />
@@ -125,7 +136,21 @@ const JoinContainer = ({code, onJoinGame, onShowSummary}) => {
                                 />
                             )}
                             {!checkingCode &&
-                                (!game || (game.started && !game.ended)) && (
+                                (!game || (game.started && !game.ended)) &&
+                                (canContinue ? (
+                                    <div
+                                        className={classnames(
+                                            "notification",
+                                            "is-success",
+                                            "mt-2",
+                                        )}>
+                                        <strong>{"NOTE:"}</strong>
+                                        {NBSP}
+                                        {
+                                            "The game has continued without you. You will come back in the match with a random guess for the current round."
+                                        }
+                                    </div>
+                                ) : (
                                     <div
                                         className={classnames(
                                             "notification",
@@ -138,7 +163,7 @@ const JoinContainer = ({code, onJoinGame, onShowSummary}) => {
                                             "Invalid code. Please check the URL & retry."
                                         }
                                     </div>
-                                )}
+                                ))}
                             {!checkingCode && game && game.ended && (
                                 <div
                                     className={classnames(
@@ -161,6 +186,7 @@ const JoinContainer = ({code, onJoinGame, onShowSummary}) => {
 
 JoinContainer.propTypes = {
     onJoinGame: PropTypes.func.isRequired,
+    onContinueGame: PropTypes.func.isRequired,
     onShowSummary: PropTypes.func.isRequired,
 };
 

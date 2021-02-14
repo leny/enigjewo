@@ -58,6 +58,7 @@ const GameContainer = ({settings, onRestart}) => {
             dispatch(injectGameSummary(settings.game));
             return;
         }
+        // TODO: handle settings.continue -> continueMatch
         dispatch((settings.join ? joinMatch : startMatch)(settings));
     }, []);
 

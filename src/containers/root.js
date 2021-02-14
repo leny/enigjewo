@@ -41,6 +41,11 @@ const RootContainer = () => {
         setMode(MODE_GAME);
     }, []);
 
+    const handleContinueGame = useCallback(options => {
+        setGameSettings(options);
+        setMode(MODE_GAME);
+    }, []);
+
     const handleShowSummary = useCallback(
         game => {
             setGameSettings({ended: true, code, game});
@@ -70,6 +75,7 @@ const RootContainer = () => {
             <JoinContainer
                 code={code}
                 onJoinGame={handleJoinGame}
+                onContinueGame={handleContinueGame}
                 onShowSummary={handleShowSummary}
             />
         );
