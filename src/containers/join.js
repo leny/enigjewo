@@ -12,10 +12,11 @@ import PropTypes from "prop-types";
 
 import {useEffect, useState} from "react";
 import {useFormik} from "formik";
+import {useLocalStorage} from "react-use-storage";
 
 import {NBSP} from "core/constants";
 import {getRandomPlayerColor} from "core/icons";
-import {hashid} from "core/utils";
+import {hashid, generatePlayerKey} from "core/utils";
 import {db} from "core/firebase";
 import classnames from "classnames";
 
@@ -26,9 +27,17 @@ import Input from "components/form/input";
 const JoinContainer = ({code, onJoinGame, onShowSummary}) => {
     const [checkingCode, setCheckingCode] = useState(true);
     const [game, setGame] = useState(null);
+    const [rawPlayerKey, setRawPlayerKey] = useLocalStorage(
+        "settings-player-key",
+        generatePlayerKey("Player"),
+    );
+    const [rawPlayerName, setRawPlayerName] = useLocalStorage(
+        "settings-player-name",
+        "",
+    );
     const {handleSubmit, handleChange, values} = useFormik({
         initialValues: {
-            name: "",
+            name: rawPlayerName,
         },
         onSubmit: ({name}) => {
             if (game.ended) {
@@ -36,7 +45,11 @@ const JoinContainer = ({code, onJoinGame, onShowSummary}) => {
                 return;
             }
 
-            name &&
+            if (name) {
+                const key =
+                    name !== rawPlayerName
+                        ? generatePlayerKey(name)
+                        : rawPlayerKey;
                 onJoinGame({
                     code,
                     join: true,
@@ -53,6 +66,11 @@ const JoinContainer = ({code, onJoinGame, onShowSummary}) => {
                         icon: getRandomPlayerColor(),
                     },
                 });
+                if (name !== rawPlayerName) {
+                    setRawPlayerName(name);
+                    setRawPlayerKey(key);
+                }
+            }
         },
     });
 
