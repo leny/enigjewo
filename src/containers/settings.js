@@ -12,11 +12,12 @@ import PropTypes from "prop-types";
 
 import {useEffect, useRef} from "react";
 import {useFormik} from "formik";
+import {useLocalStorage} from "react-use-storage";
 
 import {DEFAULT_ROUND_DURATION, DEFAULT_ROUNDS} from "core/constants";
 import {maps, loadGeoJSON} from "core/maps";
 import {getRandomPlayerColor} from "core/icons";
-import {hashid} from "core/utils";
+import {hashid, generatePlayerKey} from "core/utils";
 import bbox from "@turf/bbox";
 import classnames from "classnames";
 
@@ -30,13 +31,21 @@ import DurationSelector from "components/settings/duration";
 
 const SettingsContainer = ({onStartGame}) => {
     const gmap = useRef(null);
+    const [rawPlayerKey, setRawPlayerKey] = useLocalStorage(
+        "settings-player-key",
+        generatePlayerKey("Player"),
+    );
+    const [rawPlayerName, setRawPlayerName] = useLocalStorage(
+        "settings-player-name",
+        "Player",
+    );
     const {handleSubmit, handleChange, values, setFieldValue} = useFormik({
         initialValues: {
             totalRounds: DEFAULT_ROUNDS,
             roundDuration: DEFAULT_ROUND_DURATION,
             map: "world",
             isMulti: false,
-            name: "Player",
+            name: rawPlayerName,
             isOwner: true,
             title: "My awesome game",
         },
@@ -49,6 +58,8 @@ const SettingsContainer = ({onStartGame}) => {
             name,
             isOwner,
         }) => {
+            const key =
+                name !== rawPlayerName ? generatePlayerKey(name) : rawPlayerKey;
             onStartGame({
                 code: hashid(),
                 title: title || `Solo Game: ${maps[map].label}`,
@@ -57,18 +68,16 @@ const SettingsContainer = ({onStartGame}) => {
                 map,
                 isMulti,
                 player: {
-                    key: hashid(
-                        Date.now() +
-                            name
-                                .split("")
-                                .map((s, i) => name.charCodeAt(i))
-                                .reduce((a, i) => a + i, 0),
-                    ),
+                    key,
                     name,
                     isOwner,
                     icon: isMulti ? getRandomPlayerColor() : "white",
                 },
             });
+            if (name !== rawPlayerName) {
+                setRawPlayerName(name);
+                setRawPlayerKey(key);
+            }
         },
     });
 
