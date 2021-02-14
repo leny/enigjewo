@@ -9,7 +9,7 @@
 import {render} from "react-dom";
 
 import "bulma";
-import "core/sentry";
+// import "core/sentry";
 
 import Root from "./containers/root";
 
