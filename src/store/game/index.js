@@ -130,7 +130,11 @@ reducersMap.set(
         ...state,
         code,
         title,
-        settings: {...settings, isMulti: true},
+        settings: {
+            ...settings,
+            duration: settings.duration === 0 ? false : settings.duration,
+            isMulti: true,
+        },
         players: {
             ...players,
             [player]: {
