@@ -37,13 +37,12 @@ const Summary = ({onRestart}) => {
         entries,
         player,
         players,
-        ended,
         injected,
     } = useContext(GameStoreContext);
     const gmap = useRef(null);
 
     useEffect(() => {
-        if (!ended && isMulti && players[player].isOwner) {
+        if (isMulti && players[player].isOwner) {
             dispatch(sendEndGameState({code}));
         }
     }, []);
