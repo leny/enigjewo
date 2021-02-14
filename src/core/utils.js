@@ -32,6 +32,15 @@ const hashids = new Hashids(
 );
 export const hashid = (value = Date.now()) => hashids.encode(+value);
 
+export const generatePlayerKey = name =>
+    hashid(
+        Date.now() +
+            name
+                .split("")
+                .map((s, i) => name.charCodeAt(i))
+                .reduce((a, i) => a + i, 0),
+    );
+
 export const readableDuration = duration =>
     `${String(~~(duration / 60)).padStart(2, "0")}:${String(
         duration % 60,
