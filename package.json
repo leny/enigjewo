@@ -62,7 +62,6 @@
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@googlemaps/js-api-loader": "^1.11.1",
     "@sentry/react": "^6.1.0",
-    "@sentry/tracing": "^6.1.0",
     "@turf/bbox": "^6.3.0",
     "@turf/boolean-point-in-polygon": "^6.3.0",
     "@turf/distance": "^6.3.0",
