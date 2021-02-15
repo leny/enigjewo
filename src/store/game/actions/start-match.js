@@ -45,6 +45,7 @@ export default settings => dispatch => {
                 isActive: true,
             },
         },
+        startedAt: Date.now(),
         started: false,
         ended: false,
     };

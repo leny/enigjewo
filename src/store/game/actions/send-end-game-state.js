@@ -13,6 +13,7 @@ import {db} from "core/firebase";
 export default ({code}) => async dispatch => {
     await db.ref(`games/${code}`).update({
         ended: true,
+        endedAt: Date.now(),
     });
 
     dispatch({
