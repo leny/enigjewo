@@ -17,6 +17,7 @@ export const useGMapAPILoader = (options = {}) => {
     const loader = new Loader({
         apiKey: GMAP_API_KEY,
         version: "weekly",
+        libraries: ["geometry"],
         ...options,
     });
 
