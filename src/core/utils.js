@@ -25,6 +25,10 @@ export const preventDefault = next => e => {
 
 export const withValue = next => e => next(e.currentTarget.value);
 
+const increment = i => i + 1;
+
+export const indexedArray = i => Array.from(new Array(i).keys(), increment);
+
 const hashids = new Hashids(
     GMAP_API_KEY,
     0,

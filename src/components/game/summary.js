@@ -18,7 +18,7 @@ import {renderToStaticMarkup} from "react-dom/server";
 import {GameStoreContext} from "store/game";
 import {NBSP} from "core/constants";
 import {getMarkerIcon} from "core/icons";
-import {readableDuration, readableDistance} from "core/utils";
+import {readableDuration, readableDistance, indexedArray} from "core/utils";
 
 import Button from "components/commons/button";
 import GMap from "components/commons/map";
@@ -54,7 +54,7 @@ const Summary = ({onRestart}) => {
 
         const bounds = new google.maps.LatLngBounds();
         gmap.current.setZoom(18);
-        Array.from(new Array(total).keys(), i => i + 1).forEach(i => {
+        indexedArray(total).forEach(i => {
             const {target} = rounds[`rnd-${i}`];
             if (isMulti) {
                 const bestScore = Math.max(
@@ -326,10 +326,7 @@ const Summary = ({onRestart}) => {
                                     </tr>
                                 </tfoot>
                                 <tbody>
-                                    {Array.from(
-                                        new Array(total).keys(),
-                                        i => i + 1,
-                                    ).map(i => {
+                                    {indexedArray(total).map(i => {
                                         const {
                                             distance,
                                             score,
@@ -408,10 +405,7 @@ const Summary = ({onRestart}) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {Array.from(
-                                        new Array(total).keys(),
-                                        i => i + 1,
-                                    ).map(i =>
+                                    {indexedArray(total).map(i =>
                                         Object.entries(players).map(
                                             (
                                                 [key, {name, icon, isActive}],

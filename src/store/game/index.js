@@ -7,6 +7,7 @@
  */
 
 import {DEBUG} from "core/constants";
+import {indexedArray} from "core/utils";
 import {
     STEP_LOADING,
     STEP_LOBBY,
@@ -257,10 +258,7 @@ reducersMap.set(ACTION_SHOW_RESULTS, (state, {distance, score}) => {
             ...state.players,
             [state.player]: {
                 ...state.players[state.player],
-                score: Array.from(
-                    new Array(state.currentRound.index - 1).keys(),
-                    i => i + 1,
-                ).reduce(
+                score: indexedArray(state.currentRound.index - 1).reduce(
                     (acc, ind) =>
                         acc +
                         (state.entries[`rnd-${ind}-${state.player}`].score ||
@@ -302,10 +300,7 @@ reducersMap.set(ACTION_RECEIVE_PLAYER_RESULTS, (state, {entries}) => ({
             {
                 ...player,
                 isActive: true,
-                score: Array.from(
-                    new Array(state.currentRound.index).keys(),
-                    i => i + 1,
-                ).reduce(
+                score: indexedArray(state.currentRound.index).reduce(
                     (acc, ind) =>
                         acc + (entries[`rnd-${ind}-${key}`]?.score || 0),
                     0,
@@ -338,10 +333,7 @@ reducersMap.set(ACTION_INJECT_SUMMARY, (state, game) => ({
             key,
             {
                 ...player,
-                score: Array.from(
-                    new Array(game.settings.rounds).keys(),
-                    i => i + 1,
-                ).reduce(
+                score: indexedArray(game.settings.rounds).reduce(
                     (acc, ind) =>
                         acc + (game.entries[`rnd-${ind}-${key}`].score || 0),
                     0,
