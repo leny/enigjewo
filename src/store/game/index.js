@@ -16,6 +16,7 @@ import {
     STEP_SUMMARY,
     ACTION_PREPARE_GAME,
     ACTION_JOIN_GAME,
+    ACTION_CONTINUE_GAME,
     ACTION_SEND_PLAYER_INFOS,
     ACTION_RECEIVE_PLAYER_INFOS,
     ACTION_SEND_SETTINGS,
@@ -124,6 +125,29 @@ reducersMap.set(ACTION_SEND_SETTINGS, state => ({
 }));
 
 reducersMap.set(ACTION_JOIN_GAME, state => ({...state, step: STEP_LOADING}));
+
+reducersMap.set(ACTION_CONTINUE_GAME, (state, game) => ({
+    ...state,
+    ...game,
+    settings: {
+        ...game.settings,
+        isMulti: true,
+    },
+    players: Object.fromEntries(
+        Object.entries(game.players).map(([key, player]) => [
+            key,
+            {
+                ...player,
+                score: indexedArray(game.settings.rounds).reduce(
+                    (acc, ind) =>
+                        acc + (game.entries[`rnd-${ind}-${key}`]?.score || 0),
+                    0,
+                ),
+            },
+        ]),
+    ),
+    step: STEP_RESULTS,
+}));
 
 reducersMap.set(
     ACTION_SEND_PLAYER_INFOS,

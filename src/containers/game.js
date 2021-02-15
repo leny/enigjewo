@@ -22,6 +22,7 @@ import {
 import {initState, reducer, GameStoreContext} from "store/game";
 import startMatch from "store/game/actions/start-match";
 import joinMatch from "store/game/actions/join-match";
+import continueMatch from "store/game/actions/continue-match";
 import startRound from "store/game/actions/start-round";
 import computeResults from "store/game/actions/compute-results";
 import endMatch from "store/game/actions/end-match";
@@ -58,8 +59,15 @@ const GameContainer = ({settings, onRestart}) => {
             dispatch(injectGameSummary(settings.game));
             return;
         }
-        // TODO: handle settings.continue -> continueMatch
-        dispatch((settings.join ? joinMatch : startMatch)(settings));
+        if (settings.continue) {
+            dispatch(continueMatch(settings));
+            return;
+        }
+        if (settings.join) {
+            dispatch(joinMatch(settings));
+            return;
+        }
+        dispatch(startMatch(settings));
     }, []);
 
     useEffect(() => {
