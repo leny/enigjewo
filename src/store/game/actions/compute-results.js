@@ -6,8 +6,6 @@
  * started at 03/02/2021
  */
 
-/* global google */
-
 import {
     ACTION_PREPARE_RESULTS,
     ACTION_COMPUTE_RESULTS,
@@ -15,7 +13,8 @@ import {
 } from "store/game/types";
 
 import {db} from "core/firebase";
-import {getRandomLatLng} from "core/geo-utils";
+import {getRandomLatLng, computeDistanceBetween} from "core/geo-utils";
+import {computeScore} from "core/utils";
 import {loadGeoJSON} from "core/maps";
 
 export default (
@@ -41,26 +40,9 @@ export default (
     }
 
     dispatch({type: ACTION_COMPUTE_RESULTS, position});
-    const distance = Math.floor(
-        google.maps.geometry.spherical.computeDistanceBetween(
-            new google.maps.LatLng(target),
-            new google.maps.LatLng(position),
-        ),
-    );
+    const distance = Math.floor(computeDistanceBetween(target, position));
 
-    let score;
-
-    if (distance < 50) {
-        score = 5000;
-    } else {
-        score = Math.min(
-            5000,
-            Math.max(
-                0,
-                Math.round(5000 * Math.exp(-(distance / 1000 / difficulty))),
-            ),
-        );
-    }
+    const score = computeScore(distance, difficulty);
 
     if (isMulti) {
         await db.ref(`games/${code}/entries/rnd-${round}-${player}`).update({

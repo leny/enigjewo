@@ -10,7 +10,7 @@ import {ACTION_JOIN_GAME, ACTION_SEND_PLAYER_INFOS} from "store/game/types";
 import {db} from "core/firebase";
 
 export default settings => async dispatch => {
-    dispatch({type: ACTION_JOIN_GAME, ...settings});
+    dispatch({type: ACTION_JOIN_GAME});
 
     const {
         code,
