@@ -54,3 +54,14 @@ export const readableDistance = distance =>
     distance > 2000 ? `${Math.floor(distance / 1000)}km` : `${distance}m`;
 
 export const random = new Alea(`${GMAP_API_KEY}-${Date.now()}`);
+
+export const computeScore = (distance, difficulty) =>
+    distance < 50
+        ? 5000
+        : Math.min(
+              5000,
+              Math.max(
+                  0,
+                  Math.round(5000 * Math.exp(-(distance / 1000 / difficulty))),
+              ),
+          );
