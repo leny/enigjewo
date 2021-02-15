@@ -6,6 +6,8 @@
  * started at 02/02/2021
  */
 
+/* global google */
+
 import {DEBUG} from "core/constants";
 import {point} from "@turf/helpers";
 import distance from "@turf/distance";
@@ -95,3 +97,9 @@ export const isInGeoJSON = (pnt, geoJSON) => {
         return booleanPointInPolygon(pnt, feature);
     });
 };
+
+export const computeDistanceBetween = (from, to) =>
+    google.maps.geometry.spherical.computeDistanceBetween(
+        new google.maps.LatLng(from),
+        new google.maps.LatLng(to),
+    );
