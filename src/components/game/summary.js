@@ -19,6 +19,8 @@ import {GameStoreContext} from "store/game";
 import {NBSP} from "core/constants";
 import {getMarkerIcon} from "core/icons";
 import {readableDuration, readableDistance, indexedArray} from "core/utils";
+import {maps} from "core/maps";
+import dayjs from "dayjs";
 
 import Button from "components/commons/button";
 import GMap from "components/commons/map";
@@ -32,12 +34,13 @@ const Summary = ({onRestart}) => {
         dispatch,
         code,
         title,
-        settings: {rounds: total, isMulti},
+        settings: {rounds: total, isMulti, map},
         rounds,
         entries,
         player,
         players,
         injected,
+        startedAt: gameStartedAt,
     } = useContext(GameStoreContext);
     const gmap = useRef(null);
 
@@ -298,8 +301,14 @@ const Summary = ({onRestart}) => {
                             className={classnames(
                                 "card-header-title",
                                 "has-text-white",
+                                "is-justify-content-space-between",
+                                "is-align-items-center",
                             )}>
-                            {`${title}: Summary`}
+                            <span>{`${title}`}</span>
+                            <small>
+                                {dayjs(gameStartedAt).format("DD/MM/YYYY")}
+                            </small>
+                            <span>{maps[map].label}</span>
                         </span>
                     </header>
                     {!isMulti && (
