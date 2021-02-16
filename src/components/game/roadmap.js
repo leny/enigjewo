@@ -11,7 +11,6 @@
 import "styles/game/roadmap.scss";
 
 import {useState, useEffect, useContext, useCallback, useRef} from "react";
-import {useLocalStorage} from "react-use-storage";
 import {GameStoreContext} from "store/game";
 import PropTypes from "prop-types";
 import classnames from "classnames";
@@ -43,8 +42,16 @@ const SIZE_MEDIUM = "medium";
 const SIZE_BIG = "big";
 
 const Roadmap = ({
+    className,
     startPosition = {lat: 0, lng: 0},
     startZoom = 2,
+    isDocked,
+    isPinned,
+    size,
+    onTogglePinned,
+    onToggleDocked,
+    onShrinkSize,
+    onGrowSize,
     onResetPanorama,
     onUpdatePosition,
     onGuessPosition,
@@ -59,15 +66,6 @@ const Roadmap = ({
     const [showNotes, setShowNotes] = useState(null);
     const [notes, setNotes] = useState("");
     const [marker, setMarker] = useState(null);
-    const [isDocked, setIsDocked] = useLocalStorage(
-        "roadmap-ui-is-docked",
-        false,
-    );
-    const [size, setSize] = useLocalStorage("roadmap-ui-size", SIZE_SMALL);
-    const [isPinned, setIsPinned] = useLocalStorage(
-        "roadmap-ui-is-pinned",
-        false,
-    );
     const [ready, setReady] = useState(false);
     const gmap = useRef(null);
 
@@ -79,10 +77,6 @@ const Roadmap = ({
         setReady(true);
         gmap.current.fitBounds(bounds);
     }, [gmap.current, bounds, ready]);
-
-    const handleToggleDockedMode = useCallback(() => {
-        setIsDocked(!isDocked);
-    }, [setIsDocked, isDocked]);
 
     const handleClickOnMap = useCallback(
         (map, {latLng}) => {
@@ -113,35 +107,6 @@ const Roadmap = ({
         [setShowNotes],
     );
 
-    const handlePinBox = useCallback(() => setIsPinned(!isPinned), [
-        setIsPinned,
-        isPinned,
-    ]);
-
-    const handleGrowBox = useCallback(
-        () =>
-            setSize(
-                {
-                    [SIZE_SMALL]: SIZE_MEDIUM,
-                    [SIZE_MEDIUM]: SIZE_BIG,
-                    [SIZE_BIG]: SIZE_BIG,
-                }[size],
-            ),
-        [setSize, size],
-    );
-
-    const handleShrinkBox = useCallback(
-        () =>
-            setSize(
-                {
-                    [SIZE_SMALL]: SIZE_SMALL,
-                    [SIZE_MEDIUM]: SIZE_SMALL,
-                    [SIZE_BIG]: SIZE_MEDIUM,
-                }[size],
-            ),
-        [setSize, size],
-    );
-
     return (
         <div
             className={classnames(
@@ -154,24 +119,8 @@ const Roadmap = ({
                 isDocked && `roadmap--is-docked`,
                 size === SIZE_MEDIUM && "roadmap--size-medium",
                 size === SIZE_BIG && "roadmap--size-big",
+                className,
             )}>
-            {showNotes && (
-                <div className={classnames("mb-1", "roadmap__notes")}>
-                    <textarea
-                        className={classnames(
-                            "textarea",
-                            "roadmap__notes-area",
-                            "has-fixed-size",
-                        )}
-                        name={"notes"}
-                        placeholder={
-                            "Here's a notepad for you. It's emptied after each round."
-                        }
-                        value={notes}
-                        onChange={withValue(setNotes)}
-                    />
-                </div>
-            )}
             <div
                 className={classnames(
                     "roadmap__tools",
@@ -180,6 +129,23 @@ const Roadmap = ({
                     "is-justify-content-space-between",
                     "is-align-content-center",
                 )}>
+                {showNotes && (
+                    <div className={classnames("mb-1", "roadmap__notes")}>
+                        <textarea
+                            className={classnames(
+                                "textarea",
+                                "roadmap__notes-area",
+                                "has-fixed-size",
+                            )}
+                            name={"notes"}
+                            placeholder={
+                                "Here's a notepad for you. It's emptied after each round."
+                            }
+                            value={notes}
+                            onChange={withValue(setNotes)}
+                        />
+                    </div>
+                )}
                 <span>
                     <ToolIcon
                         icon={faMapMarkerAlt}
@@ -203,26 +169,26 @@ const Roadmap = ({
                     <ToolIcon
                         icon={isDocked ? faWindowRestore : faWindowMaximize}
                         title={`${isDocked ? "Floating" : "Docked"} roadmap`}
-                        onClick={handleToggleDockedMode}
+                        onClick={onToggleDocked}
                     />
                     <ToolIcon
                         icon={isDocked ? faLongArrowAltDown : faCompressAlt}
                         title={"Shrink roadmap"}
                         disabled={size === SIZE_SMALL}
-                        onClick={handleShrinkBox}
+                        onClick={onShrinkSize}
                     />
                     <ToolIcon
                         icon={isDocked ? faLongArrowAltUp : faExpandAlt}
                         title={"Expand roadmap"}
                         disabled={size === SIZE_BIG}
-                        onClick={handleGrowBox}
+                        onClick={onGrowSize}
                     />
                     {!isDocked && (
                         <ToolIcon
                             icon={faThumbtack}
                             title={"Pin roadmap"}
                             active={isPinned}
-                            onClick={handlePinBox}
+                            onClick={onTogglePinned}
                         />
                     )}
                 </span>
@@ -251,6 +217,13 @@ Roadmap.propTypes = {
         lng: PropTypes.number.isRequired,
     }),
     startZoom: PropTypes.number,
+    isDocked: PropTypes.bool,
+    isPinned: PropTypes.bool,
+    size: PropTypes.string.isRequired,
+    onTogglePinned: PropTypes.func.isRequired,
+    onToggleDocked: PropTypes.func.isRequired,
+    onShrinkSize: PropTypes.func.isRequired,
+    onGrowSize: PropTypes.func.isRequired,
     onResetPanorama: PropTypes.func.isRequired,
     onUpdatePosition: PropTypes.func.isRequired,
     onGuessPosition: PropTypes.func.isRequired,

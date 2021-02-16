@@ -11,8 +11,15 @@
     left: 2rem;
     bottom: 2rem;
     z-index: 100;
+    &__tools {
+        position: relative;
+    }
     &__notes {
+        position: absolute;
+        bottom: calc(100% + 0.25rem);
+        left: 0;
         transition: width 0.25s ease-in-out, height 0.25s ease-in-out;
+        width: 100%;
         height: 320px;
         > textarea {
             width: 100%;
@@ -26,14 +33,20 @@
         background: lightgray; // tmp
     }
     &--is-docked {
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        position: static;
         opacity: 1;
-        .roadmap__map{
+        .roadmap__map {
             width: 100vw;
-            height: 30vh;
+            height: 25vh;
+        }
+        .roadmap__tools {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            padding-bottom: 1rem;
+        }
+        .roadmap__notes {
+            width: 30vw;
+            margin-left: 1rem;
         }
         &.roadmap--size-medium {
             .roadmap__map {
@@ -42,16 +55,14 @@
         }
         &.roadmap--size-big {
             .roadmap__map {
-                height: 75vh;
+                height: 65vh;
             }
-        }
-        .roadmap__tools {
-            padding-left: 1rem;
-            padding-right: 4.5rem;
-        }
-        .roadmap__notes {
-            width: 20vw;
-            margin-left: 1rem;
+            .roadmap__notes {
+                height: 12.5vh;
+                > textarea {
+                    min-height: 0;
+                }
+            }
         }
     }
     &--is-pinned {

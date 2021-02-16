@@ -11,6 +11,7 @@
 import "styles/game.scss";
 
 import {useRef, useEffect, forwardRef} from "react";
+import useComponentSize from "@rehooks/component-size";
 
 import classnames from "classnames";
 import PropTypes from "prop-types";
@@ -18,6 +19,7 @@ import PropTypes from "prop-types";
 const StreetView = forwardRef(
     ({className, panorama, options = {}}, streetView) => {
         const box = useRef(null);
+        const {height} = useComponentSize(box);
 
         useEffect(() => {
             if (streetView.current || !box.current) {
@@ -50,6 +52,13 @@ const StreetView = forwardRef(
             });
             streetView.current.setZoom(0);
         }, [box, streetView.current, panorama, options]);
+
+        useEffect(
+            () =>
+                streetView.current &&
+                google.maps.event.trigger(streetView.current, "resize"),
+            [streetView.current, height],
+        );
 
         return <div className={classnames(className, "expand")} ref={box} />;
     },

@@ -7,7 +7,23 @@
  */
 
 .play {
+    position: fixed;
+    top: 0;
+    right:0;
+    bottom:0;
+    left:0;
+    &--docked{
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        	align-items: center;
+        .play__roadmap {
 
+        }
+        .play__street-view {
+            margin-bottom: -3.5rem;
+        }
+    }
 }
 
 .bust-scroll {

@@ -61,6 +61,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@googlemaps/js-api-loader": "^1.11.1",
+    "@rehooks/component-size": "^1.0.3",
     "@turf/bbox": "^6.3.0",
     "@turf/boolean-point-in-polygon": "^6.3.0",
     "@turf/distance": "^6.3.0",
