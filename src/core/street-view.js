@@ -14,9 +14,10 @@ import {getRandomLatLng, isInGeoJSON} from "core/geo-utils";
 
 let service;
 
-export const getRandomPanorama = geoJSON =>
+export const getRandomPanorama = (geoJSON, progress) =>
     new Promise(resolve => {
-        let getPanorama;
+        let getPanorama,
+            progressCount = 0;
 
         (getPanorama = () => {
             (service ||= new google.maps.StreetViewService()).getPanorama(
@@ -27,6 +28,8 @@ export const getRandomPanorama = geoJSON =>
                     source: "outdoor",
                 },
                 (data, status) => {
+                    progress?.(++progressCount);
+
                     if (status !== "OK" || !data?.location) {
                         getPanorama();
                         return;
