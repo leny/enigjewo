@@ -36,6 +36,7 @@ const Lobby = ({onStartMatch}) => {
         dispatch,
         code,
         title,
+        progressCount,
         settings: {map, rounds, duration},
         players,
         player: key,
@@ -109,16 +110,21 @@ const Lobby = ({onStartMatch}) => {
     if (player.isOwner) {
         const playersCount = Object.keys(players).length;
 
+        let label = "Start Game";
+
+        if (playersCount < 2) {
+            label = "Waiting for players…";
+        }
+
+        if (preparing) {
+            label = `Finding new location (attempt #${progressCount})…`;
+        }
+
         $footer = (
             <Button
                 type={"button"}
                 disabled={preparing || playersCount < 2}
-                loading={preparing}
-                label={
-                    preparing || playersCount < 2
-                        ? "Waiting for players…"
-                        : "Start Game"
-                }
+                label={label}
                 variant={"link"}
                 className={classnames("card-footer-item", "no-top-radius")}
                 onClick={handleStartMatch}

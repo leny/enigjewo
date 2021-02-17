@@ -51,6 +51,7 @@ const Results = ({onNext, onEnd}) => {
         code,
         settings: {rounds: total, isMulti},
         currentRound: {index},
+        progressCount,
         rounds,
         entries,
         players,
@@ -413,6 +414,22 @@ const Results = ({onNext, onEnd}) => {
     );
 
     if (players[player].isOwner) {
+        let label = "Start next round";
+
+        if (ended) {
+            label = "Show summary";
+        }
+
+        if (isMulti) {
+            if (!allPlayersReady) {
+                label = "Waiting for players…";
+            }
+
+            if (preparing) {
+                label = `Finding new location (attempt #${progressCount})…`;
+            }
+        }
+
         $footer = (
             <Button
                 type={"button"}
@@ -420,14 +437,7 @@ const Results = ({onNext, onEnd}) => {
                     isMulti &&
                     (preparing || !players[player].isOwner || !allPlayersReady)
                 }
-                loading={preparing}
-                label={
-                    isMulti && (preparing || !allPlayersReady)
-                        ? "Waiting for players…"
-                        : ended
-                        ? "Show summary"
-                        : "Start next round"
-                }
+                label={label}
                 variant={"link"}
                 className={classnames("card-footer-item", "no-top-radius")}
                 onClick={handleNextRoundOrSummary}

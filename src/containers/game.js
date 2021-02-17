@@ -111,7 +111,11 @@ const GameContainer = ({settings, onRestart}) => {
     }
 
     // state === STEP_LOADING
-    return <Loading />;
+    return (
+        <GameStoreContextProvider value={{...state, dispatch}}>
+            <Loading />
+        </GameStoreContextProvider>
+    );
 };
 
 GameContainer.propTypes = {
