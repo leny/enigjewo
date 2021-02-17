@@ -17,6 +17,8 @@ export const ACTION_PREPARE_GAME = "store.game.actions.action_prepare_game";
 export const ACTION_SEND_SETTINGS = "store.game.actions.action_send_settings";
 export const ACTION_JOIN_GAME = "store.game.actions.action_join_game";
 export const ACTION_CONTINUE_GAME = "store.game.actions.action_continue_game";
+export const ACTION_PROGRESS_INDICATION =
+    "store.game.actions.action_progress_indication";
 export const ACTION_SEND_PLAYER_INFOS =
     "store.game.actions.action_send_player_infos";
 export const ACTION_WAIT_FOR_PLAYERS =

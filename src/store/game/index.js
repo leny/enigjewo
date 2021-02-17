@@ -21,6 +21,7 @@ import {
     ACTION_RECEIVE_PLAYER_INFOS,
     ACTION_SEND_SETTINGS,
     ACTION_PREPARE_ROUND,
+    ACTION_PROGRESS_INDICATION,
     ACTION_START_ROUND,
     ACTION_SEND_PLAYER_ROUND_START_TIME,
     ACTION_DEACTIVATE_PLAYER,
@@ -81,6 +82,7 @@ export const initState = () => ({
         index: 0,
         // startedAt (multi) Number: reference of start - for tempo & waiting for players
     },
+    progressCount: 0, // count of location attempt
     step: STEP_LOADING,
     ended: false,
 });
@@ -189,6 +191,12 @@ reducersMap.set(ACTION_PREPARE_ROUND, state => ({
         index: state.currentRound.index + 1,
     },
     step: STEP_LOADING,
+    progressCount: 0,
+}));
+
+reducersMap.set(ACTION_PROGRESS_INDICATION, (state, {count}) => ({
+    ...state,
+    progressCount: count,
 }));
 
 reducersMap.set(
@@ -253,6 +261,7 @@ reducersMap.set(ACTION_PREPARE_RESULTS, (state, {now}) => {
                 endedAt: now,
             },
         },
+        progressCount: 0,
         step: STEP_LOADING,
     };
 });

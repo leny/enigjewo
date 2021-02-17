@@ -9,6 +9,7 @@
 import {DEFAULT_DIFFICULTY} from "core/constants";
 import {
     ACTION_PREPARE_ROUND,
+    ACTION_PROGRESS_INDICATION,
     ACTION_SEND_ROUND_PARAMS,
     ACTION_START_ROUND,
 } from "store/game/types";
@@ -37,14 +38,24 @@ export default state => async dispatch => {
     };
 
     if (map === "world") {
-        const {panorama, position} = await getRandomPanorama();
+        const {panorama, position} = await getRandomPanorama(null, count =>
+            dispatch({
+                type: ACTION_PROGRESS_INDICATION,
+                count,
+            }),
+        );
         payload.panorama = panorama;
         payload.target = position;
     } else {
         const geoJSON = await loadGeoJSON(map);
         const [west, south, east, north] = bbox(geoJSON);
         const difficulty = getGeoJSONDifficulty(geoJSON);
-        const {panorama, position} = await getRandomPanorama(geoJSON);
+        const {panorama, position} = await getRandomPanorama(geoJSON, count =>
+            dispatch({
+                type: ACTION_PROGRESS_INDICATION,
+                count,
+            }),
+        );
 
         payload.panorama = panorama;
         payload.target = position;
