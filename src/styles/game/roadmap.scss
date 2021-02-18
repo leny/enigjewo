@@ -16,9 +16,9 @@
     }
     &__notes {
         position: absolute;
-        bottom: calc(100% + 0.25rem);
+        bottom: calc(100% + .25rem);
         left: 0;
-        transition: width 0.25s ease-in-out, height 0.25s ease-in-out;
+        transition: width .25s ease-in-out, height .25s ease-in-out;
         width: 100%;
         height: 320px;
         > textarea {
@@ -29,8 +29,6 @@
     &__map {
         width: 300px;
         height: 180px;
-        transition: width 0.25s ease-out, height 0.25s ease-out;
-        background: lightgray; // tmp
     }
     &--is-docked {
         position: static;
@@ -38,6 +36,7 @@
         .roadmap__map {
             width: 100vw;
             height: 25vh;
+            transition: height .125s ease-in;
         }
         .roadmap__tools {
             padding-left: 1rem;
@@ -89,7 +88,10 @@
     }
     &--is-floating {
         opacity: 0.5;
-        transition: opacity 0.25s ease-in-out;
+        transition: opacity .25s ease-in-out;
+        .roadmap__map {
+            transition: width .125s ease-in .33s, height .125s ease-in .33s;
+        }
         .roadmap__notes {
             height: 240px;
         }
@@ -98,7 +100,7 @@
             .roadmap__map {
                 width: 40vw;
                 height: 35vh;
-                transition: width 0.2s ease-in, height 0.2s ease-in;
+                transition: width .125s ease-in, height .125s ease-in;
             }
             &.roadmap--size-medium {
                 .roadmap__map {
