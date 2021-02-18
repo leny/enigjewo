@@ -17,6 +17,7 @@ This is originally inspired by [Geoguess](https://github.com/GeoGuess/Geoguess),
 - 4 maps (random positions):
 	- 🌍 World
 	- 🇪🇺 Europa (without Russia)
+    - 🗿 Unesco (World Heritage List)
 	- 🇧🇪 Belgium
 	- 🇫🇷 France
 

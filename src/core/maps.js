@@ -9,6 +9,7 @@
 import axios from "axios";
 
 import europe from "url:maps/europe.geojson";
+import unesco from "url:maps/unesco.geojson";
 import belgium from "url:maps/belgium.geojson";
 import france from "url:maps/france.geojson";
 
@@ -20,6 +21,10 @@ export const maps = {
     europe: {
         label: "🇪🇺 Europe (without Russia)",
         data: europe,
+    },
+    unesco: {
+        label: "🗿 Unesco (World Heritage List)",
+        data: unesco,
     },
     belgium: {
         label: "🇧🇪 Belgium",
