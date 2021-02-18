@@ -14,12 +14,14 @@ This is originally inspired by [Geoguess](https://github.com/GeoGuess/Geoguess),
 
 - Solo game
 - Multiplayer game over the internet
-- 4 maps (random positions):
-	- 🌍 World
-	- 🇪🇺 Europa (without Russia)
-    - 🗿 Unesco (World Heritage List)
-	- 🇧🇪 Belgium
-	- 🇫🇷 France
+- 25 maps (random positions):
+   - 🗺 3 Geographic Areas
+	- 🌍 6 Continents
+	- 🚩 14 Countries
+   - 🌐 3 Misc Challenge Maps
+	   - 🗿 Unesco (World Heritage List)
+	   - 🏙 Biggest Cities (40 biggest cities of the world)
+	   - 🔥 Inferno - two complex cities - Santa Cruz de la Sierra (Bolivia) & Touba (Senegal)
 
 #### 👉 NOTE
 
