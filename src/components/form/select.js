@@ -9,21 +9,46 @@
 import PropTypes from "prop-types";
 import FormBase from "components/form/base";
 
-const FormSelect = ({id, name, label, value, choices, onChange, className}) => (
-    <FormBase id={id} label={label} className={className}>
-        <div className={"control"}>
-            <div className={"select"}>
-                <select id={id} name={name} value={value} onChange={onChange}>
-                    {Object.entries(choices).map(([key, option]) => (
-                        <option key={key} value={key}>
-                            {option}
-                        </option>
-                    ))}
-                </select>
+const FormSelect = ({
+    id,
+    name,
+    label,
+    value,
+    choices,
+    withGroups = false,
+    onChange,
+    className,
+}) => {
+    const optionMapper = ([key, option]) => (
+        <option key={key} value={key}>
+            {option}
+        </option>
+    );
+
+    const groupMapper = ([key, {label: lbl, options}]) => (
+        <optgroup key={key} label={lbl}>
+            {Object.entries(options).map(optionMapper)}
+        </optgroup>
+    );
+
+    return (
+        <FormBase id={id} label={label} className={className}>
+            <div className={"control"}>
+                <div className={"select"}>
+                    <select
+                        id={id}
+                        name={name}
+                        value={value}
+                        onChange={onChange}>
+                        {Object.entries(choices).map(
+                            withGroups ? groupMapper : optionMapper,
+                        )}
+                    </select>
+                </div>
             </div>
-        </div>
-    </FormBase>
-);
+        </FormBase>
+    );
+};
 
 FormSelect.propTypes = {
     id: PropTypes.string.isRequired,
@@ -31,7 +56,8 @@ FormSelect.propTypes = {
     label: PropTypes.node.isRequired,
     type: PropTypes.string,
     value: PropTypes.string.isRequired,
-    choices: PropTypes.objectOf(PropTypes.string).isRequired,
+    choices: PropTypes.object.isRequired,
+    withGroups: PropTypes.bool,
     onChange: PropTypes.func.isRequired,
 };
 
