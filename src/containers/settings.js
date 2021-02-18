@@ -15,7 +15,7 @@ import {useFormik} from "formik";
 import {useLocalStorage} from "react-use-storage";
 
 import {DEFAULT_ROUND_DURATION, DEFAULT_ROUNDS} from "core/constants";
-import {maps, loadGeoJSON} from "core/maps";
+import {groups, maps, loadGeoJSON} from "core/maps";
 import {getRandomPlayerColor} from "core/icons";
 import {hashid, generatePlayerKey} from "core/utils";
 import bbox from "@turf/bbox";
@@ -166,10 +166,28 @@ const SettingsContainer = ({onStartGame}) => {
                                 id={"map"}
                                 name={"map"}
                                 label={"Map"}
+                                withGroups
                                 choices={Object.fromEntries(
-                                    Object.entries(
-                                        maps,
-                                    ).map(([key, {label}]) => [key, label]),
+                                    Object.entries(groups).map(
+                                        ([key, {label, maps: elts}]) => [
+                                            key,
+                                            {
+                                                label,
+                                                options: Object.fromEntries(
+                                                    Object.entries(maps)
+                                                        .filter(([m]) =>
+                                                            elts.includes(m),
+                                                        )
+                                                        .map(
+                                                            ([
+                                                                k,
+                                                                {label: lbl},
+                                                            ]) => [k, lbl],
+                                                        ),
+                                                ),
+                                            },
+                                        ],
+                                    ),
                                 )}
                                 value={values.map}
                                 onChange={handleChange}
