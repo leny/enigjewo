@@ -31,6 +31,7 @@ import brazil from "url:maps/brazil.geojson";
 import canada from "url:maps/canada.geojson";
 import argentina from "url:maps/argentina.geojson";
 import mexico from "url:maps/mexico.geojson";
+import sweden from "url:maps/sweden.geojson";
 import biggestCities from "url:maps/biggest-cities.geojson";
 import inferno from "url:maps/inferno.geojson";
 
@@ -62,6 +63,7 @@ export const maps = {
     japan: {label: "🇯🇵 Japan", data: japan},
     mexico: {label: "🇲🇽 Mexico", data: mexico},
     russia: {label: "🇷🇺 Russia", data: russia},
+    sweden: {label: "🇸🇪 Sweden", data: sweden},
     uk: {label: "🇬🇧 United Kingdom", data: uk},
     usa: {label: "🇺🇸 USA", data: usa},
     // --- misc
@@ -107,6 +109,7 @@ export const groups = {
             "india",
             "japan",
             "mexico",
+            "sweden",
             "russia",
             "uk",
             "usa",
