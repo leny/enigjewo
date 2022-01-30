@@ -121,6 +121,10 @@ const Lobby = ({onStartMatch}) => {
             label = `Finding new location (attempt #${progressCount})…`;
         }
 
+        if (variant === GAME_VARIANT_CHALLENGE) {
+            label = "Start Challenge";
+        }
+
         $footer = (
             <Button
                 type={"button"}

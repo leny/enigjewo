@@ -28,6 +28,7 @@ import {
     ACTION_PREPARE_ROUND,
     ACTION_PROGRESS_INDICATION,
     ACTION_START_ROUND,
+    ACTION_START_CHALLENGE_ROUND,
     ACTION_SEND_PLAYER_ROUND_START_TIME,
     ACTION_DEACTIVATE_PLAYER,
     ACTION_PREPARE_RESULTS,
@@ -218,6 +219,41 @@ reducersMap.set(ACTION_PROGRESS_INDICATION, (state, {count}) => ({
     ...state,
     progressCount: count,
 }));
+
+reducersMap.set(
+    ACTION_START_CHALLENGE_ROUND,
+    (state, {index, panorama, target, difficulty, bounds, now}) => {
+        const key = `rnd-${index}-${state.player}`;
+
+        return {
+            ...state,
+            settings: {
+                ...state.settings,
+                difficulty,
+                bounds,
+            },
+            rounds: {
+                ...state.rounds,
+                [`rnd-${index}`]: {
+                    panorama,
+                    target,
+                },
+            },
+            entries: {
+                ...state.entries,
+                [key]: {
+                    startedAt: now,
+                },
+            },
+            currentRound: {
+                ...state.currentRound,
+                index,
+                startedAt: now,
+            },
+            step: STEP_PLAY,
+        };
+    },
+);
 
 reducersMap.set(
     ACTION_START_ROUND,
