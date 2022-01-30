@@ -2,7 +2,7 @@
  *
  * /src/components/game/roadmap.js - Game Component: Roadmap
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 02/02/2021
  */
 

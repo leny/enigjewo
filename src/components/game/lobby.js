@@ -2,7 +2,7 @@
  *
  * /src/components/game/lobby.js - Game Component: Lobby
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 09/02/2021
  */
 
@@ -14,7 +14,7 @@ import {useCallback, useContext, useEffect, useRef, useState} from "react";
 
 import {GameStoreContext} from "store/game";
 
-import {NBSP} from "core/constants";
+import {NBSP, GAME_VARIANT_CHALLENGE} from "core/constants";
 import {maps, loadGeoJSON} from "core/maps";
 import {getMarkerIcon} from "core/icons";
 import {readableDuration} from "core/utils";
@@ -34,6 +34,7 @@ const Lobby = ({onStartMatch}) => {
     const [preparing, setPreparing] = useState(false);
     const {
         dispatch,
+        variant,
         code,
         title,
         progressCount,
@@ -91,7 +92,7 @@ const Lobby = ({onStartMatch}) => {
                 gmap.current.fitBounds({north, east, south, west});
             })();
         }
-    }, [gmap.current, map]);
+    }, [map]);
 
     let $footer = (
         <span
@@ -107,7 +108,7 @@ const Lobby = ({onStartMatch}) => {
         </span>
     );
 
-    if (player.isOwner) {
+    if (player.isOwner || variant === GAME_VARIANT_CHALLENGE) {
         const playersCount = Object.keys(players).length;
 
         let label = "Start Game";
@@ -118,6 +119,10 @@ const Lobby = ({onStartMatch}) => {
 
         if (preparing) {
             label = `Finding new location (attempt #${progressCount})…`;
+        }
+
+        if (variant === GAME_VARIANT_CHALLENGE) {
+            label = "Start Challenge";
         }
 
         $footer = (
@@ -205,6 +210,13 @@ const Lobby = ({onStartMatch}) => {
                                 `pt-${player.isOwner ? "0" : "2"}`,
                             )}>
                             <ul>
+                                {variant === GAME_VARIANT_CHALLENGE && (
+                                    <li>
+                                        <strong>{"Variant:"}</strong>
+                                        {NBSP}
+                                        {GAME_VARIANT_CHALLENGE}
+                                    </li>
+                                )}
                                 <li>
                                     <strong>{"Rounds:"}</strong>
                                     {NBSP}

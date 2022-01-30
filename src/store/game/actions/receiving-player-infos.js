@@ -2,7 +2,7 @@
  *
  * /src/store/game/actions/receiving-player-infos.js - Game Store Action: receiving player infos
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 10/02/2021
  */
 

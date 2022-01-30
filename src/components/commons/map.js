@@ -2,7 +2,7 @@
  *
  * /src/components/commons/map.js - Common Component: Map
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 04/02/2021
  */
 

@@ -2,7 +2,7 @@
  *
  * /src/components/game/loading.js - Game Component: loading
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 11/02/2021
  */
 

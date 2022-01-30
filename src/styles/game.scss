@@ -2,7 +2,7 @@
  *
  * /src/styles/game.scss - Specific styles for Game Screen
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 01/02/2021
  */
 
@@ -30,4 +30,16 @@
 .no-top-radius {
     border-top-left-radius:0;
     border-top-right-radius:0;
+}
+
+.only-bottom-left-radius {
+    border-top-left-radius:0;
+    border-top-right-radius:0;
+    border-bottom-right-radius:0;
+}
+
+.only-bottom-right-radius {
+    border-top-left-radius:0;
+    border-top-right-radius:0;
+    border-bottom-left-radius:0;
 }

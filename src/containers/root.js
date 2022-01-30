@@ -2,7 +2,7 @@
  *
  * /src/containers/root.js - Container: root
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 01/02/2021
  */
 

@@ -2,7 +2,7 @@
  *
  * /src/components/form/input.js - Form Component: input
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 11/02/2021
  */
 
@@ -27,9 +27,10 @@ const FormInput = ({
     loading,
     isValid = null,
     className,
+    style = {},
     ...props
 }) => (
-    <FormBase id={id} label={label} className={className}>
+    <FormBase id={id} label={label} className={className} style={style}>
         <div
             className={classnames(
                 "control",
@@ -64,6 +65,7 @@ FormInput.propTypes = {
     readOnly: PropTypes.bool,
     disabled: PropTypes.bool,
     value: PropTypes.any.isRequired,
+    style: PropTypes.object,
     onChange: PropTypes.func,
 };
 

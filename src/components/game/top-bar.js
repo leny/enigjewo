@@ -2,7 +2,7 @@
  *
  * /src/components/game/top-bar.js - Game TopBar
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 02/02/2021
  */
 

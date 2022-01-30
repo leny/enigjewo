@@ -2,7 +2,7 @@
  *
  * /src/components/game/tool-icon.js - Game Tool Icon
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 02/02/2021
  */
 

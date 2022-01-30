@@ -2,7 +2,7 @@
  *
  * /src/core/utils.js - Core Utils
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 02/02/2021
  */
 

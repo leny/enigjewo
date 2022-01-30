@@ -2,7 +2,7 @@
  *
  * /src/core/maps.js - Maps utils
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 04/02/2021
  */
 
@@ -73,8 +73,7 @@ export const maps = {
         data: biggestCities,
     },
     inferno: {
-        label:
-            "🔥 Inferno - two complex cities - Santa Cruz de la Sierra (Bolivia) & Touba (Senegal)",
+        label: "🔥 Inferno - two complex cities - Santa Cruz de la Sierra (Bolivia) & Touba (Senegal)",
         data: inferno,
     },
 };

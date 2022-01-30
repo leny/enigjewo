@@ -2,7 +2,7 @@
  *
  * /src/components/game/results.js - Game Component: results
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 04/02/2021
  */
 
@@ -18,7 +18,7 @@ import {useContext, useCallback, useEffect, useRef, useState} from "react";
 import {renderToStaticMarkup} from "react-dom/server";
 
 import {GameStoreContext} from "store/game";
-import {NBSP} from "core/constants";
+import {NBSP, GAME_VARIANT_CHALLENGE} from "core/constants";
 import {getMarkerIcon} from "core/icons";
 import {
     noop,
@@ -49,6 +49,7 @@ const Results = ({onNext, onEnd}) => {
     const {
         dispatch,
         code,
+        variant,
         settings: {rounds: total, isMulti},
         currentRound: {index},
         progressCount,
@@ -83,16 +84,20 @@ const Results = ({onNext, onEnd}) => {
             db.ref(`games/${code}/entries`).on("value", snapshot =>
                 dispatch(receivingPlayerResults({entries: snapshot.val()})),
             );
-            db.ref(`games/${code}/currentRound`).on(
-                "value",
-                snapshot =>
-                    index !== snapshot.val().index &&
-                    dispatch(receivingRoundParams(code)),
-            );
+            variant !== GAME_VARIANT_CHALLENGE &&
+                db
+                    .ref(`games/${code}/currentRound`)
+                    .on(
+                        "value",
+                        snapshot =>
+                            index !== snapshot.val().index &&
+                            dispatch(receivingRoundParams(code)),
+                    );
 
             return () => {
                 db.ref(`games/${code}/entries`).off("value");
-                db.ref(`games/${code}/currentRound`).off("value");
+                variant !== GAME_VARIANT_CHALLENGE &&
+                    db.ref(`games/${code}/currentRound`).off("value");
             };
         }
         return noop;
@@ -328,12 +333,8 @@ const Results = ({onNext, onEnd}) => {
                                     );
                                 }
 
-                                const {
-                                    distance,
-                                    score,
-                                    startedAt,
-                                    endedAt,
-                                } = entries[`rnd-${index}-${key}`];
+                                const {distance, score, startedAt, endedAt} =
+                                    entries[`rnd-${index}-${key}`];
                                 const duration =
                                     endedAt &&
                                     startedAt &&
@@ -438,6 +439,16 @@ const Results = ({onNext, onEnd}) => {
                     (preparing || !players[player].isOwner || !allPlayersReady)
                 }
                 label={label}
+                variant={"link"}
+                className={classnames("card-footer-item", "no-top-radius")}
+                onClick={handleNextRoundOrSummary}
+            />
+        );
+    } else if (variant === GAME_VARIANT_CHALLENGE) {
+        $footer = (
+            <Button
+                type={"button"}
+                label={ended ? "Show summary" : "Next round"}
                 variant={"link"}
                 className={classnames("card-footer-item", "no-top-radius")}
                 onClick={handleNextRoundOrSummary}

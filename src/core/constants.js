@@ -2,7 +2,7 @@
  *
  * /src/core/constants.js - Constants
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 01/02/2021
  */
 
@@ -12,6 +12,9 @@ export const MODE_MENU = "menu";
 export const MODE_GAME = "game";
 export const MODE_SETTINGS = "settings";
 export const MODE_JOIN = "join";
+
+export const GAME_VARIANT_CLASSIC = "classic";
+export const GAME_VARIANT_CHALLENGE = "challenge";
 
 export const GMAP_API_KEY = process.env.GMAP_API_KEY;
 export const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY;

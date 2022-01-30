@@ -2,7 +2,7 @@
  *
  * /src/containers/settings.js - Settings Container
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 05/02/2021
  */
 
@@ -147,21 +147,32 @@ const SettingsContainer = ({onStartGame}) => {
                                     onChange={handleChange}
                                 />
                             )}
-                            <Input
-                                id={"totalRounds"}
-                                name={"totalRounds"}
-                                label={"Number of rounds"}
-                                type={"number"}
-                                value={values.totalRounds}
-                                min={1}
-                                onChange={handleChange}
-                            />
-                            <DurationSelector
-                                id={"roundDuration"}
-                                name={"roundDuration"}
-                                value={values.roundDuration}
-                                onChange={handleChange}
-                            />
+
+                            <div
+                                className={classnames(
+                                    "is-flex",
+                                    "is-justify-content-space-between",
+                                )}>
+                                <Input
+                                    id={"totalRounds"}
+                                    className={classnames("mr-3")}
+                                    style={{width: "15%"}}
+                                    name={"totalRounds"}
+                                    label={"Rounds"}
+                                    type={"number"}
+                                    value={values.totalRounds}
+                                    min={1}
+                                    onChange={handleChange}
+                                />
+                                <DurationSelector
+                                    id={"roundDuration"}
+                                    className={classnames("is-flex-grow-1")}
+                                    name={"roundDuration"}
+                                    value={values.roundDuration}
+                                    onChange={handleChange}
+                                />
+                            </div>
+
                             <Select
                                 id={"map"}
                                 name={"map"}

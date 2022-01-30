@@ -2,11 +2,15 @@
  *
  * /src/store/game/index.js - Store: game
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 03/02/2021
  */
 
-import {DEBUG} from "core/constants";
+import {
+    DEBUG,
+    GAME_VARIANT_CLASSIC,
+    GAME_VARIANT_CHALLENGE,
+} from "core/constants";
 import {indexedArray} from "core/utils";
 import {
     STEP_LOADING,
@@ -14,6 +18,7 @@ import {
     STEP_PLAY,
     STEP_RESULTS,
     STEP_SUMMARY,
+    STEP_SETUP_CHALLENGE,
     ACTION_PREPARE_GAME,
     ACTION_JOIN_GAME,
     ACTION_CONTINUE_GAME,
@@ -23,13 +28,17 @@ import {
     ACTION_PREPARE_ROUND,
     ACTION_PROGRESS_INDICATION,
     ACTION_START_ROUND,
+    ACTION_START_CHALLENGE_ROUND,
     ACTION_SEND_PLAYER_ROUND_START_TIME,
     ACTION_DEACTIVATE_PLAYER,
     ACTION_PREPARE_RESULTS,
     ACTION_COMPUTE_RESULTS,
     ACTION_RECEIVE_PLAYER_RESULTS,
+    ACTION_SETUP_CHALLENGE,
+    ACTION_PREPARE_CHALLENGE,
     ACTION_SHOW_RESULTS,
     ACTION_SHOW_SUMMARY,
+    ACTION_SHOW_CHALLENGE_SUMMARY,
     ACTION_SEND_ENDED_GAME,
     ACTION_INJECT_SUMMARY,
 } from "./types";
@@ -106,6 +115,7 @@ reducersMap.set(
         ...state,
         code,
         title,
+        variant: GAME_VARIANT_CLASSIC,
         settings: {rounds, duration: duration || false, isMulti, map},
         player: key,
         players: {
@@ -153,8 +163,19 @@ reducersMap.set(ACTION_CONTINUE_GAME, (state, game) => ({
 
 reducersMap.set(
     ACTION_SEND_PLAYER_INFOS,
-    (state, {code, title, settings, players, player}) => ({
+    (
+        state,
+        {
+            code,
+            variant = GAME_VARIANT_CLASSIC,
+            title,
+            settings,
+            players,
+            player,
+        },
+    ) => ({
         ...state,
+        variant,
         code,
         title,
         settings: {
@@ -180,7 +201,7 @@ reducersMap.set(ACTION_RECEIVE_PLAYER_INFOS, (state, {key, player}) => ({
         ...state.players,
         [key]: {
             ...player,
-            score: 0,
+            score: state.variant === GAME_VARIANT_CHALLENGE ? player.score : 0,
         },
     },
 }));
@@ -198,6 +219,41 @@ reducersMap.set(ACTION_PROGRESS_INDICATION, (state, {count}) => ({
     ...state,
     progressCount: count,
 }));
+
+reducersMap.set(
+    ACTION_START_CHALLENGE_ROUND,
+    (state, {index, panorama, target, difficulty, bounds, now}) => {
+        const key = `rnd-${index}-${state.player}`;
+
+        return {
+            ...state,
+            settings: {
+                ...state.settings,
+                difficulty,
+                bounds,
+            },
+            rounds: {
+                ...state.rounds,
+                [`rnd-${index}`]: {
+                    panorama,
+                    target,
+                },
+            },
+            entries: {
+                ...state.entries,
+                [key]: {
+                    startedAt: now,
+                },
+            },
+            currentRound: {
+                ...state.currentRound,
+                index,
+                startedAt: now,
+            },
+            step: STEP_PLAY,
+        };
+    },
+);
 
 reducersMap.set(
     ACTION_START_ROUND,
@@ -347,6 +403,40 @@ reducersMap.set(ACTION_SHOW_SUMMARY, state => ({
     ...state,
     step: STEP_SUMMARY,
 }));
+
+reducersMap.set(ACTION_SHOW_CHALLENGE_SUMMARY, state => ({
+    ...state,
+    variant: GAME_VARIANT_CHALLENGE,
+    step: STEP_SUMMARY,
+}));
+
+reducersMap.set(ACTION_SETUP_CHALLENGE, state => ({
+    ...state,
+    step: STEP_SETUP_CHALLENGE,
+}));
+
+reducersMap.set(
+    ACTION_PREPARE_CHALLENGE,
+    (state, {title, player: {key, icon, name}}) => {
+        const oldPlayer = state.players[state.player];
+
+        return {
+            ...state,
+            title,
+            player: key,
+            players: {
+                [key]: {...oldPlayer, icon, name},
+            },
+            entries: Object.fromEntries(
+                Object.entries(state.entries).map(([k, v]) => [
+                    k.endsWith(state.player) ? k.replace(state.player, key) : k,
+                    v,
+                ]),
+            ),
+            step: STEP_LOADING,
+        };
+    },
+);
 
 reducersMap.set(ACTION_SEND_ENDED_GAME, state => ({
     ...state,

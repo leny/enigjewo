@@ -2,7 +2,7 @@
  *
  * /src/components/game/summary.js - Game Component: summary
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 04/02/2021
  */
 
@@ -16,7 +16,11 @@ import {useContext, useEffect, useRef} from "react";
 import {renderToStaticMarkup} from "react-dom/server";
 
 import {GameStoreContext} from "store/game";
-import {NBSP} from "core/constants";
+import {
+    NBSP,
+    GAME_VARIANT_CHALLENGE,
+    GAME_VARIANT_CLASSIC,
+} from "core/constants";
 import {getMarkerIcon} from "core/icons";
 import {readableDuration, readableDistance, indexedArray} from "core/utils";
 import {maps} from "core/maps";
@@ -24,14 +28,17 @@ import dayjs from "dayjs";
 
 import Button from "components/commons/button";
 import GMap from "components/commons/map";
+import Copiable from "components/commons/copiable";
+
 import sendEndGameState from "store/game/actions/send-end-game-state";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCrown} from "@fortawesome/free-solid-svg-icons";
 
-const Summary = ({onRestart}) => {
+const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
     const {
         dispatch,
+        variant = GAME_VARIANT_CLASSIC,
         code,
         title,
         settings: {rounds: total, isMulti, map},
@@ -59,7 +66,7 @@ const Summary = ({onRestart}) => {
         gmap.current.setZoom(18);
         indexedArray(total).forEach(i => {
             const {target} = rounds[`rnd-${i}`];
-            if (isMulti) {
+            if (isMulti || variant === GAME_VARIANT_CHALLENGE) {
                 const bestScore = Math.max(
                     ...Object.entries(entries)
                         .filter(([key]) => key.startsWith(`rnd-${i}`))
@@ -124,9 +131,8 @@ const Summary = ({onRestart}) => {
                     bounds.extend(positionMarker.getPosition());
                 });
             } else {
-                const {position, distance, score} = entries[
-                    `rnd-${i}-${player}`
-                ];
+                const {position, distance, score} =
+                    entries[`rnd-${i}-${player}`];
                 const {icon} = players[player];
 
                 const polyLine = new google.maps.Polyline({
@@ -201,13 +207,59 @@ const Summary = ({onRestart}) => {
             bottom: 30,
             left: 30,
         });
-    }, [gmap.current, isMulti, entries, player, rounds, total]);
+    }, [
+        // gmap.current,
+        isMulti,
+        entries,
+        player,
+        players,
+        rounds,
+        total,
+        variant,
+    ]);
 
     const $gmap = <GMap className={classnames("summary__map")} ref={gmap} />;
 
     let $content = $gmap;
+    let $challenge = null;
 
-    if (isMulti) {
+    if (variant === GAME_VARIANT_CHALLENGE) {
+        const gameURL = `${location.protocol}//${location.host}${location.pathname}?c=${code}`;
+
+        $challenge = (
+            <div className={classnames("card-image", "p-3")}>
+                <div
+                    className={classnames("notification", "is-warning", "p-3")}>
+                    <p>
+                        {
+                            "Any player can join this challenge by simply use the following code or URL:"
+                        }
+                    </p>
+                    <div className={classnames("has-text-centered")}>
+                        <strong
+                            className={classnames(
+                                "is-block",
+                                "is-size-3",
+                                "is-family-code",
+                            )}>
+                            <Copiable text={code}>{code}</Copiable>
+                        </strong>
+                        <span
+                            className={classnames(
+                                "is-size-6",
+                                "is-family-code",
+                            )}>
+                            <Copiable text={gameURL}>{gameURL}</Copiable>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    const completeMode = isMulti || variant === GAME_VARIANT_CHALLENGE;
+
+    if (completeMode) {
         const bestScore = Math.max(
             ...Object.values(players).map(({score}) => score),
         );
@@ -288,7 +340,7 @@ const Summary = ({onRestart}) => {
             <div
                 className={classnames(
                     "column",
-                    isMulti ? "is-four-fifths" : "is-two-thirds",
+                    completeMode ? "is-four-fifths" : "is-two-thirds",
                     "section",
                 )}>
                 <div className={"card"}>
@@ -311,7 +363,7 @@ const Summary = ({onRestart}) => {
                             <span>{maps[map].label}</span>
                         </span>
                     </header>
-                    {!isMulti && (
+                    {!completeMode && (
                         <div className={classnames("card-image")}>
                             <table
                                 className={classnames(
@@ -385,18 +437,19 @@ const Summary = ({onRestart}) => {
                             </table>
                         </div>
                     )}
+                    {$challenge}
                     <div
                         className={classnames(
                             "card-image",
-                            `summary__${isMulti ? "multi" : "navigation"}`,
+                            `summary__${completeMode ? "multi" : "navigation"}`,
                             "mx-0",
-                            `mt-${isMulti ? "0" : "1"}`,
-                            isMulti && "columns",
+                            `mt-${completeMode ? "0" : "1"}`,
+                            completeMode && "columns",
                             "mb-0",
                         )}>
                         {$content}
                     </div>
-                    {isMulti && (
+                    {completeMode && (
                         <div className={classnames("card-image")}>
                             <table
                                 className={classnames(
@@ -509,12 +562,25 @@ const Summary = ({onRestart}) => {
                     )}
                     {!injected && (
                         <footer className={"card-footer"}>
+                            {showSetupChallengeButton && (
+                                <Button
+                                    label={"Create a Challenge from this Match"}
+                                    variant={"link"}
+                                    className={classnames(
+                                        "card-footer-item",
+                                        "only-bottom-left-radius",
+                                    )}
+                                    onClick={onSetupChallenge}
+                                />
+                            )}
                             <Button
                                 label={"Restart a Match"}
-                                variant={"link"}
+                                variant={"info"}
                                 className={classnames(
                                     "card-footer-item",
-                                    "no-top-radius",
+                                    showSetupChallengeButton
+                                        ? "only-bottom-right-radius"
+                                        : "no-top-radius",
                                 )}
                                 onClick={onRestart}
                             />
@@ -527,7 +593,9 @@ const Summary = ({onRestart}) => {
 };
 
 Summary.propTypes = {
+    showSetupChallengeButton: PropTypes.bool,
     onRestart: PropTypes.func,
+    onSetupChallenge: PropTypes.func,
 };
 
 export default Summary;

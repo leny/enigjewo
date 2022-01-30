@@ -2,7 +2,7 @@
  *
  * /src/core/hooks/use-timer.js - Custom hook: useTimer
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 02/02/2021
  */
 

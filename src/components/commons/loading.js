@@ -2,7 +2,7 @@
  *
  * /src/components/commons/loading.js - Loading icon
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 01/02/2021
  */
 

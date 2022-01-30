@@ -2,16 +2,17 @@
  *
  * /src/store/game/actions/start-round.js - Game Store Action: start round
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 03/02/2021
  */
 
-import {DEFAULT_DIFFICULTY} from "core/constants";
+import {DEFAULT_DIFFICULTY, GAME_VARIANT_CHALLENGE} from "core/constants";
 import {
     ACTION_PREPARE_ROUND,
     ACTION_PROGRESS_INDICATION,
     ACTION_SEND_ROUND_PARAMS,
     ACTION_START_ROUND,
+    ACTION_START_CHALLENGE_ROUND,
 } from "store/game/types";
 import bbox from "@turf/bbox";
 
@@ -24,6 +25,7 @@ import {db, cleanGame} from "core/firebase";
 export default state => async dispatch => {
     const {
         code,
+        variant,
         settings: {map, isMulti},
         currentRound: {index = 0} = {},
     } = state;
@@ -36,6 +38,25 @@ export default state => async dispatch => {
         bounds: null,
         difficulty: DEFAULT_DIFFICULTY,
     };
+
+    if (variant === GAME_VARIANT_CHALLENGE) {
+        const gameSettings = (
+            await db.ref(`games/${code}/settings`).get()
+        ).val();
+        const gameRound = (
+            await db.ref(`games/${code}/rounds/rnd-${index + 1}`).get()
+        ).val();
+
+        dispatch({
+            type: ACTION_START_CHALLENGE_ROUND,
+            index: index + 1,
+            ...payload,
+            ...gameSettings,
+            ...gameRound,
+        });
+
+        return;
+    }
 
     if (map === "world") {
         const {panorama, position} = await getRandomPanorama(null, count =>

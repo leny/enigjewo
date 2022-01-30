@@ -2,7 +2,7 @@
  *
  * /src/components/settings/duration.js - Settings Component: duration
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 11/02/2021
  */
 
@@ -13,7 +13,7 @@ import {readableDuration} from "core/utils";
 
 import FormBase from "components/form/base";
 
-const SettingsDurationSelector = ({id, name, value, onChange}) => {
+const SettingsDurationSelector = ({id, name, value, onChange, className}) => {
     const $label = (
         <>
             {"Round duration"}
@@ -23,13 +23,14 @@ const SettingsDurationSelector = ({id, name, value, onChange}) => {
     );
 
     return (
-        <FormBase id={id} label={$label}>
+        <FormBase id={id} label={$label} className={className}>
             <div
                 className={classnames(
                     "control",
                     "is-flex",
                     "is-align-content-space-between",
                     "is-align-items-center",
+                    "mt-2",
                 )}>
                 <div className={classnames("settings__duration-range")}>
                     <input

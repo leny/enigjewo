@@ -2,7 +2,7 @@
  *
  * /src/store/game/actions/start-match.js - Game Store Action: start match
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 08/02/2021
  */
 

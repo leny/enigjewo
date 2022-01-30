@@ -2,7 +2,7 @@
  *
  * /src/components/commons/copiable.js - Common Component: Copiable
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 09/02/2021
  */
 
@@ -44,6 +44,7 @@ const Copiable = ({className, children, text}) => {
         <a
             href={"#"}
             onClick={handleClick}
+            style={{textDecoration: "none"}}
             className={classnames("has-text-black", className)}
             title={"Click to copy"}>
             {children}

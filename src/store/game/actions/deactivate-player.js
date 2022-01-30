@@ -2,7 +2,7 @@
  *
  * /src/store/game/actions/deactivate-player.js - Game Store Action: deactivate player
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 10/02/2021
  */
 

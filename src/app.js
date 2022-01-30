@@ -2,7 +2,7 @@
  *
  * /src/app.js - Main entry point
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 01/02/2021
  */
 
