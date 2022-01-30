@@ -29,7 +29,7 @@ import sendEndGameState from "store/game/actions/send-end-game-state";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCrown} from "@fortawesome/free-solid-svg-icons";
 
-const Summary = ({onRestart}) => {
+const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
     const {
         dispatch,
         code,
@@ -508,20 +508,25 @@ const Summary = ({onRestart}) => {
                     )}
                     {!injected && (
                         <footer className={"card-footer"}>
-                            <Button
-                                label={"Create a Challenge from this Match"}
-                                variant={"link"}
-                                className={classnames(
-                                    "card-footer-item",
-                                    "only-bottom-left-radius",
-                                )}
-                            />
+                            {showSetupChallengeButton && (
+                                <Button
+                                    label={"Create a Challenge from this Match"}
+                                    variant={"link"}
+                                    className={classnames(
+                                        "card-footer-item",
+                                        "only-bottom-left-radius",
+                                    )}
+                                    onClick={onSetupChallenge}
+                                />
+                            )}
                             <Button
                                 label={"Restart a Match"}
                                 variant={"info"}
                                 className={classnames(
                                     "card-footer-item",
-                                    "only-bottom-right-radius",
+                                    showSetupChallengeButton
+                                        ? "only-bottom-right-radius"
+                                        : "no-top-radius",
                                 )}
                                 onClick={onRestart}
                             />
@@ -534,7 +539,9 @@ const Summary = ({onRestart}) => {
 };
 
 Summary.propTypes = {
+    showSetupChallengeButton: PropTypes.bool,
     onRestart: PropTypes.func,
+    onSetupChallenge: PropTypes.func,
 };
 
 export default Summary;

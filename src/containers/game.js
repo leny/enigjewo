@@ -17,6 +17,7 @@ import {
     STEP_LOBBY,
     STEP_PLAY,
     STEP_RESULTS,
+    STEP_SETUP_CHALLENGE,
     STEP_SUMMARY,
 } from "store/game/types";
 import {initState, reducer, GameStoreContext} from "store/game";
@@ -26,6 +27,8 @@ import continueMatch from "store/game/actions/continue-match";
 import startRound from "store/game/actions/start-round";
 import computeResults from "store/game/actions/compute-results";
 import endMatch from "store/game/actions/end-match";
+import setupChallenge from "store/game/actions/setup-challenge";
+import submitChallenge from "store/game/actions/submit-challenge";
 import injectGameSummary from "store/game/actions/inject-game-summary";
 
 import Loading from "components/game/loading";
@@ -33,6 +36,7 @@ import Lobby from "components/game/lobby";
 import Play from "components/game/play";
 import Results from "components/game/results";
 import Summary from "components/game/summary";
+import SetupChallenge from "components/game/setup-challenge";
 
 const {Provider: GameStoreContextProvider} = GameStoreContext;
 
@@ -45,11 +49,22 @@ const GameContainer = ({settings, onRestart}) => {
         [state],
     );
 
-    const handleNextRound = useCallback(() => dispatch(startRound(state)), [
-        state,
-    ]);
+    const handleSubmitChallenge = useCallback(
+        ({title, player}) => dispatch(submitChallenge(state, {title, player})),
+        [state],
+    );
+
+    const handleNextRound = useCallback(
+        () => dispatch(startRound(state)),
+        [state],
+    );
 
     const handleEndMatch = useCallback(() => dispatch(endMatch()), []);
+
+    const handleSetupChallenge = useCallback(
+        () => dispatch(setupChallenge()),
+        [],
+    );
 
     const handleRestart = useCallback(() => onRestart(), [onRestart]);
 
@@ -81,7 +96,19 @@ const GameContainer = ({settings, onRestart}) => {
     if (state.step === STEP_SUMMARY) {
         return (
             <GameStoreContextProvider value={{...state, dispatch}}>
-                <Summary onRestart={handleRestart} />
+                <Summary
+                    showSetupChallengeButton={!state.settings.isMulti}
+                    onSetupChallenge={handleSetupChallenge}
+                    onRestart={handleRestart}
+                />
+            </GameStoreContextProvider>
+        );
+    }
+
+    if (state.step === STEP_SETUP_CHALLENGE) {
+        return (
+            <GameStoreContextProvider value={{...state, dispatch}}>
+                <SetupChallenge onSubmitChallenge={handleSubmitChallenge} />
             </GameStoreContextProvider>
         );
     }
