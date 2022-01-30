@@ -39,7 +39,7 @@ const MenuContainer = ({onPrepareGame, onJoinGame}) => {
 
                     <p>
                         {
-                            "Game is simple. You're dropped somewhere on StreetView."
+                            "Game is simple: you're dropped somewhere on StreetView."
                         }
                         <br />
                         {
@@ -54,10 +54,14 @@ const MenuContainer = ({onPrepareGame, onJoinGame}) => {
                             "notification",
                             "is-warning",
                             "mt-2",
+                            "px-3",
+                            "py-2",
                         )}>
-                        <strong>{"NOTE:"}</strong>
-                        {NBSP}
-                        {"This game is in beta. There might be some bugs."}
+                        <small>
+                            <strong>{"NOTE:"}</strong>
+                            {NBSP}
+                            {"This game is in beta. There might be some bugs."}
+                        </small>
                     </div>
                 </div>
                 <div
@@ -68,7 +72,7 @@ const MenuContainer = ({onPrepareGame, onJoinGame}) => {
                         "is-align-content-center",
                     )}>
                     <Button
-                        className={"mb-3"}
+                        className={"mb-5"}
                         label={"Start a game"}
                         size={"large"}
                         variant={"link"}
@@ -78,7 +82,7 @@ const MenuContainer = ({onPrepareGame, onJoinGame}) => {
                         <div className={classnames("control", "menu__map")}>
                             <input
                                 type={"text"}
-                                placeholder={"Game Code"}
+                                placeholder={"Game or Challenge Code"}
                                 className={classnames("input", "is-medium")}
                                 value={code}
                                 onChange={withValue(setCode)}
@@ -86,7 +90,7 @@ const MenuContainer = ({onPrepareGame, onJoinGame}) => {
                         </div>
                         <div className={"control"}>
                             <Button
-                                label={"Join a game"}
+                                label={"Join"}
                                 size={"medium"}
                                 variant={"info"}
                                 disabled={!code}
