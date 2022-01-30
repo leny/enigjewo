@@ -72,7 +72,7 @@
     "react-use-storage": "~0.5.1",
     "use-clippy": "~1.0.8",
     "use-interval": "~1.4.0",
-    "use-sound": "~2.2.0"
+    "use-sound": "~4.0.1"
   },
   "lint-staged": {
     "*.json": [
