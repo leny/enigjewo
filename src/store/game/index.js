@@ -200,7 +200,7 @@ reducersMap.set(ACTION_RECEIVE_PLAYER_INFOS, (state, {key, player}) => ({
         ...state.players,
         [key]: {
             ...player,
-            score: 0,
+            score: state.variant === GAME_VARIANT_CHALLENGE ? player.score : 0,
         },
     },
 }));
