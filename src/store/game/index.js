@@ -18,6 +18,7 @@ import {
     STEP_PLAY,
     STEP_RESULTS,
     STEP_SUMMARY,
+    STEP_SETUP_CHALLENGE,
     ACTION_PREPARE_GAME,
     ACTION_JOIN_GAME,
     ACTION_CONTINUE_GAME,
@@ -32,6 +33,8 @@ import {
     ACTION_PREPARE_RESULTS,
     ACTION_COMPUTE_RESULTS,
     ACTION_RECEIVE_PLAYER_RESULTS,
+    ACTION_SETUP_CHALLENGE,
+    ACTION_PREPARE_CHALLENGE,
     ACTION_SHOW_RESULTS,
     ACTION_SHOW_SUMMARY,
     ACTION_SEND_ENDED_GAME,
@@ -351,6 +354,16 @@ reducersMap.set(ACTION_RECEIVE_PLAYER_RESULTS, (state, {entries}) => ({
 reducersMap.set(ACTION_SHOW_SUMMARY, state => ({
     ...state,
     step: STEP_SUMMARY,
+}));
+
+reducersMap.set(ACTION_SETUP_CHALLENGE, state => ({
+    ...state,
+    step: STEP_SETUP_CHALLENGE,
+}));
+
+reducersMap.set(ACTION_PREPARE_CHALLENGE, state => ({
+    ...state,
+    step: STEP_LOADING,
 }));
 
 reducersMap.set(ACTION_SEND_ENDED_GAME, state => ({
