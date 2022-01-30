@@ -2,7 +2,7 @@
  *
  * /src/store/game/actions/setup-challenge.js - Game Store Action: setup challenge
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 30/01/2022
  */
 

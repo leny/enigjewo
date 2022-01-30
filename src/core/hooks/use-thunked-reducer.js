@@ -2,7 +2,7 @@
  *
  * /src/core/hooks/use-thunked-reducer.js - Custom hook: useThunkedReducer
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 03/02/2021
  */
 

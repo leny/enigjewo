@@ -2,7 +2,7 @@
  *
  * /src/components/game/lobby.js - Game Component: Lobby
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 09/02/2021
  */
 

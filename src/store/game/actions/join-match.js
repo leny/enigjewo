@@ -2,7 +2,7 @@
  *
  * /src/store/game/actions/join-match.js - Game Store Action: join match
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 09/02/2021
  */
 

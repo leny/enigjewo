@@ -2,7 +2,7 @@
  *
  * /src/store/game/actions/end-match.js - Game Store Action: end match
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 03/02/2021
  */
 

@@ -2,7 +2,7 @@
  *
  * /src/core/street-view.js - StreetView
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 03/02/2021
  */
 

@@ -2,7 +2,7 @@
  *
  * /src/components/game/results.js - Game Component: results
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 04/02/2021
  */
 
@@ -328,12 +328,8 @@ const Results = ({onNext, onEnd}) => {
                                     );
                                 }
 
-                                const {
-                                    distance,
-                                    score,
-                                    startedAt,
-                                    endedAt,
-                                } = entries[`rnd-${index}-${key}`];
+                                const {distance, score, startedAt, endedAt} =
+                                    entries[`rnd-${index}-${key}`];
                                 const duration =
                                     endedAt &&
                                     startedAt &&

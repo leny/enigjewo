@@ -2,7 +2,7 @@
  *
  * /src/components/game/setup-challenge.js - Game Component: setup challenge
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 30/01/2022
  */
 

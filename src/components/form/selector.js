@@ -2,7 +2,7 @@
  *
  * /src/components/form/selector.js - Form Component: selector
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 11/02/2021
  */
 

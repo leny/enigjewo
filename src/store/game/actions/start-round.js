@@ -2,7 +2,7 @@
  *
  * /src/store/game/actions/start-round.js - Game Store Action: start round
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 03/02/2021
  */
 

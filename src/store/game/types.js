@@ -2,7 +2,7 @@
  *
  * /src/store/game/types.js - Store: game types
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 03/02/2021
  */
 

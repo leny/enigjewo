@@ -2,7 +2,7 @@
  *
  * /src/store/game/actions/submit-challenge.js - Game Store Action: submit challenge
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 30/01/2022
  */
 

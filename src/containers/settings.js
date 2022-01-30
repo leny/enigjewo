@@ -2,7 +2,7 @@
  *
  * /src/containers/settings.js - Settings Container
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 05/02/2021
  */
 

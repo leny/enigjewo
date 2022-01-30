@@ -2,7 +2,7 @@
  *
  * /src/core/geo-utils.js - Core Geo Utils
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 02/02/2021
  */
 

@@ -2,7 +2,7 @@
  *
  * /src/core/firebase.js - Firebase wrapper
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 09/02/2021
  */
 

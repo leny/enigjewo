@@ -2,7 +2,7 @@
  *
  * /src/core/icons.js - Icon utils
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 04/02/2021
  */
 

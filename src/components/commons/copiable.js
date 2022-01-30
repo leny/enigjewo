@@ -2,7 +2,7 @@
  *
  * /src/components/commons/copiable.js - Common Component: Copiable
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 09/02/2021
  */
 

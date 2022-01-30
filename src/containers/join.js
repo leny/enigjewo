@@ -2,7 +2,7 @@
  *
  * /src/containers/join.js - Join Container
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 09/02/2021
  */
 

@@ -2,7 +2,7 @@
  *
  * /src/core/constants.js - Constants
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 01/02/2021
  */
 

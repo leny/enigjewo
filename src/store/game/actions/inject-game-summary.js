@@ -2,7 +2,7 @@
  *
  * /src/store/game/actions/inject-game-summary.js - Game Store Action: inject game summary
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 11/02/2021
  */
 

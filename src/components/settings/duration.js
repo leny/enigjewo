@@ -2,7 +2,7 @@
  *
  * /src/components/settings/duration.js - Settings Component: duration
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 11/02/2021
  */
 

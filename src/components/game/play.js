@@ -2,7 +2,7 @@
  *
  * /src/components/game/play.js - Game Component: play
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 01/02/2021
  */
 
@@ -53,23 +53,24 @@ const Play = ({onFinishRound}) => {
         streetView.current.setZoom(0);
     }, [streetView.current, panorama]);
 
-    const handleUpdatePosition = useCallback(pos => setPosition(pos), [
-        setPosition,
-    ]);
+    const handleUpdatePosition = useCallback(
+        pos => setPosition(pos),
+        [setPosition],
+    );
 
-    const handleFinishRound = useCallback(() => onFinishRound(position), [
-        position,
-        onFinishRound,
-    ]);
+    const handleFinishRound = useCallback(
+        () => onFinishRound(position),
+        [position, onFinishRound],
+    );
 
     const handleToggleDocked = useCallback(() => {
         setIsDocked(!isDocked);
     }, [setIsDocked, isDocked]);
 
-    const handleTogglePinned = useCallback(() => setIsPinned(!isPinned), [
-        setIsPinned,
-        isPinned,
-    ]);
+    const handleTogglePinned = useCallback(
+        () => setIsPinned(!isPinned),
+        [setIsPinned, isPinned],
+    );
 
     const handleGrowSize = useCallback(
         () =>

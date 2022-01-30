@@ -2,7 +2,7 @@
  *
  * /src/store/game/actions/receiving-round-params.js - Game Store Action: receiving round params
  *
- * coded by leny@BeCode
+ * coded by leny
  * started at 10/02/2021
  */
 
