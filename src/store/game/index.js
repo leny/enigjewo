@@ -100,12 +100,14 @@ reducersMap.set(
             duration,
             map,
             isMulti,
+            variant,
             player: {key, name, isOwner, icon},
         },
     ) => ({
         ...state,
         code,
         title,
+        variant,
         settings: {rounds, duration: duration || false, isMulti, map},
         player: key,
         players: {
