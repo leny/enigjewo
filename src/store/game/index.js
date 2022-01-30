@@ -6,7 +6,11 @@
  * started at 03/02/2021
  */
 
-import {DEBUG} from "core/constants";
+import {
+    DEBUG,
+    GAME_VARIANT_CLASSIC,
+    // GAME_VARIANT_CHALLENGE,
+} from "core/constants";
 import {indexedArray} from "core/utils";
 import {
     STEP_LOADING,
@@ -100,14 +104,13 @@ reducersMap.set(
             duration,
             map,
             isMulti,
-            variant,
             player: {key, name, isOwner, icon},
         },
     ) => ({
         ...state,
         code,
         title,
-        variant,
+        variant: GAME_VARIANT_CLASSIC,
         settings: {rounds, duration: duration || false, isMulti, map},
         player: key,
         players: {

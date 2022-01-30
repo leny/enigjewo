@@ -14,14 +14,7 @@ import {useEffect, useRef} from "react";
 import {useFormik} from "formik";
 import {useLocalStorage} from "react-use-storage";
 
-import {
-    DEFAULT_ROUND_DURATION,
-    DEFAULT_ROUNDS,
-    GAME_VARIANT_CLASSIC,
-    GAME_VARIANT_CHALLENGE,
-    NBSP,
-    BSP,
-} from "core/constants";
+import {DEFAULT_ROUND_DURATION, DEFAULT_ROUNDS} from "core/constants";
 import {groups, maps, loadGeoJSON} from "core/maps";
 import {getRandomPlayerColor} from "core/icons";
 import {hashid, generatePlayerKey} from "core/utils";
@@ -31,7 +24,6 @@ import classnames from "classnames";
 import Button from "components/commons/button";
 import GMap from "components/commons/map";
 import Box from "components/commons/box";
-import FormBase from "components/form/base";
 import Input from "components/form/input";
 import Select from "components/form/select";
 import Selector from "components/form/selector";
@@ -56,7 +48,6 @@ const SettingsContainer = ({onStartGame}) => {
             name: rawPlayerName,
             isOwner: true,
             title: "My awesome game",
-            withChallengeCode: false,
         },
         onSubmit: ({
             totalRounds: rounds,
@@ -66,16 +57,12 @@ const SettingsContainer = ({onStartGame}) => {
             isMulti,
             name,
             isOwner,
-            withChallengeCode,
         }) => {
             const key =
                 name !== rawPlayerName ? generatePlayerKey(name) : rawPlayerKey;
             onStartGame({
                 code: hashid(),
                 title: title || `Solo Game: ${maps[map].label}`,
-                variant: withChallengeCode
-                    ? GAME_VARIANT_CHALLENGE
-                    : GAME_VARIANT_CLASSIC,
                 rounds,
                 duration,
                 map,
@@ -185,35 +172,6 @@ const SettingsContainer = ({onStartGame}) => {
                                     onChange={handleChange}
                                 />
                             </div>
-
-                            {!values.isMulti && (
-                                <FormBase id={"withChallengeCodeBase"}>
-                                    <label>
-                                        <input
-                                            id={"withChallengeCode"}
-                                            name={"withChallengeCode"}
-                                            type={"checkbox"}
-                                            value={values.withChallengeCode}
-                                            onChange={handleChange}
-                                        />
-                                        {NBSP}
-                                        {`Generate a`}
-                                        {BSP}
-                                        <em className={"has-text-primary"}>
-                                            {"challenge code"}
-                                        </em>
-                                        {BSP}
-                                        {"after the game."}
-                                    </label>
-                                    <p className={"has-text-grey"}>
-                                        <small>
-                                            {
-                                                "The challenge code will allow any player to play the same game as you and try to beat your score."
-                                            }
-                                        </small>
-                                    </p>
-                                </FormBase>
-                            )}
 
                             <Select
                                 id={"map"}
