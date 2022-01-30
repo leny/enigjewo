@@ -44,6 +44,7 @@ const Copiable = ({className, children, text}) => {
         <a
             href={"#"}
             onClick={handleClick}
+            style={{textDecoration: "none"}}
             className={classnames("has-text-black", className)}
             title={"Click to copy"}>
             {children}

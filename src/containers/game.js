@@ -12,7 +12,7 @@ import {useEffect, useCallback} from "react";
 import PropTypes from "prop-types";
 import {useThunkedReducer} from "core/hooks/use-thunked-reducer";
 
-import {DEBUG} from "core/constants";
+import {DEBUG, GAME_VARIANT_CLASSIC} from "core/constants";
 import {
     STEP_LOBBY,
     STEP_PLAY,
@@ -97,7 +97,10 @@ const GameContainer = ({settings, onRestart}) => {
         return (
             <GameStoreContextProvider value={{...state, dispatch}}>
                 <Summary
-                    showSetupChallengeButton={!state.settings.isMulti}
+                    showSetupChallengeButton={
+                        !state.settings.isMulti &&
+                        state.variant === GAME_VARIANT_CLASSIC
+                    }
                     onSetupChallenge={handleSetupChallenge}
                     onRestart={handleRestart}
                 />

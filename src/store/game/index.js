@@ -9,7 +9,7 @@
 import {
     DEBUG,
     GAME_VARIANT_CLASSIC,
-    // GAME_VARIANT_CHALLENGE,
+    GAME_VARIANT_CHALLENGE,
 } from "core/constants";
 import {indexedArray} from "core/utils";
 import {
@@ -37,6 +37,7 @@ import {
     ACTION_PREPARE_CHALLENGE,
     ACTION_SHOW_RESULTS,
     ACTION_SHOW_SUMMARY,
+    ACTION_SHOW_CHALLENGE_SUMMARY,
     ACTION_SEND_ENDED_GAME,
     ACTION_INJECT_SUMMARY,
 } from "./types";
@@ -356,15 +357,39 @@ reducersMap.set(ACTION_SHOW_SUMMARY, state => ({
     step: STEP_SUMMARY,
 }));
 
+reducersMap.set(ACTION_SHOW_CHALLENGE_SUMMARY, state => ({
+    ...state,
+    variant: GAME_VARIANT_CHALLENGE,
+    step: STEP_SUMMARY,
+}));
+
 reducersMap.set(ACTION_SETUP_CHALLENGE, state => ({
     ...state,
     step: STEP_SETUP_CHALLENGE,
 }));
 
-reducersMap.set(ACTION_PREPARE_CHALLENGE, state => ({
-    ...state,
-    step: STEP_LOADING,
-}));
+reducersMap.set(
+    ACTION_PREPARE_CHALLENGE,
+    (state, {title, player: {key, icon, name}}) => {
+        const oldPlayer = state.players[state.player];
+
+        return {
+            ...state,
+            title,
+            player: key,
+            players: {
+                [key]: {...oldPlayer, icon, name},
+            },
+            entries: Object.fromEntries(
+                Object.entries(state.entries).map(([k, v]) => [
+                    k.endsWith(state.player) ? k.replace(state.player, key) : k,
+                    v,
+                ]),
+            ),
+            step: STEP_LOADING,
+        };
+    },
+);
 
 reducersMap.set(ACTION_SEND_ENDED_GAME, state => ({
     ...state,

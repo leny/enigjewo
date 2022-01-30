@@ -50,6 +50,8 @@ export const ACTION_RECEIVE_PLAYER_RESULTS =
 export const ACTION_SEND_ENDED_GAME =
     "store.game.actions.action_send_ended_game";
 export const ACTION_SHOW_SUMMARY = "store.game.actions.action_show_summary";
+export const ACTION_SHOW_CHALLENGE_SUMMARY =
+    "store.game.actions.action_show_challenge_summary";
 export const ACTION_SETUP_CHALLENGE =
     "store.game.actions.action_setup_challenge";
 export const ACTION_PREPARE_CHALLENGE =
