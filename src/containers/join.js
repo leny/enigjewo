@@ -14,7 +14,7 @@ import {useEffect, useState, useMemo} from "react";
 import {useFormik} from "formik";
 import {useLocalStorage} from "react-use-storage";
 
-import {NBSP} from "core/constants";
+import {NBSP, GAME_VARIANT_CHALLENGE} from "core/constants";
 import {getRandomPlayerColor} from "core/icons";
 import {generatePlayerKey} from "core/utils";
 import {db} from "core/firebase";
@@ -36,25 +36,36 @@ const JoinContainer = ({code, onJoinGame, onContinueGame, onShowSummary}) => {
         "",
     );
 
-    const canContinue = useMemo(
-        () =>
-            !checkingCode &&
-            (!game || (game.started && !game.ended)) &&
-            !!game.players[rawPlayerKey],
-        [checkingCode, game, rawPlayerKey],
-    );
+    const canContinue = useMemo(() => {
+        if (checkingCode) {
+            return false;
+        }
+
+        if (!game) {
+            return false;
+        }
+
+        if (!game.players[rawPlayerKey]) {
+            return false;
+        }
+
+        return (
+            game.started &&
+            (game.variant === GAME_VARIANT_CHALLENGE ? game.ended : !game.ended)
+        );
+    }, [checkingCode, game, rawPlayerKey]);
 
     const {handleSubmit, handleChange, values} = useFormik({
         initialValues: {
             name: rawPlayerName,
         },
         onSubmit: ({name}) => {
-            if (game.ended) {
+            if (game.variant !== GAME_VARIANT_CHALLENGE && game.ended) {
                 onShowSummary(game);
                 return;
             }
 
-            if (canContinue) {
+            if (game.variant !== GAME_VARIANT_CHALLENGE && canContinue) {
                 onContinueGame({
                     code,
                     continue: true,
@@ -67,6 +78,7 @@ const JoinContainer = ({code, onJoinGame, onContinueGame, onShowSummary}) => {
                     name !== rawPlayerName
                         ? generatePlayerKey(name)
                         : rawPlayerKey;
+
                 onJoinGame({
                     code,
                     join: true,
@@ -95,12 +107,20 @@ const JoinContainer = ({code, onJoinGame, onContinueGame, onShowSummary}) => {
     const $footer = (
         <Button
             type={"submit"}
-            label={game?.ended ? "Show summary" : "Start"}
+            label={
+                game?.variant !== GAME_VARIANT_CHALLENGE && game?.ended
+                    ? "Show summary"
+                    : "Start"
+            }
             variant={"link"}
             disabled={
                 !game ||
                 (!game.started && !values.name) ||
-                (game.started && !game.ended && !canContinue)
+                (game.started &&
+                    (game.variant === GAME_VARIANT_CHALLENGE
+                        ? !game.ended
+                        : game.ended) &&
+                    !canContinue)
             }
             className={classnames("card-footer-item", "no-top-radius")}
         />
@@ -123,18 +143,24 @@ const JoinContainer = ({code, onJoinGame, onContinueGame, onShowSummary}) => {
                                 isValid={
                                     !checkingCode &&
                                     game &&
-                                    !(game?.started && game?.ended)
+                                    (game?.variant === GAME_VARIANT_CHALLENGE
+                                        ? game?.started && game?.ended
+                                        : !(game?.started && game?.ended))
                                 }
                             />
-                            {!checkingCode && game && !game.started && (
-                                <Input
-                                    id={"name"}
-                                    name={"name"}
-                                    label={"Your nickname"}
-                                    value={values.name}
-                                    onChange={handleChange}
-                                />
-                            )}
+                            {!checkingCode &&
+                                game &&
+                                (game.variant === GAME_VARIANT_CHALLENGE
+                                    ? game.started
+                                    : !game.started) && (
+                                    <Input
+                                        id={"name"}
+                                        name={"name"}
+                                        label={"Your nickname"}
+                                        value={values.name}
+                                        onChange={handleChange}
+                                    />
+                                )}
                             {!checkingCode &&
                                 (!game || (game.started && !game.ended)) &&
                                 (canContinue ? (
@@ -164,18 +190,21 @@ const JoinContainer = ({code, onJoinGame, onContinueGame, onShowSummary}) => {
                                         }
                                     </div>
                                 ))}
-                            {!checkingCode && game && game.ended && (
-                                <div
-                                    className={classnames(
-                                        "notification",
-                                        "is-warning",
-                                        "mt-2",
-                                    )}>
-                                    {
-                                        "This game is already finish. You can consult the results."
-                                    }
-                                </div>
-                            )}
+                            {!checkingCode &&
+                                game &&
+                                game.variant !== GAME_VARIANT_CHALLENGE &&
+                                game.ended && (
+                                    <div
+                                        className={classnames(
+                                            "notification",
+                                            "is-warning",
+                                            "mt-2",
+                                        )}>
+                                        {
+                                            "This game is already finish. You can consult the results."
+                                        }
+                                    </div>
+                                )}
                         </div>
                     </Box>
                 </form>

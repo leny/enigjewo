@@ -162,8 +162,19 @@ reducersMap.set(ACTION_CONTINUE_GAME, (state, game) => ({
 
 reducersMap.set(
     ACTION_SEND_PLAYER_INFOS,
-    (state, {code, title, settings, players, player}) => ({
+    (
+        state,
+        {
+            code,
+            variant = GAME_VARIANT_CLASSIC,
+            title,
+            settings,
+            players,
+            player,
+        },
+    ) => ({
         ...state,
+        variant,
         code,
         title,
         settings: {
