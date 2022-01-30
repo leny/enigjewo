@@ -124,9 +124,8 @@ const Summary = ({onRestart}) => {
                     bounds.extend(positionMarker.getPosition());
                 });
             } else {
-                const {position, distance, score} = entries[
-                    `rnd-${i}-${player}`
-                ];
+                const {position, distance, score} =
+                    entries[`rnd-${i}-${player}`];
                 const {icon} = players[player];
 
                 const polyLine = new google.maps.Polyline({
@@ -510,11 +509,19 @@ const Summary = ({onRestart}) => {
                     {!injected && (
                         <footer className={"card-footer"}>
                             <Button
-                                label={"Restart a Match"}
+                                label={"Create a Challenge from this Match"}
                                 variant={"link"}
                                 className={classnames(
                                     "card-footer-item",
-                                    "no-top-radius",
+                                    "only-bottom-left-radius",
+                                )}
+                            />
+                            <Button
+                                label={"Restart a Match"}
+                                variant={"info"}
+                                className={classnames(
+                                    "card-footer-item",
+                                    "only-bottom-right-radius",
                                 )}
                                 onClick={onRestart}
                             />
