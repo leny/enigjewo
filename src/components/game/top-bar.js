@@ -6,6 +6,8 @@
  * started at 02/02/2021
  */
 
+import "howler";
+
 import "styles/game/top-bar.scss";
 
 import classnames from "classnames";
