@@ -16,6 +16,16 @@ export const MODE_JOIN = "join";
 export const GAME_VARIANT_CLASSIC = "classic";
 export const GAME_VARIANT_CHALLENGE = "challenge";
 
+export const GAME_RULES_CLASSIC = "Classic";
+export const GAME_RULES_STATIONARY = "Stationary";
+export const GAME_RULES_GUESS_COUNTRY = "Guess the Country";
+
+export const GAME_RULES_EMOJIS = {
+    [GAME_RULES_CLASSIC]: "🧭",
+    [GAME_RULES_STATIONARY]: "🚷",
+    [GAME_RULES_GUESS_COUNTRY]: "🏳️",
+};
+
 export const GMAP_API_KEY = process.env.GMAP_API_KEY;
 export const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY;
 export const FIREBASE_AUTH_DOMAIN = process.env.FIREBASE_AUTH_DOMAIN;
