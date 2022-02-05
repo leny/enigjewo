@@ -10,6 +10,9 @@ import {
     DEBUG,
     GAME_VARIANT_CLASSIC,
     GAME_VARIANT_CHALLENGE,
+    GAME_RULES_CLASSIC,
+    // GAME_RULES_STATIONARY,
+    // GAME_RULES_GUESS_COUNTRY,
 } from "core/constants";
 import {indexedArray} from "core/utils";
 import {
@@ -50,6 +53,7 @@ export const GameStoreContext = createContext();
 export const initState = () => ({
     code: null, // (multi) String: hash code to join game
     title: null, // (multi) String: title of the game
+    variant: GAME_VARIANT_CLASSIC, // Enum(classic|challenge): Variant of the game
     settings: {
         // rounds Number
         // duration Number: round duration - in seconds (false for infinite)
@@ -57,6 +61,7 @@ export const initState = () => ({
         // map String
         // difficulty Number
         // bounds (local) Object - computed from map, cached in the store
+        // rules Enum(classic|stationary|guess-country): Rules of the game
     },
     player: null, // String: id of the current player
     players: {
@@ -110,13 +115,14 @@ reducersMap.set(
             map,
             isMulti,
             player: {key, name, isOwner, icon},
+            rules = GAME_RULES_CLASSIC,
         },
     ) => ({
         ...state,
         code,
         title,
         variant: GAME_VARIANT_CLASSIC,
-        settings: {rounds, duration: duration || false, isMulti, map},
+        settings: {rounds, duration: duration || false, isMulti, map, rules},
         player: key,
         players: {
             [key]: {

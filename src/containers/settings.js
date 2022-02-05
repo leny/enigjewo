@@ -22,6 +22,7 @@ import {
     GAME_RULES_STATIONARY,
     GAME_RULES_GUESS_COUNTRY,
     GAME_RULES_EMOJIS,
+    GAME_RULES_NAMES,
 } from "core/constants";
 import {groups, maps, loadGeoJSON} from "core/maps";
 import {getRandomPlayerColor} from "core/icons";
@@ -265,7 +266,7 @@ const SettingsContainer = ({onStartGame}) => {
                                                 GAME_RULES_GUESS_COUNTRY,
                                             ].map(key => [
                                                 key,
-                                                `${GAME_RULES_EMOJIS[key]}${NBSP}${NBSP}${key}`,
+                                                `${GAME_RULES_EMOJIS[key]}${NBSP}${NBSP}${GAME_RULES_NAMES[key]}`,
                                             ]),
                                         )}
                                         value={values.rules}

@@ -16,9 +16,15 @@ export const MODE_JOIN = "join";
 export const GAME_VARIANT_CLASSIC = "classic";
 export const GAME_VARIANT_CHALLENGE = "challenge";
 
-export const GAME_RULES_CLASSIC = "Classic";
-export const GAME_RULES_STATIONARY = "Stationary";
-export const GAME_RULES_GUESS_COUNTRY = "Guess the Country";
+export const GAME_RULES_CLASSIC = "classic";
+export const GAME_RULES_STATIONARY = "stationary";
+export const GAME_RULES_GUESS_COUNTRY = "guess-country";
+
+export const GAME_RULES_NAMES = {
+    [GAME_RULES_CLASSIC]: "Classic",
+    [GAME_RULES_STATIONARY]: "Stationary",
+    [GAME_RULES_GUESS_COUNTRY]: "Guess the Country",
+};
 
 export const GAME_RULES_EMOJIS = {
     [GAME_RULES_CLASSIC]: "🧭",
