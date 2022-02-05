@@ -43,7 +43,7 @@ const MenuContainer = ({onPrepareGame, onJoinGame}) => {
                         }
                         <br />
                         {
-                            "Using only what you see on StreetView, try to pin your drop point on a map."
+                            "Moving around and using what you see, try to pin your drop point on a map."
                         }
                     </p>
 

@@ -6,6 +6,12 @@
  * started at 04/02/2021
  */
 
+import {
+    GAME_RULES_CLASSIC,
+    GAME_RULES_STATIONARY,
+    GAME_RULES_GUESS_COUNTRY,
+} from "core/constants";
+
 import axios from "axios";
 
 import europeanUnion from "url:maps/european-union.geojson";
@@ -79,42 +85,98 @@ export const maps = {
 };
 
 export const groups = {
-    areas: {
-        label: "Areas",
-        maps: ["world", "europeanUnion", "europaWithoutRussia"],
+    [GAME_RULES_CLASSIC]: {
+        areas: {
+            label: "Areas",
+            maps: ["world", "europeanUnion", "europaWithoutRussia"],
+        },
+        continents: {
+            label: "Continents",
+            maps: [
+                "africa",
+                "asia",
+                "europa",
+                "northAmerica",
+                "oceania",
+                "southAmerica",
+            ],
+        },
+        countries: {
+            label: "Countries",
+            maps: [
+                "argentina",
+                "belgium",
+                "brazil",
+                "canada",
+                "china",
+                "france",
+                "germany",
+                "iceland",
+                "india",
+                "japan",
+                "mexico",
+                "sweden",
+                "russia",
+                "uk",
+                "usa",
+            ],
+        },
+        misc: {label: "Misc.", maps: ["unesco", "biggestCities", "inferno"]},
     },
-    continents: {
-        label: "Continents",
-        maps: [
-            "africa",
-            "asia",
-            "europa",
-            "northAmerica",
-            "oceania",
-            "southAmerica",
-        ],
+    [GAME_RULES_STATIONARY]: {
+        areas: {
+            label: "Areas",
+            maps: ["world", "europeanUnion", "europaWithoutRussia"],
+        },
+        continents: {
+            label: "Continents",
+            maps: [
+                "africa",
+                "asia",
+                "europa",
+                "northAmerica",
+                "oceania",
+                "southAmerica",
+            ],
+        },
+        countries: {
+            label: "Countries",
+            maps: [
+                "argentina",
+                "belgium",
+                "brazil",
+                "canada",
+                "china",
+                "france",
+                "germany",
+                "iceland",
+                "india",
+                "japan",
+                "mexico",
+                "sweden",
+                "russia",
+                "uk",
+                "usa",
+            ],
+        },
     },
-    countries: {
-        label: "Countries",
-        maps: [
-            "argentina",
-            "belgium",
-            "brazil",
-            "canada",
-            "china",
-            "france",
-            "germany",
-            "iceland",
-            "india",
-            "japan",
-            "mexico",
-            "sweden",
-            "russia",
-            "uk",
-            "usa",
-        ],
+    [GAME_RULES_GUESS_COUNTRY]: {
+        areas: {
+            label: "Areas",
+            maps: ["world", "europeanUnion", "europaWithoutRussia"],
+        },
+        continents: {
+            label: "Continents",
+            maps: [
+                "africa",
+                "asia",
+                "europa",
+                "northAmerica",
+                "oceania",
+                "southAmerica",
+            ],
+        },
     },
-    misc: {label: "Misc.", maps: ["unesco", "biggestCities", "inferno"]},
 };
 
 const cache = new Map();
