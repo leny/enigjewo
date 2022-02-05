@@ -18,7 +18,13 @@ import {useContext, useCallback, useEffect, useRef, useState} from "react";
 import {renderToStaticMarkup} from "react-dom/server";
 
 import {GameStoreContext} from "store/game";
-import {NBSP, GAME_VARIANT_CHALLENGE} from "core/constants";
+import {
+    NBSP,
+    GAME_VARIANT_CHALLENGE,
+    GAME_RULES_EMOJIS,
+    GAME_RULES_NAMES,
+    GAME_RULES_STATIONARY,
+} from "core/constants";
 import {getMarkerIcon} from "core/icons";
 import {
     noop,
@@ -50,7 +56,7 @@ const Results = ({onNext, onEnd}) => {
         dispatch,
         code,
         variant,
-        settings: {rounds: total, isMulti},
+        settings: {rounds: total, isMulti, rules},
         currentRound: {index},
         progressCount,
         rounds,
@@ -479,8 +485,17 @@ const Results = ({onNext, onEnd}) => {
                             className={classnames(
                                 "card-header-title",
                                 "has-text-white",
+                                "is-justify-content-space-between",
+                                rules === GAME_RULES_STATIONARY
+                                    ? "is-align-items-left"
+                                    : "is-align-items-center",
                             )}>
-                            {`Round ${index}/${total} results`}
+                            <span>{`Round ${index}/${total} results`}</span>
+                            {rules === GAME_RULES_STATIONARY && (
+                                <small>
+                                    {`${GAME_RULES_EMOJIS[rules]}${NBSP}${NBSP}${GAME_RULES_NAMES[rules]}`}
+                                </small>
+                            )}
                         </span>
                     </header>
                     {$results}

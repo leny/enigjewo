@@ -20,6 +20,9 @@ import {
     NBSP,
     GAME_VARIANT_CHALLENGE,
     GAME_VARIANT_CLASSIC,
+    GAME_RULES_EMOJIS,
+    GAME_RULES_NAMES,
+    GAME_RULES_STATIONARY,
 } from "core/constants";
 import {getMarkerIcon} from "core/icons";
 import {readableDuration, readableDistance, indexedArray} from "core/utils";
@@ -41,7 +44,7 @@ const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
         variant = GAME_VARIANT_CLASSIC,
         code,
         title,
-        settings: {rounds: total, isMulti, map},
+        settings: {rounds: total, isMulti, map, rules},
         rounds,
         entries,
         player,
@@ -360,7 +363,16 @@ const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
                             <small>
                                 {dayjs(gameStartedAt).format("DD/MM/YYYY")}
                             </small>
-                            <span>{maps[map].label}</span>
+                            <span>
+                                <small className={"is-block"}>
+                                    {maps[map].label}
+                                </small>
+                                {rules === GAME_RULES_STATIONARY && (
+                                    <small className={classnames("is-block")}>
+                                        {`${GAME_RULES_EMOJIS[rules]}${NBSP}${NBSP}${GAME_RULES_NAMES[rules]}`}
+                                    </small>
+                                )}
+                            </span>
                         </span>
                     </header>
                     {!completeMode && (

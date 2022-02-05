@@ -24,14 +24,19 @@ import {faBell, faBellSlash} from "@fortawesome/free-solid-svg-icons";
 
 import {noop, preventDefault} from "core/utils";
 
-import {NBSP} from "core/constants";
+import {
+    NBSP,
+    GAME_RULES_EMOJIS,
+    GAME_RULES_NAMES,
+    GAME_RULES_STATIONARY,
+} from "core/constants";
 
 import halfTimeAlert from "url:sounds/half-time.ogg";
 import lastSecondsAlert from "url:sounds/last-seconds.ogg";
 
 const TopBar = ({onTimerFinished = noop}) => {
     const {
-        settings: {duration, rounds: total},
+        settings: {duration, rounds: total, rules},
         currentRound: {index: current},
         players,
         player,
@@ -130,9 +135,18 @@ const TopBar = ({onTimerFinished = noop}) => {
                 )}
             </span>
             <span className={classnames("top-bar__rounds")}>
-                <span className={classnames("has-text-grey")}>{"Round:"}</span>
-                {NBSP}
-                <strong>{`${current} / ${total}`}</strong>
+                <span className={classnames("is-block")}>
+                    <span className={classnames("has-text-grey")}>
+                        {"Round:"}
+                    </span>
+                    {NBSP}
+                    <strong>{`${current} / ${total}`}</strong>
+                </span>
+                {rules === GAME_RULES_STATIONARY && (
+                    <small className={classnames("is-block")}>
+                        {`${GAME_RULES_EMOJIS[rules]}${NBSP}${NBSP}${GAME_RULES_NAMES[rules]}`}
+                    </small>
+                )}
             </span>
             <span className={classnames("top-bar__score")}>
                 <span className={classnames("has-text-grey")}>{"Score:"}</span>
