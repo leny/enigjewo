@@ -228,7 +228,7 @@ reducersMap.set(ACTION_PROGRESS_INDICATION, (state, {count}) => ({
 
 reducersMap.set(
     ACTION_START_CHALLENGE_ROUND,
-    (state, {index, panorama, target, difficulty, bounds, now}) => {
+    (state, {index, panorama, target, country, difficulty, bounds, now}) => {
         const key = `rnd-${index}-${state.player}`;
 
         return {
@@ -243,6 +243,7 @@ reducersMap.set(
                 [`rnd-${index}`]: {
                     panorama,
                     target,
+                    country,
                 },
             },
             entries: {
@@ -263,7 +264,7 @@ reducersMap.set(
 
 reducersMap.set(
     ACTION_START_ROUND,
-    (state, {index, panorama, target, difficulty, bounds, now}) => {
+    (state, {index, panorama, target, country, difficulty, bounds, now}) => {
         const key = `rnd-${index}-${state.player}`;
 
         return {
@@ -278,6 +279,7 @@ reducersMap.set(
                 [`rnd-${index}`]: {
                     panorama,
                     target,
+                    country,
                 },
             },
             entries: {

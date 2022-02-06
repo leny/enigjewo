@@ -23,7 +23,7 @@ import {
     GAME_VARIANT_CHALLENGE,
     GAME_RULES_EMOJIS,
     GAME_RULES_NAMES,
-    GAME_RULES_STATIONARY,
+    GAME_RULES_CLASSIC,
 } from "core/constants";
 import {getMarkerIcon} from "core/icons";
 import {
@@ -486,12 +486,12 @@ const Results = ({onNext, onEnd}) => {
                                 "card-header-title",
                                 "has-text-white",
                                 "is-justify-content-space-between",
-                                rules === GAME_RULES_STATIONARY
+                                rules !== GAME_RULES_CLASSIC
                                     ? "is-align-items-left"
                                     : "is-align-items-center",
                             )}>
                             <span>{`Round ${index}/${total} results`}</span>
-                            {rules === GAME_RULES_STATIONARY && (
+                            {rules !== GAME_RULES_CLASSIC && (
                                 <small>
                                     {`${GAME_RULES_EMOJIS[rules]}${NBSP}${NBSP}${GAME_RULES_NAMES[rules]}`}
                                 </small>

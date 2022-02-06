@@ -28,7 +28,7 @@ import {
     NBSP,
     GAME_RULES_EMOJIS,
     GAME_RULES_NAMES,
-    GAME_RULES_STATIONARY,
+    GAME_RULES_CLASSIC,
 } from "core/constants";
 
 import halfTimeAlert from "url:sounds/half-time.ogg";
@@ -134,7 +134,8 @@ const TopBar = ({onTimerFinished = noop}) => {
                     NBSP
                 )}
             </span>
-            <span className={classnames("top-bar__rounds")}>
+            <span
+                className={classnames("top-bar__rounds", "has-text-centered")}>
                 <span className={classnames("is-block")}>
                     <span className={classnames("has-text-grey")}>
                         {"Round:"}
@@ -142,7 +143,7 @@ const TopBar = ({onTimerFinished = noop}) => {
                     {NBSP}
                     <strong>{`${current} / ${total}`}</strong>
                 </span>
-                {rules === GAME_RULES_STATIONARY && (
+                {rules !== GAME_RULES_CLASSIC && (
                     <small className={classnames("is-block")}>
                         {`${GAME_RULES_EMOJIS[rules]}${NBSP}${NBSP}${GAME_RULES_NAMES[rules]}`}
                     </small>

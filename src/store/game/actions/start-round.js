@@ -6,7 +6,11 @@
  * started at 03/02/2021
  */
 
-import {DEFAULT_DIFFICULTY, GAME_VARIANT_CHALLENGE} from "core/constants";
+import {
+    DEFAULT_DIFFICULTY,
+    GAME_VARIANT_CHALLENGE,
+    GAME_RULES_GUESS_COUNTRY,
+} from "core/constants";
 import {
     ACTION_PREPARE_ROUND,
     ACTION_PROGRESS_INDICATION,
@@ -19,6 +23,7 @@ import bbox from "@turf/bbox";
 import {getRandomPanorama} from "core/street-view";
 import {getGeoJSONDifficulty} from "core/geo-utils";
 import {loadGeoJSON} from "core/maps";
+import {getCountryFromPosition} from "core/geocoder";
 
 import {db, cleanGame} from "core/firebase";
 
@@ -26,7 +31,7 @@ export default state => async dispatch => {
     const {
         code,
         variant,
-        settings: {map, isMulti},
+        settings: {map, isMulti, rules},
         currentRound: {index = 0} = {},
     } = state;
 
@@ -82,6 +87,10 @@ export default state => async dispatch => {
         payload.target = position;
         payload.bounds = {north, east, south, west};
         payload.difficulty = difficulty;
+    }
+
+    if (rules === GAME_RULES_GUESS_COUNTRY) {
+        payload.country = await getCountryFromPosition(payload.target);
     }
 
     if (!isMulti) {

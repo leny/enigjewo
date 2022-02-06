@@ -22,7 +22,7 @@ import {
     GAME_VARIANT_CLASSIC,
     GAME_RULES_EMOJIS,
     GAME_RULES_NAMES,
-    GAME_RULES_STATIONARY,
+    GAME_RULES_CLASSIC,
 } from "core/constants";
 import {getMarkerIcon} from "core/icons";
 import {readableDuration, readableDistance, indexedArray} from "core/utils";
@@ -367,7 +367,7 @@ const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
                                 <small className={"is-block"}>
                                     {maps[map].label}
                                 </small>
-                                {rules === GAME_RULES_STATIONARY && (
+                                {rules === GAME_RULES_CLASSIC && (
                                     <small className={classnames("is-block")}>
                                         {`${GAME_RULES_EMOJIS[rules]}${NBSP}${NBSP}${GAME_RULES_NAMES[rules]}`}
                                     </small>
