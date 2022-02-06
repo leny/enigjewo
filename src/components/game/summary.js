@@ -6,6 +6,8 @@
  * started at 04/02/2021
  */
 
+// TODO: split
+
 /* global google */
 
 import "styles/game/summary.scss";
@@ -23,11 +25,13 @@ import {
     GAME_RULES_EMOJIS,
     GAME_RULES_NAMES,
     GAME_RULES_CLASSIC,
+    GAME_RULES_GUESS_COUNTRY,
 } from "core/constants";
 import {getMarkerIcon} from "core/icons";
 import {readableDuration, readableDistance, indexedArray} from "core/utils";
 import {maps} from "core/maps";
 import dayjs from "dayjs";
+import {getFlag, getName} from "iso-country-conversion";
 
 import Button from "components/commons/button";
 import GMap from "components/commons/map";
@@ -367,7 +371,7 @@ const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
                                 <small className={"is-block"}>
                                     {maps[map].label}
                                 </small>
-                                {rules === GAME_RULES_CLASSIC && (
+                                {rules !== GAME_RULES_CLASSIC && (
                                     <small className={classnames("is-block")}>
                                         {`${GAME_RULES_EMOJIS[rules]}${NBSP}${NBSP}${GAME_RULES_NAMES[rules]}`}
                                     </small>
@@ -386,7 +390,11 @@ const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
                                 <thead>
                                     <tr>
                                         <th>{"# Round"}</th>
-                                        <th>{"Distance"}</th>
+                                        <th>
+                                            {rules === GAME_RULES_GUESS_COUNTRY
+                                                ? "Guess"
+                                                : "Distance"}
+                                        </th>
                                         <th>{"Duration"}</th>
                                         <th>{"Score"}</th>
                                     </tr>
@@ -400,9 +408,12 @@ const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
                                 </tfoot>
                                 <tbody>
                                     {indexedArray(total).map(i => {
+                                        const {country: targetCountry} =
+                                            rounds[`rnd-${i}`];
                                         const {
                                             distance,
                                             score,
+                                            country,
                                             startedAt,
                                             endedAt,
                                         } = entries[`rnd-${i}-${player}`];
@@ -414,15 +425,45 @@ const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
                                                   )
                                                 : null;
 
+                                        const targetCountryName = `${getFlag(
+                                            targetCountry,
+                                        )}${NBSP}${NBSP}${getName(
+                                            targetCountry,
+                                        )}`;
+
+                                        const guessCountryName = `${getFlag(
+                                            country,
+                                        )}${NBSP}${NBSP}${getName(country)}`;
+
                                         return (
                                             <tr key={`round-${i}`}>
-                                                <td>{i}</td>
                                                 <td>
-                                                    {distance
-                                                        ? readableDistance(
-                                                              distance,
-                                                          )
-                                                        : "-"}
+                                                    {i}
+                                                    {rules ===
+                                                        GAME_RULES_GUESS_COUNTRY && (
+                                                        <>
+                                                            {NBSP}
+                                                            <small>
+                                                                {
+                                                                    targetCountryName
+                                                                }
+                                                            </small>
+                                                        </>
+                                                    )}
+                                                </td>
+                                                <td>
+                                                    {rules ===
+                                                    GAME_RULES_GUESS_COUNTRY ? (
+                                                        <small>
+                                                            {guessCountryName}
+                                                        </small>
+                                                    ) : distance ? (
+                                                        readableDistance(
+                                                            distance,
+                                                        )
+                                                    ) : (
+                                                        "-"
+                                                    )}
                                                 </td>
                                                 <td>
                                                     {duration
@@ -434,11 +475,21 @@ const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
                                                 <td>
                                                     <span
                                                         className={classnames(
-                                                            score === 5000 &&
-                                                                "has-text-success",
+                                                            rules ===
+                                                                GAME_RULES_GUESS_COUNTRY
+                                                                ? score === 1
+                                                                    ? "has-text-success"
+                                                                    : "has-text-danger"
+                                                                : score ===
+                                                                      5000 &&
+                                                                      "has-text-success",
                                                         )}>
                                                         {score
-                                                            ? `${score}pts`
+                                                            ? `${score}pt${
+                                                                  score > 1
+                                                                      ? "s"
+                                                                      : ""
+                                                              }`
                                                             : "-"}
                                                     </span>
                                                 </td>
@@ -479,8 +530,10 @@ const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {indexedArray(total).map(i =>
-                                        Object.entries(players).map(
+                                    {indexedArray(total).map(i => {
+                                        const {country: targetCountry} =
+                                            rounds[`rnd-${i}`];
+                                        return Object.entries(players).map(
                                             (
                                                 [key, {name, icon, isActive}],
                                                 idx,
@@ -488,6 +541,7 @@ const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
                                                 const {
                                                     distance,
                                                     score,
+                                                    country,
                                                     startedAt,
                                                     endedAt,
                                                 } =
@@ -502,6 +556,18 @@ const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
                                                                   1000,
                                                           )
                                                         : null;
+
+                                                const targetCountryName = `${getFlag(
+                                                    targetCountry,
+                                                )}${NBSP}${NBSP}${getName(
+                                                    targetCountry,
+                                                )}`;
+
+                                                const guessCountryName = `${getFlag(
+                                                    country,
+                                                )}${NBSP}${NBSP}${getName(
+                                                    country,
+                                                )}`;
 
                                                 return (
                                                     <tr
@@ -521,6 +587,17 @@ const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
                                                                     "summary__round-cell"
                                                                 }>
                                                                 {i}
+                                                                {rules ===
+                                                                    GAME_RULES_GUESS_COUNTRY && (
+                                                                    <>
+                                                                        {NBSP}
+                                                                        <small>
+                                                                            {
+                                                                                targetCountryName
+                                                                            }
+                                                                        </small>
+                                                                    </>
+                                                                )}
                                                             </td>
                                                         )}
                                                         <td>
@@ -538,11 +615,20 @@ const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
                                                             {name}
                                                         </td>
                                                         <td>
-                                                            {distance
-                                                                ? readableDistance(
-                                                                      distance,
-                                                                  )
-                                                                : "-"}
+                                                            {rules ===
+                                                            GAME_RULES_GUESS_COUNTRY ? (
+                                                                <small>
+                                                                    {
+                                                                        guessCountryName
+                                                                    }
+                                                                </small>
+                                                            ) : distance ? (
+                                                                readableDistance(
+                                                                    distance,
+                                                                )
+                                                            ) : (
+                                                                "-"
+                                                            )}
                                                         </td>
                                                         <td>
                                                             {duration
@@ -554,20 +640,31 @@ const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
                                                         <td>
                                                             <span
                                                                 className={classnames(
-                                                                    score ===
-                                                                        5000 &&
-                                                                        "has-text-success",
+                                                                    rules ===
+                                                                        GAME_RULES_GUESS_COUNTRY
+                                                                        ? score ===
+                                                                          1
+                                                                            ? "has-text-success"
+                                                                            : "has-text-danger"
+                                                                        : score ===
+                                                                              5000 &&
+                                                                              "has-text-success",
                                                                 )}>
                                                                 {score
-                                                                    ? `${score}pts`
+                                                                    ? `${score}pt${
+                                                                          score >
+                                                                          1
+                                                                              ? "s"
+                                                                              : ""
+                                                                      }`
                                                                     : "-"}
                                                             </span>
                                                         </td>
                                                     </tr>
                                                 );
                                             },
-                                        ),
-                                    )}
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>

@@ -346,7 +346,7 @@ reducersMap.set(ACTION_COMPUTE_RESULTS, (state, {position}) => {
     };
 });
 
-reducersMap.set(ACTION_SHOW_RESULTS, (state, {distance, score}) => {
+reducersMap.set(ACTION_SHOW_RESULTS, (state, {distance, score, country}) => {
     const key = `rnd-${state.currentRound.index}-${state.player}`;
 
     return {
@@ -370,6 +370,7 @@ reducersMap.set(ACTION_SHOW_RESULTS, (state, {distance, score}) => {
                 ...state.entries[key],
                 distance,
                 score,
+                country,
             },
         },
         step: STEP_RESULTS,
