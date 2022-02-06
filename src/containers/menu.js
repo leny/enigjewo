@@ -43,7 +43,7 @@ const MenuContainer = ({onPrepareGame, onJoinGame}) => {
                         }
                         <br />
                         {
-                            "Using only what you see on StreetView, try to pin your drop point on a map."
+                            "Moving around and using what you see, try to pin your drop point on a map."
                         }
                     </p>
 
@@ -106,7 +106,10 @@ const MenuContainer = ({onPrepareGame, onJoinGame}) => {
                         "has-text-grey-lighter",
                         "is-family-code",
                     )}>
-                    {`version ${version}`}
+                    <a href={"//github.com/leny/enigjewo"} target={"_new"}>
+                        enigjewo
+                    </a>
+                    {` - v${version}`}
                 </div>
             </div>
         </div>

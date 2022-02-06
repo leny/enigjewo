@@ -6,6 +6,8 @@
  * started at 01/02/2021
  */
 
+import PropTypes from "prop-types";
+
 import "styles/game/play.scss";
 
 import classnames from "classnames";
@@ -13,7 +15,7 @@ import {useCallback, useContext, useEffect, useState, useRef} from "react";
 import {useLocalStorage} from "react-use-storage";
 import {GameStoreContext} from "store/game";
 
-import PropTypes from "prop-types";
+import {GAME_RULES_STATIONARY} from "core/constants";
 
 import sendPlayerRoundStartTime from "store/game/actions/send-player-round-start-time";
 
@@ -30,7 +32,7 @@ const Play = ({onFinishRound}) => {
         dispatch,
         code,
         currentRound: {index},
-        settings: {isMulti},
+        settings: {isMulti, rules},
         rounds,
         player,
     } = useContext(GameStoreContext);
@@ -114,6 +116,7 @@ const Play = ({onFinishRound}) => {
             <StreetView
                 className={classnames(isDocked && "play__street-view")}
                 panorama={panorama}
+                stationary={rules === GAME_RULES_STATIONARY}
                 ref={streetView}
             />
             <Roadmap

@@ -15,6 +15,11 @@ import {GameStoreContext} from "store/game";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 
+import {getCountryFromPosition} from "core/geocoder";
+import {getFlag, getName} from "iso-country-conversion";
+
+import {NBSP, GAME_RULES_GUESS_COUNTRY} from "core/constants";
+
 import Button from "components/commons/button";
 import ToolIcon from "components/game/tool-icon";
 import GMap from "components/commons/map";
@@ -57,7 +62,7 @@ const Roadmap = ({
     onGuessPosition,
 }) => {
     const {
-        settings: {bounds},
+        settings: {bounds, rules},
         players,
         player: key,
     } = useContext(GameStoreContext);
@@ -67,6 +72,7 @@ const Roadmap = ({
     const [notes, setNotes] = useState("");
     const [marker, setMarker] = useState(null);
     const [ready, setReady] = useState(false);
+    const [country, setCountry] = useState(null);
     const gmap = useRef(null);
 
     useEffect(() => {
@@ -79,7 +85,7 @@ const Roadmap = ({
     }, [gmap.current, bounds, ready]);
 
     const handleClickOnMap = useCallback(
-        (map, {latLng}) => {
+        async (map, {latLng}) => {
             onUpdatePosition(latLng.toJSON());
 
             if (!marker) {
@@ -90,12 +96,17 @@ const Roadmap = ({
                         icon: getMarkerIcon(icon),
                     }),
                 );
-                return;
+            } else {
+                marker.setPosition(latLng);
             }
 
-            marker.setPosition(latLng);
+            if (rules === GAME_RULES_GUESS_COUNTRY) {
+                const result = await getCountryFromPosition(latLng);
+
+                result && setCountry(result);
+            }
         },
-        [marker, setMarker, onUpdatePosition, icon],
+        [marker, setMarker, onUpdatePosition, icon, rules],
     );
 
     const handleCenterMap = useCallback(() => {
@@ -200,6 +211,19 @@ const Roadmap = ({
                 zoom={startZoom}
                 onMapClick={handleClickOnMap}
             />
+            {rules === GAME_RULES_GUESS_COUNTRY && country && (
+                <span
+                    className={classnames(
+                        "button",
+                        "is-normal",
+                        "no-radius",
+                        "is-light",
+                        "is-info",
+                        "is-static",
+                    )}>
+                    {`${getFlag(country)}${NBSP}${NBSP}${getName(country)}`}
+                </span>
+            )}
             <Button
                 className={"no-top-radius"}
                 variant={"dark"}

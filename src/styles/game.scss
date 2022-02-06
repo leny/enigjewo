@@ -27,6 +27,10 @@
     height: 100%;
 }
 
+.no-radius {
+    border-radius: 0;
+}
+
 .no-top-radius {
     border-top-left-radius:0;
     border-top-right-radius:0;

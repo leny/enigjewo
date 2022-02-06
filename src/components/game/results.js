@@ -18,7 +18,14 @@ import {useContext, useCallback, useEffect, useRef, useState} from "react";
 import {renderToStaticMarkup} from "react-dom/server";
 
 import {GameStoreContext} from "store/game";
-import {NBSP, GAME_VARIANT_CHALLENGE} from "core/constants";
+import {
+    NBSP,
+    GAME_VARIANT_CHALLENGE,
+    GAME_RULES_EMOJIS,
+    GAME_RULES_NAMES,
+    GAME_RULES_CLASSIC,
+    GAME_RULES_GUESS_COUNTRY,
+} from "core/constants";
 import {getMarkerIcon} from "core/icons";
 import {
     noop,
@@ -26,6 +33,7 @@ import {
     readableDuration,
     readableDistance,
 } from "core/utils";
+import {getFlag, getName} from "iso-country-conversion";
 
 import Button from "components/commons/button";
 import GMap from "components/commons/map";
@@ -50,7 +58,7 @@ const Results = ({onNext, onEnd}) => {
         dispatch,
         code,
         variant,
-        settings: {rounds: total, isMulti},
+        settings: {rounds: total, isMulti, rules},
         currentRound: {index},
         progressCount,
         rounds,
@@ -59,7 +67,7 @@ const Results = ({onNext, onEnd}) => {
         player,
         ended,
     } = useContext(GameStoreContext);
-    const {panorama, target} = rounds[`rnd-${index}`];
+    const {panorama, target, country: targetCountry} = rounds[`rnd-${index}`];
     const bestScore = Math.max(
         ...Object.values(players).map(({score}) => score),
     );
@@ -222,6 +230,22 @@ const Results = ({onNext, onEnd}) => {
     if (isMulti) {
         $results = (
             <div className={classnames("card-image")}>
+                {rules === GAME_RULES_GUESS_COUNTRY && (
+                    <div
+                        className={classnames(
+                            "notification",
+                            "is-success",
+                            "is-light",
+                        )}>
+                        {"Answer was:"}
+                        {NBSP}
+                        <strong>
+                            {`${getFlag(targetCountry)}${NBSP}${NBSP}${getName(
+                                targetCountry,
+                            )}`}
+                        </strong>
+                    </div>
+                )}
                 <table
                     className={classnames(
                         "table",
@@ -231,7 +255,11 @@ const Results = ({onNext, onEnd}) => {
                     <thead>
                         <tr>
                             <th>{"Player"}</th>
-                            <th>{"Distance"}</th>
+                            <th>
+                                {rules === GAME_RULES_GUESS_COUNTRY
+                                    ? "Guess"
+                                    : "Distance"}
+                            </th>
                             <th>{"Duration"}</th>
                             <th>{"Score"}</th>
                             <th>{"Total Score"}</th>
@@ -333,8 +361,13 @@ const Results = ({onNext, onEnd}) => {
                                     );
                                 }
 
-                                const {distance, score, startedAt, endedAt} =
-                                    entries[`rnd-${index}-${key}`];
+                                const {
+                                    distance,
+                                    score,
+                                    country,
+                                    startedAt,
+                                    endedAt,
+                                } = entries[`rnd-${index}-${key}`];
                                 const duration =
                                     endedAt &&
                                     startedAt &&
@@ -343,13 +376,26 @@ const Results = ({onNext, onEnd}) => {
                                 return (
                                     <tr key={key}>
                                         {$name}
-                                        <td>{readableDistance(distance)}</td>
+                                        <td>
+                                            {rules === GAME_RULES_GUESS_COUNTRY
+                                                ? `${getFlag(
+                                                      country,
+                                                  )}${NBSP}${NBSP}${getName(
+                                                      country,
+                                                  )}`
+                                                : readableDistance(distance)}
+                                        </td>
                                         <td>{readableDuration(duration)}</td>
                                         <td>
                                             <span
                                                 className={classnames(
-                                                    score === 5000 &&
-                                                        "has-text-success",
+                                                    rules ===
+                                                        GAME_RULES_GUESS_COUNTRY
+                                                        ? score === 1
+                                                            ? "has-text-success"
+                                                            : "has-text-danger"
+                                                        : score === 5000 &&
+                                                              "has-text-success",
                                                 )}>
                                                 {`${score}pts`}
                                             </span>
@@ -366,29 +412,79 @@ const Results = ({onNext, onEnd}) => {
         );
     } else {
         const {score: totalScore} = players[player];
-        const {score, distance} = entries[`rnd-${index}-${player}`];
+        const {score, distance, country} = entries[`rnd-${index}-${player}`];
 
-        $results = (
-            <div className={classnames("card-content", "has-text-centered")}>
-                <p>
-                    <strong>{readableDistance(distance)}</strong>
-                    {`${NBSP}-${NBSP}`}
-                    <strong
+        if (rules === GAME_RULES_GUESS_COUNTRY) {
+            $results = (
+                <div
+                    className={classnames("card-content", "has-text-centered")}>
+                    <div
                         className={classnames(
-                            score === 5000 && "has-text-success",
+                            "notification",
+                            "is-success",
+                            "is-light",
                         )}>
-                        {`${score}pts`}
-                    </strong>
-                </p>
-                <p>
-                    <small>
-                        {"Total score:"}
+                        {"Answer was:"}
                         {NBSP}
-                        <strong>{`${totalScore}pts`}</strong>
-                    </small>
-                </p>
-            </div>
-        );
+                        <strong>
+                            {`${getFlag(targetCountry)}${NBSP}${NBSP}${getName(
+                                targetCountry,
+                            )}`}
+                        </strong>
+                    </div>
+                    <p>
+                        {"Your guess:"}
+                        {NBSP}
+                        <strong>
+                            {`${getFlag(country)}${NBSP}${NBSP}${getName(
+                                country,
+                            )}`}
+                        </strong>
+                        {`${NBSP}-${NBSP}`}
+                        <strong
+                            className={classnames(
+                                score === 1
+                                    ? "has-text-success"
+                                    : "has-text-danger",
+                            )}>
+                            {`${score}pt${score > 1 ? "s" : ""}`}
+                        </strong>
+                    </p>
+                    <p>
+                        <small>
+                            {"Total score:"}
+                            {NBSP}
+                            <strong>
+                                {`${totalScore}pt${totalScore > 1 ? "s" : ""}`}
+                            </strong>
+                        </small>
+                    </p>
+                </div>
+            );
+        } else {
+            $results = (
+                <div
+                    className={classnames("card-content", "has-text-centered")}>
+                    <p>
+                        <strong>{readableDistance(distance)}</strong>
+                        {`${NBSP}-${NBSP}`}
+                        <strong
+                            className={classnames(
+                                score === 5000 && "has-text-success",
+                            )}>
+                            {`${score}pts`}
+                        </strong>
+                    </p>
+                    <p>
+                        <small>
+                            {"Total score:"}
+                            {NBSP}
+                            <strong>{`${totalScore}pts`}</strong>
+                        </small>
+                    </p>
+                </div>
+            );
+        }
     }
 
     const allPlayersReady = Object.entries(players)
@@ -479,8 +575,17 @@ const Results = ({onNext, onEnd}) => {
                             className={classnames(
                                 "card-header-title",
                                 "has-text-white",
+                                "is-justify-content-space-between",
+                                rules !== GAME_RULES_CLASSIC
+                                    ? "is-align-items-left"
+                                    : "is-align-items-center",
                             )}>
-                            {`Round ${index}/${total} results`}
+                            <span>{`Round ${index}/${total} results`}</span>
+                            {rules !== GAME_RULES_CLASSIC && (
+                                <small>
+                                    {`${GAME_RULES_EMOJIS[rules]}${NBSP}${NBSP}${GAME_RULES_NAMES[rules]}`}
+                                </small>
+                            )}
                         </span>
                     </header>
                     {$results}

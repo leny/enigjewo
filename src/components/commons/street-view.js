@@ -7,6 +7,7 @@
  */
 
 /* global google */
+/* eslint-disable consistent-return */
 
 import "styles/game.scss";
 
@@ -17,7 +18,7 @@ import classnames from "classnames";
 import PropTypes from "prop-types";
 
 const StreetView = forwardRef(
-    ({className, panorama, options = {}}, streetView) => {
+    ({className, panorama, stationary = false, options = {}}, streetView) => {
         const box = useRef(null);
         const {height} = useComponentSize(box);
 
@@ -28,21 +29,39 @@ const StreetView = forwardRef(
 
             streetView.current = new google.maps.StreetViewPanorama(
                 box.current,
-                {
-                    addressControl: false,
-                    fullscreenControl: false,
-                    motionTracking: false,
-                    motionTrackingControl: false,
-                    showRoadLabels: false,
-                    panControl: true,
-                    panControlOptions: {
-                        position: google.maps.ControlPosition.RIGHT_TOP,
-                    },
-                    zoomControlOptions: {
-                        position: google.maps.ControlPosition.RIGHT_TOP,
-                    },
-                    ...options,
-                },
+                stationary
+                    ? {
+                          disableDefaultUI: true,
+                          clickToGo: false,
+                          fullscreenControl: false,
+                          motionTracking: false,
+                          motionTrackingControl: false,
+                          showRoadLabels: false,
+                          panControl: true,
+                          panControlOptions: {
+                              position: google.maps.ControlPosition.RIGHT_TOP,
+                          },
+                          zoomControlOptions: {
+                              position: google.maps.ControlPosition.RIGHT_TOP,
+                          },
+                          ...options,
+                      }
+                    : {
+                          addressControl: false,
+                          clickToGo: true,
+                          fullscreenControl: false,
+                          motionTracking: false,
+                          motionTrackingControl: false,
+                          showRoadLabels: false,
+                          panControl: true,
+                          panControlOptions: {
+                              position: google.maps.ControlPosition.RIGHT_TOP,
+                          },
+                          zoomControlOptions: {
+                              position: google.maps.ControlPosition.RIGHT_TOP,
+                          },
+                          ...options,
+                      },
             );
 
             streetView.current.setPano(panorama);
@@ -51,7 +70,31 @@ const StreetView = forwardRef(
                 pitch: 0,
             });
             streetView.current.setZoom(0);
-        }, [box, streetView.current, panorama, options]);
+
+            if (stationary) {
+                let startingPosition;
+
+                const listener = streetView.current.addListener(
+                    "position_changed",
+                    () => {
+                        if (!startingPosition) {
+                            startingPosition = streetView.current.getPosition();
+                        } else if (
+                            !streetView.current
+                                .getPosition()
+                                .equals(startingPosition)
+                        ) {
+                            streetView.current.setPosition(startingPosition);
+                            return false;
+                        }
+                    },
+                );
+
+                return () => {
+                    google.maps.event.removeListener(listener);
+                };
+            }
+        }, [box, streetView.current, panorama, stationary, options]);
 
         useEffect(
             () =>
@@ -65,8 +108,9 @@ const StreetView = forwardRef(
 );
 
 StreetView.propTypes = {
-    panorama: PropTypes.string.isRequired,
     options: PropTypes.object,
+    panorama: PropTypes.string.isRequired,
+    stationary: PropTypes.bool,
 };
 
 export default StreetView;
