@@ -532,7 +532,11 @@ const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
                                     <tr>
                                         <th>{"# Round"}</th>
                                         <th>{"Player"}</th>
-                                        <th>{"Distance"}</th>
+                                        <th>
+                                            {rules === GAME_RULES_GUESS_COUNTRY
+                                                ? "Guess"
+                                                : "Distance"}
+                                        </th>
                                         <th>{"Duration"}</th>
                                         <th>{"Score"}</th>
                                     </tr>
@@ -565,17 +569,25 @@ const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
                                                           )
                                                         : null;
 
-                                                const targetCountryName = `${getFlag(
-                                                    targetCountry,
-                                                )}${NBSP}${NBSP}${getName(
-                                                    targetCountry,
-                                                )}`;
+                                                let targetCountryName,
+                                                    guessCountryName;
 
-                                                const guessCountryName = `${getFlag(
-                                                    country,
-                                                )}${NBSP}${NBSP}${getName(
-                                                    country,
-                                                )}`;
+                                                if (
+                                                    rules ===
+                                                    GAME_RULES_GUESS_COUNTRY
+                                                ) {
+                                                    targetCountryName = `${getFlag(
+                                                        targetCountry,
+                                                    )}${NBSP}${NBSP}${getName(
+                                                        targetCountry,
+                                                    )}`;
+
+                                                    guessCountryName = `${getFlag(
+                                                        country,
+                                                    )}${NBSP}${NBSP}${getName(
+                                                        country,
+                                                    )}`;
+                                                }
 
                                                 return (
                                                     <tr

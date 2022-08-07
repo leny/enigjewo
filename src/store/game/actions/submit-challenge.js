@@ -29,6 +29,7 @@ export default (state, {title, player}) =>
                 map: settings.map,
                 rounds: settings.rounds,
                 duration: settings.duration,
+                rules: settings.rules,
             },
             rounds,
             entries: Object.fromEntries(
