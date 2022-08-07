@@ -7,6 +7,7 @@
  */
 
 .summary {
+    &__nowrap{white-space: nowrap;}
     &__navigation{height:40vh}
     &__multi{height:35vh}
     &__map{
@@ -19,6 +20,12 @@
         vertical-align: middle !important;
         text-align: center !important;
             border-right: 1px solid #dbdbdb !important;
+    }
+    &__round-cell-guess-country {
+        // width: 100px;
+        vertical-align: middle !important;
+        // text-align: center !important;
+        border-right: 1px solid #dbdbdb !important;
     }
 }
 

@@ -330,7 +330,9 @@ const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
                                                 "is-block",
                                                 "has-text-right",
                                             )}>
-                                            {`${totalScore}pts`}
+                                            {`${totalScore}pt${
+                                                totalScore > 1 ? "s" : ""
+                                            }`}
                                         </small>
                                     </li>
                                 ),
@@ -604,7 +606,10 @@ const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
                                                                     ).length
                                                                 }
                                                                 className={
-                                                                    "summary__round-cell"
+                                                                    rules ===
+                                                                    GAME_RULES_GUESS_COUNTRY
+                                                                        ? "summary__round-cell-guess-country"
+                                                                        : "summary__round-cell"
                                                                 }>
                                                                 {i}
                                                                 {rules ===
@@ -637,7 +642,10 @@ const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
                                                         <td>
                                                             {rules ===
                                                             GAME_RULES_GUESS_COUNTRY ? (
-                                                                <small>
+                                                                <small
+                                                                    className={
+                                                                        "summary__nowrap"
+                                                                    }>
                                                                     {
                                                                         guessCountryName
                                                                     }
@@ -670,7 +678,7 @@ const Summary = ({showSetupChallengeButton, onRestart, onSetupChallenge}) => {
                                                                               5000 &&
                                                                               "has-text-success",
                                                                 )}>
-                                                                {score
+                                                                {score !== ""
                                                                     ? `${score}pt${
                                                                           score >
                                                                           1
