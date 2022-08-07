@@ -6,7 +6,7 @@
  * started at 30/01/2022
  */
 
-import {GAME_VARIANT_CHALLENGE} from "core/constants";
+import {GAME_VARIANT_CHALLENGE, GAME_RULES_GUESS_COUNTRY} from "core/constants";
 import {
     ACTION_PREPARE_CHALLENGE,
     ACTION_SHOW_CHALLENGE_SUMMARY,
@@ -31,7 +31,20 @@ export default (state, {title, player}) =>
                 duration: settings.duration,
                 rules: settings.rules,
             },
-            rounds,
+            rounds:
+                settings.rules === GAME_RULES_GUESS_COUNTRY
+                    ? rounds
+                    : Object.fromEntries(
+                          Object.entries(rounds).map(
+                              ([k, {panorama, target}]) => [
+                                  k,
+                                  {
+                                      panorama,
+                                      target,
+                                  },
+                              ],
+                          ),
+                      ),
             entries: Object.fromEntries(
                 Object.entries(state.entries).map(([k, v]) => [
                     k.endsWith(state.player) ? k.replace(state.player, key) : k,
