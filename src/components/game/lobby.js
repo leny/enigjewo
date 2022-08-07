@@ -10,11 +10,27 @@ import PropTypes from "prop-types";
 
 import "styles/lobby.scss";
 
-import {useCallback, useContext, useEffect, useRef, useState} from "react";
+import {
+    useCallback,
+    useMemo,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 
 import {GameStoreContext} from "store/game";
 
-import {NBSP, GAME_VARIANT_CHALLENGE} from "core/constants";
+import {
+    NBSP,
+    BSP,
+    GAME_VARIANT_CHALLENGE,
+    GAME_RULES_CLASSIC,
+    GAME_RULES_STATIONARY,
+    GAME_RULES_GUESS_COUNTRY,
+    GAME_RULES_EMOJIS,
+    GAME_RULES_NAMES,
+} from "core/constants";
 import {maps, loadGeoJSON} from "core/maps";
 import {getMarkerIcon} from "core/icons";
 import {readableDuration} from "core/utils";
@@ -38,7 +54,7 @@ const Lobby = ({onStartMatch}) => {
         code,
         title,
         progressCount,
-        settings: {map, rounds, duration},
+        settings: {map, rounds, duration, rules},
         players,
         player: key,
     } = useContext(GameStoreContext);
@@ -49,6 +65,35 @@ const Lobby = ({onStartMatch}) => {
         setPreparing(true);
         onStartMatch();
     }, [setPreparing, onStartMatch]);
+
+    const rulesExplain = useMemo(
+        () =>
+            ({
+                [GAME_RULES_CLASSIC]:
+                    "Moving around and using what you see, try to pin your drop point on a map.",
+                [GAME_RULES_STATIONARY]: (
+                    <>
+                        {"You can't move on StreetView!"}
+                        <br />
+                        {
+                            "Using only what you see around you, can you guess your drop point on the map?"
+                        }
+                        <br />
+                        {"Not an easy task, indeed!"}
+                    </>
+                ),
+                [GAME_RULES_GUESS_COUNTRY]: (
+                    <>
+                        {
+                            "Moving around and using what you see, can you guess the country you're in?!"
+                        }
+                        <br />
+                        {"This seems easier, but sometimes, it's tricky!"}
+                    </>
+                ),
+            }[rules]),
+        [rules],
+    );
 
     useEffect(() => {
         db.ref(`games/${code}/players`).on(
@@ -209,14 +254,18 @@ const Lobby = ({onStartMatch}) => {
                                 "column",
                                 `pt-${player.isOwner ? "0" : "2"}`,
                             )}>
+                            {variant === GAME_VARIANT_CHALLENGE && (
+                                <p>
+                                    {"This game is a"}
+                                    {BSP}
+                                    <strong>{"Challenge"}</strong>
+                                    {
+                                        ": the other players already did their rounds. Play on your side and compare your score with them at the end!"
+                                    }
+                                </p>
+                            )}
+                            <hr />
                             <ul>
-                                {variant === GAME_VARIANT_CHALLENGE && (
-                                    <li>
-                                        <strong>{"Variant:"}</strong>
-                                        {NBSP}
-                                        {GAME_VARIANT_CHALLENGE}
-                                    </li>
-                                )}
                                 <li>
                                     <strong>{"Rounds:"}</strong>
                                     {NBSP}
@@ -233,6 +282,18 @@ const Lobby = ({onStartMatch}) => {
                                     <strong>{"Map:"}</strong>
                                     {NBSP}
                                     {maps[map].label}
+                                </li>
+                                <li>
+                                    <strong>{"Rules:"}</strong>
+                                    {NBSP}
+                                    <span>
+                                        {`${GAME_RULES_EMOJIS[rules]}${NBSP}${NBSP}${GAME_RULES_NAMES[rules]}`}
+                                    </span>
+                                    <br />
+
+                                    <small className={"has-text-grey"}>
+                                        {rulesExplain}
+                                    </small>
                                 </li>
                             </ul>
                             <hr />
